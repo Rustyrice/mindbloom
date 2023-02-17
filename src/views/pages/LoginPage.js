@@ -1,4 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
+
+// Supabase
+import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
 
 // reactstrap components
 import { Button, Card, Form, Input, Container, Row, Col } from "reactstrap";
@@ -7,13 +10,24 @@ import { Button, Card, Form, Input, Container, Row, Col } from "reactstrap";
 import ExamplesNavbar from "components/Navbars/ExamplesNavbar.js";
 
 function RegisterPage() {
+
   document.documentElement.classList.remove("nav-open");
-  React.useEffect(() => {
+  useEffect(() => {
     document.body.classList.add("register-page");
     return function cleanup() {
       document.body.classList.remove("register-page");
     };
   });
+
+  // const { session } = useSession(); // Get the current session (null if not signed in)
+  // const supabase = useSupabaseClient(); // Get the supabase client
+
+  // if(session) {
+  //   window.location.href = "/login-page";
+  // }
+
+
+
   return (
     <>
       <ExamplesNavbar />
@@ -30,14 +44,7 @@ function RegisterPage() {
               <Card className="card-register ml-auto mr-auto">
                 <h3 className="title mx-auto">Welcome Back</h3>
                 <div className="social-line text-center">
-                  <Button
-                    className="btn-neutral btn-just-icon mr-1"
-                    color="facebook"
-                    href="#pablo"
-                    onClick={(e) => e.preventDefault()}
-                  >
-                    <i className="fa fa-facebook-square" />
-                  </Button>
+                  {/* Google Button */}
                   <Button
                     className="btn-neutral btn-just-icon mr-1"
                     color="google"
@@ -46,14 +53,7 @@ function RegisterPage() {
                   >
                     <i className="fa fa-google-plus" />
                   </Button>
-                  <Button
-                    className="btn-neutral btn-just-icon"
-                    color="twitter"
-                    href="#pablo"
-                    onClick={(e) => e.preventDefault()}
-                  >
-                    <i className="fa fa-twitter" />
-                  </Button>
+                  
                 </div>
                 <Form className="register-form">
                   <label>Email</label>
