@@ -84,7 +84,7 @@ function IndexNavbar() {
                 color="danger"
                 href="register-page"
               >
-                <i /> Try for free
+                <i /> Sign Up
               </Button>
             </NavItem>
           </Nav>

@@ -1,7 +1,4 @@
-import React, { useEffect } from "react";
-
-// Supabase
-import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
+import React from "react";
 
 // reactstrap components
 import { Button, Card, Form, Input, Container, Row, Col } from "reactstrap";
@@ -9,25 +6,14 @@ import { Button, Card, Form, Input, Container, Row, Col } from "reactstrap";
 // core components
 import ExamplesNavbar from "components/Navbars/ExamplesNavbar.js";
 
-function RegisterPage() {
-
+function LoginPage() {
   document.documentElement.classList.remove("nav-open");
-  useEffect(() => {
+  React.useEffect(() => {
     document.body.classList.add("register-page");
     return function cleanup() {
       document.body.classList.remove("register-page");
     };
   });
-
-  // const { session } = useSession(); // Get the current session (null if not signed in)
-  // const supabase = useSupabaseClient(); // Get the supabase client
-
-  // if(session) {
-  //   window.location.href = "/login-page";
-  // }
-
-
-
   return (
     <>
       <ExamplesNavbar />
@@ -42,9 +28,16 @@ function RegisterPage() {
           <Row>
             <Col className="ml-auto mr-auto" lg="4">
               <Card className="card-register ml-auto mr-auto">
-                <h3 className="title mx-auto">Welcome Back</h3>
+                <h3 className="title mx-auto">Welcome</h3>
                 <div className="social-line text-center">
-                  {/* Google Button */}
+                  <Button
+                    className="btn-neutral btn-just-icon mr-1"
+                    color="facebook"
+                    href="#pablo"
+                    onClick={(e) => e.preventDefault()}
+                  >
+                    <i className="fa fa-facebook-square" />
+                  </Button>
                   <Button
                     className="btn-neutral btn-just-icon mr-1"
                     color="google"
@@ -53,7 +46,14 @@ function RegisterPage() {
                   >
                     <i className="fa fa-google-plus" />
                   </Button>
-                  
+                  <Button
+                    className="btn-neutral btn-just-icon"
+                    color="twitter"
+                    href="#pablo"
+                    onClick={(e) => e.preventDefault()}
+                  >
+                    <i className="fa fa-twitter" />
+                  </Button>
                 </div>
                 <Form className="register-form">
                   <label>Email</label>
@@ -61,24 +61,16 @@ function RegisterPage() {
                   <label>Password</label>
                   <Input placeholder="Password" type="password" />
                   <Button block className="btn-round" color="danger">
-                    Log In
+                    Register
                   </Button>
                 </Form>
                 <div className="forgot">
                   <Button
                     className="btn-link"
                     color="danger"
-                    href="#pablo"
-                    onClick={(e) => e.preventDefault()}
+                    href="/login-page"
                   >
-                    Forgot password?
-                  </Button>
-                  <Button
-                    className="btn-link mt-0"
-                    color="danger"
-                    href="/register-page"
-                  >
-                    Don't have an account?
+                    Already have an account?
                   </Button>
                 </div>
               </Card>
@@ -90,4 +82,4 @@ function RegisterPage() {
   );
 }
 
-export default RegisterPage;
+export default LoginPage;
