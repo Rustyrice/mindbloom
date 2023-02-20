@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 // reactstrap components
 import {
@@ -17,18 +17,31 @@ import {
 } from "reactstrap";
 
 // core components
-import ExamplesNavbar from "components/Navbars/ExamplesNavbar.js";
+import IndexNavbar from "components/Navbars/IndexNavbar";
 import ProfilePageHeader from "components/Headers/ProfilePageHeader.js";
 import DemoFooter from "components/Footers/DemoFooter.js";
+import { supabase } from "config/client";
 
 function ProfilePage() {
-  const [activeTab, setActiveTab] = React.useState("1");
+  const [user, setUser] = useState(null);
+  const [activeTab, setActiveTab] = useState("1");
 
   const toggle = (tab) => {
     if (activeTab !== tab) {
       setActiveTab(tab);
     }
   };
+
+  useEffect(() => {
+    supabase.auth.getUser().then((value) => {
+      if (value.data?.user) {
+        console.log("user", value.data.user);
+        setUser(value.data.user);
+      } else {
+        console.log("no user");
+      }
+    });
+  }, []);
 
   document.documentElement.classList.remove("nav-open");
   React.useEffect(() => {
@@ -39,7 +52,7 @@ function ProfilePage() {
   });
   return (
     <>
-      <ExamplesNavbar />
+      <IndexNavbar />
       <ProfilePageHeader />
       <div className="section profile-content">
         <Container>
@@ -53,12 +66,12 @@ function ProfilePage() {
             </div>
             <div className="name">
               <h4 className="title">
-                Jane Faker <br />
+                {user?.user_metadata.name} <br />
               </h4>
-              <h6 className="description">Music Producer</h6>
+              {/* <h6 className="description">Music Producer</h6> */}
             </div>
           </div>
-          <Row>
+          {/* <Row>
             <Col className="ml-auto mr-auto text-center" md="6">
               <p>
                 An artist of considerable range, Jane Faker — the name taken by
@@ -71,8 +84,8 @@ function ProfilePage() {
                 <i className="fa fa-cog" /> Settings
               </Button>
             </Col>
-          </Row>
-          <br />
+          </Row> */}
+          {/* <br />
           <div className="nav-tabs-navigation">
             <div className="nav-tabs-wrapper">
               <Nav role="tablist" tabs>
@@ -98,9 +111,9 @@ function ProfilePage() {
                 </NavItem>
               </Nav>
             </div>
-          </div>
+          </div> */}
           {/* Tab panes */}
-          <TabContent className="following" activeTab={activeTab}>
+          {/* <TabContent className="following" activeTab={activeTab}>
             <TabPane tabId="1" id="follows">
               <Row>
                 <Col className="ml-auto mr-auto" md="6">
@@ -170,7 +183,7 @@ function ProfilePage() {
                 Find artists
               </Button>
             </TabPane>
-          </TabContent>
+          </TabContent> */}
         </Container>
       </div>
       <DemoFooter />

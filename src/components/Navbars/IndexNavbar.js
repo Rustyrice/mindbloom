@@ -1,7 +1,5 @@
 import React from "react";
-// nodejs library that concatenates strings
-import classnames from "classnames";
-// reactstrap components
+import classnames from "classnames"; // used for making className more dynamic
 import {
   Button,
   Collapse,
@@ -13,9 +11,28 @@ import {
   Container
 } from "reactstrap";
 
+import { supabase } from "config/client";
+
 function IndexNavbar() {
   const [navbarColor, setNavbarColor] = React.useState("navbar-transparent");
   const [navbarCollapse, setNavbarCollapse] = React.useState(false);
+  const [userState, setUserState] = React.useState(null);
+
+  supabase.auth.onAuthStateChange((event, session) => {
+    console.log("onAuthStateChange", event, session);
+    if (event !== "SIGNED_OUT") { // If user is signed in
+      setUserState(session.user);
+    } else {
+      setUserState(null);
+    }
+  });
+
+  console.log("userState", userState);
+
+    const handleSignOut = async () => {
+      const { error } = await supabase.auth.signOut();
+      if (error) console.log("Error signing out:", error);
+    };
 
   const toggleNavbarCollapse = () => {
     setNavbarCollapse(!navbarCollapse);
@@ -70,24 +87,41 @@ function IndexNavbar() {
           navbar
           isOpen={navbarCollapse}
         >
-          <Nav navbar>
-            <NavItem>
-              <NavLink
-                href="/login-page"
-              >
-                <i /> Log in
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <Button
-                className="btn-round"
-                color="danger"
-                href="register-page"
-              >
-                <i /> Sign Up
-              </Button>
-            </NavItem>
-          </Nav>
+          {userState ? 
+            <Nav navbar>
+             <NavItem>
+             <Button
+               className="btn-round"
+               color="danger"
+               onClick={handleSignOut}
+             >
+               <i /> Log Out
+             </Button>
+              </NavItem>
+            </Nav>
+
+            :
+            <Nav navbar>
+              <NavItem>
+                <NavLink
+                  href="/login-page"
+                >
+                  <i /> Log in
+                </NavLink>
+              </NavItem>
+
+              <NavItem>
+                <Button
+                  className="btn-round"
+                  color="danger"
+                  href="register-page"
+                >
+                  <i /> Sign Up
+                </Button>
+              </NavItem>
+            </Nav>
+          }
+            
         </Collapse>
       </Container>
     </Navbar>

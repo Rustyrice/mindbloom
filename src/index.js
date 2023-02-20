@@ -13,7 +13,7 @@ import LandingPage from "views/pages/LandingPage.js";
 import ProfilePage from "views/pages/ProfilePage.js";
 import RegisterPage from "views/pages/RegisterPage.js";
 import LoginPage from "views/pages/LoginPage.js";
-// others
+import DashboardPage from "views/pages/DashboardPage.js";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -40,6 +40,10 @@ root.render(
       <Route
         path="/login-page"
         render={(props) => <LoginPage {...props} />}
+      />
+      <Route
+        path ="/dashboard"
+        render={(props) => <DashboardPage {...props} />}
       />
       <Redirect to="/index" />
     </Switch>
