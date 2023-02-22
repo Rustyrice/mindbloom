@@ -14,6 +14,7 @@ import ProfilePage from "views/pages/ProfilePage.js";
 import RegisterPage from "views/pages/RegisterPage.js";
 import LoginPage from "views/pages/LoginPage.js";
 import RevisionPage from "views/pages/RevisionPage.js";
+import DashboardPage from "views/pages/DashboardPage.js";
 // others
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
