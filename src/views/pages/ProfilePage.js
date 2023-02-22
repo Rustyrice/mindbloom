@@ -100,7 +100,7 @@ function ProfilePage() {
             </div>
           </div>
           {/* Tab panes */}
-          <TabContent className="following" activeTab={activeTab}>
+          {/* <TabContent className="following" activeTab={activeTab}>
             <TabPane tabId="1" id="follows">
               <Row>
                 <Col className="ml-auto mr-auto" md="6">
@@ -170,7 +170,7 @@ function ProfilePage() {
                 Find artists
               </Button>
             </TabPane>
-          </TabContent>
+          </TabContent> */}
         </Container>
       </div>
       <DemoFooter />

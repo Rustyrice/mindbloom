@@ -7,11 +7,11 @@ import {
   CardBody,
   CardFooter,
   CardTitle,
-  Form,
-  Input,
-  InputGroupAddon,
-  InputGroupText,
-  InputGroup,
+  // Form,
+  // Input,
+  // InputGroupAddon,
+  // InputGroupText,
+  // InputGroup,
   Container,
   Row,
   Col
@@ -266,7 +266,7 @@ function LandingPage() {
           </Container>
         </div>
         <div className="section landing-section">
-          <Container>
+          {/* <Container>
             <Row>
               <Col className="ml-auto mr-auto" md="8">
                 <h2 className="text-center">Keep in touch?</h2>
@@ -311,7 +311,7 @@ function LandingPage() {
                 </Form>
               </Col>
             </Row>
-          </Container>
+          </Container> */}
         </div>
       </div>
       <DemoFooter />

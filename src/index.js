@@ -2,10 +2,6 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Route, Redirect, Switch } from "react-router-dom";
 
-// Connect to Supabase
-import { createClient } from '@supabase/supabase-js';
-import { SessionContextProvider } from '@supabase/auth-helpers-react';
-
 // styles
 import "bootstrap/scss/bootstrap.scss";
 import "assets/scss/paper-kit.scss?v=1.3.0";
@@ -22,14 +18,8 @@ import RevisionPage from "views/pages/RevisionPage.js";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
-const supabase = createClient(
-  process.env.REACT_APP_SUPABASE_URL,
-  process.env.REACT_APP_SUPERBASE_KEY
-);
-
 root.render(
   <BrowserRouter>
-    <SessionContextProvider supabaseClient={supabase}>
     <Switch>
       <Route path="/index" render={(props) => <Index {...props} />} />
       <Route
@@ -56,8 +46,11 @@ root.render(
         path="/login-page"
         render={(props) => <LoginPage {...props} />}
       />
+      <Route
+        path ="/dashboard"
+        render={(props) => <DashboardPage {...props} />}
+      />
       <Redirect to="/index" />
     </Switch>
-    </SessionContextProvider>
   </BrowserRouter>
 );
