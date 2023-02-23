@@ -1,7 +1,22 @@
 import React from "react";
 
 // reactstrap components
-import { Container } from "reactstrap";
+import {
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  CardTitle,
+  Form,
+  Input,
+  InputGroupAddon,
+  InputGroupText,
+  InputGroup,
+  Container,
+  Row,
+  Col
+} from "reactstrap";
+
 
 // core components
 function RevisionHeader() {
@@ -11,7 +26,7 @@ function RevisionHeader() {
         className="page-header section-dark"
         style={{
           backgroundImage:
-            "url(" + require("assets/img/antoine-barres.jpg") + ")"
+            "url(" + require("assets/img/revision-page-background.jpg") + ")"
         }}
       >
         <div className="filter" />
@@ -20,16 +35,20 @@ function RevisionHeader() {
             <div className="title-brand">
               <h1 className="presentation-title">Mindbloom</h1>
               <h1 className="presentation-second-title">Revision</h1>
-              <div className="fog-low">
-                <img alt="..." src={require("assets/img/fog-low.png")} />
-              </div>
-              <div className="fog-low right">
-                <img alt="..." src={require("assets/img/fog-low.png")} />
-              </div>
             </div>
             <h2 className="presentation-subtitle text-center">
               This is the revision page for our Software Processes Coursework!
             </h2>
+            <div className="padded-div">
+            <button className="daily-own" role="button" onclick="dailyView()">
+              <span class="text">Daily View</span>
+            </button>
+            </div>
+            <div className="padded-div">
+            <button className="daily-own" role="button" onclick="weeklyView()">
+              <span class="text">Weekly View</span>
+            </button>
+            </div>
           </Container>
         </div>
         <div
@@ -39,8 +58,15 @@ function RevisionHeader() {
           }}
         />
       </div>
+
     </>
   );
+}
+function dailyView(){
+
+}
+function weeklyView(){
+
 }
 
 export default RevisionHeader;
