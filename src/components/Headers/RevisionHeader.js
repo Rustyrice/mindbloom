@@ -19,7 +19,7 @@ function RevisionHeader() {
           <Container>
             <div className="title-brand">
               <h1 className="presentation-title">Mindbloom</h1>
-              <h1 className="presentation-secondTitle">Revision</h1>
+              <h1 className="presentation-second-title">Revision</h1>
               <div className="fog-low">
                 <img alt="..." src={require("assets/img/fog-low.png")} />
               </div>

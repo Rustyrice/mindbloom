@@ -5693,6 +5693,19 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+.presentation-second-title{
+  font-size: 5em;
+  font-weight: 700;
+  margin: 0;
+  color: red;
+  background: #fbf8ec;
+  background: -moz-linear-gradient(top, #fff 35%, #4e6773 100%);
+  background: -webkit-linear-gradient(top, #fff 35%, #4e6773 100%);
+  background: -ms-linear-gradient(top, #fff 35%, #4e6773 100%);
+  background: linear-gradient(to bottom, #fff 35%, #4e6773 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 .presentation-subtitle {
   font-size: 1.7em;
   color: #ffffff;
