@@ -2900,6 +2900,7 @@ h1,
 h2,
 .h2 {
   font-size: 2.8em;
+  color: red;
 }
 
 h3,
@@ -6357,7 +6358,19 @@ License - nucleoapp.com/license/
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
-
+.presentation-secondTitle{
+  font-size: 5em;
+  font-weight: 700;
+  margin: 0;
+  color: red;
+  background: #fbf8ec;
+  background: -moz-linear-gradient(top, #ffffff 35%, #4e6773 100%);
+  background: -webkit-linear-gradient(top, #ffffff 35%, #4e6773 100%);
+  background: -ms-linear-gradient(top, #ffffff 35%, #4e6773 100%);
+  background: linear-gradient(to bottom, #ffffff 35%, #4e6773 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 .presentation-subtitle {
   font-size: 1.7em;
   color: #ffffff;
