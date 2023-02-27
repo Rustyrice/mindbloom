@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 // reactstrap components
 import {
@@ -20,6 +20,14 @@ import {
 
 // core components
 function RevisionHeader() {
+  const [view, setView] = useState(false);
+
+  const dailyView = (e) => {
+    e.preventDefault();
+    setView(true);
+    console.log("hello");
+  }
+   
   return (
     <>
       <div
@@ -39,10 +47,12 @@ function RevisionHeader() {
             <h2 className="presentation-subtitle text-center">
               This is the revision page for our Software Processes Coursework!
             </h2>
+            { view ? <p>Viewing Daily</p> : <p>Not Viewing Daily</p>}
             <div className="padded-div">
-            <button className="daily-own" role="button" onclick="dailyView()">
+            <button className="daily-own" onClick={dailyView}>
               <span class="text">Daily View</span>
             </button>
+
             </div>
             <div className="padded-div">
             <button className="daily-own" role="button" onclick="weeklyView()">
@@ -51,20 +61,18 @@ function RevisionHeader() {
             </div>
           </Container>
         </div>
-        <div
+        {/* <div
           className="moving-clouds"
           style={{
             backgroundImage: "url(" + require("assets/img/clouds.png") + ")"
           }}
-        />
+        /> */}
       </div>
 
     </>
   );
 }
-function dailyView(){
 
-}
 function weeklyView(){
 
 }
