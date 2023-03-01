@@ -16,18 +16,15 @@ import {
   Row,
   Col
 } from "reactstrap";
-
-
+import {ReactComponent as Plant} from 'assets/img/plant-1573.svg';
 // core components
 function RevisionHeader() {
-  const [view, setView] = useState(false);
-
-  const dailyView = (e) => {
-    e.preventDefault();
-    setView(true);
-    console.log("hello");
+  function dailyView(){
+    window.location.href = "/revision-daily";
   }
-   
+  function weeklyView(){
+    window.location.href = "/revision-weekly";
+  }
   return (
     <>
       <div
@@ -47,9 +44,8 @@ function RevisionHeader() {
             <h2 className="presentation-subtitle text-center">
               This is the revision page for our Software Processes Coursework!
             </h2>
-            { view ? <p>Viewing Daily</p> : <p>Not Viewing Daily</p>}
             <div className="padded-div">
-            <button className="daily-own" onClick={dailyView}>
+            < button className="daily-own" onClick={dailyView}>
               <span class="text">Daily View</span>
             </button>
 
@@ -60,6 +56,7 @@ function RevisionHeader() {
             </button>
             </div>
           </Container>
+          
         </div>
         {/* <div
           className="moving-clouds"
@@ -68,13 +65,18 @@ function RevisionHeader() {
           }}
         /> */}
       </div>
-
+      <div className="section-dark" >
+        <h3 className="presentation-desc-title">The Pomodoro System</h3>
+        <p className="desc-text">
+          The Pomodoro Technique is a time management method developed by Francesco Cirillo in the late 1980s.
+          The technique uses a timer to break down work into intervals, traditionally 25 minutes in length, separated by short breaks.
+          Each interval is known as a pomodoro, from the Italian word for 'tomato', after the tomato-shaped kitchen timer that Cirillo used as a university student.
+          This method is based on the idea that frequent breaks can improve mental agility. The research on this technique has shown promising results. This is why we have chosen to use this technique for our revision page.
+          For our page the pomodoros will be represented by plants as can be seen here. <Plant />
+        </p>
+      </div>
     </>
   );
-}
-
-function weeklyView(){
-
 }
 
 export default RevisionHeader;

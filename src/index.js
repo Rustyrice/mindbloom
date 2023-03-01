@@ -13,7 +13,9 @@ import LandingPage from "views/pages/LandingPage.js";
 import ProfilePage from "views/pages/ProfilePage.js";
 import RegisterPage from "views/pages/RegisterPage.js";
 import LoginPage from "views/pages/LoginPage.js";
-import RevisionPage from "views/pages/RevisionPage.js";
+import RevisionPage from "views/pages/RevisionLandingPage.js";
+import RevisionDailyPage from "views/pages/RevisionDaily.js";
+import RevisionWeeklyPage from "views/pages/RevisionWeekly.js";
 import DashboardPage from "views/pages/DashboardPage.js";
 // others
 
@@ -28,10 +30,6 @@ root.render(
         render={(props) => <NucleoIcons {...props} />}
       />
       <Route
-        path="/revision-page"
-        render={(props) => <RevisionPage {...props} />}
-      />
-      <Route
         path="/landing-page"
         render={(props) => <LandingPage {...props} />}
       />
@@ -42,6 +40,18 @@ root.render(
       <Route
         path="/register-page"
         render={(props) => <RegisterPage {...props} />}
+      />
+       <Route
+        path="/revision-landing-page"
+        render={(props) => <RevisionPage {...props} />}
+      />
+      <Route
+        path="/revision-daily"
+        render={(props) => <RevisionDailyPage {...props} />}
+      />
+      <Route
+        path="/revision-weekly"
+        render={(props) => <RevisionWeeklyPage {...props} />}
       />
       <Route
         path="/login-page"
@@ -55,3 +65,4 @@ root.render(
     </Switch>
   </BrowserRouter>
 );
+
