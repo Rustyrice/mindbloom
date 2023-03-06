@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import classnames from "classnames"; // used for making className more dynamic
 import {
   Button,
@@ -14,24 +15,39 @@ import {
 import { supabase } from "config/client";
 
 function IndexNavbar() {
-  const [navbarColor, setNavbarColor] = React.useState("navbar-transparent");
-  const [navbarCollapse, setNavbarCollapse] = React.useState(false);
-  const [userState, setUserState] = React.useState(null);
+  const [navbarColor, setNavbarColor] = useState("navbar-transparent");
+  const [navbarCollapse, setNavbarCollapse] = useState(false);
+  const [userState, setUserState] = useState();
 
-  supabase.auth.onAuthStateChange((event, session) => {
-    console.log("onAuthStateChange", event, session);
-    if (event !== "SIGNED_OUT") { // If user is signed in
-      setUserState(session.user);
-    } else {
-      setUserState(null);
-    }
-  });
+  let history = useHistory();
+
+  useEffect(() => {
+    supabase.auth.onAuthStateChange((event, session) => {
+      console.log("onAuthStateChange", event, session);
+      if (event !== "SIGNED_OUT") { // If user is signed in
+        setUserState(session.user);
+      } else {
+        setUserState(null);
+      }
+    });
+  }, [window.location]);
+
+  // supabase.auth.onAuthStateChange((event, session) => {
+  //   console.log("onAuthStateChange", event, session);
+  //   if (event !== "SIGNED_OUT") { // If user is signed in
+  //     setUserState(session.user);
+  //   } else {
+  //     setUserState(null);
+  //   }
+  // });
 
   console.log("userState", userState);
 
     const handleSignOut = async () => {
       const { error } = await supabase.auth.signOut();
       if (error) console.log("Error signing out:", error);
+      setUserState(null);
+      history.push("/index");
     };
 
   const toggleNavbarCollapse = () => {

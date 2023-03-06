@@ -53,7 +53,6 @@ function Index() {
         {/* <SectionLogin /> */}
         {/* <SectionExamples /> */}
         {/* <SectionDownload /> */}
-        <SectionLogin />
         <SectionExamples /> 
         <DemoFooter />
       </div>
