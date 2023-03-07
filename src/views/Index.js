@@ -1,6 +1,8 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
 
 // reactstrap components
+import { Button } from "reactstrap";
 
 // core components
 import IndexNavbar from "components/Navbars/IndexNavbar.js";
@@ -26,6 +28,8 @@ import SectionCards from "views/index-sections/SectionCards";
 
 
 function Index() {
+  const history = useHistory();
+
   document.documentElement.classList.remove("nav-open");
   React.useEffect(() => {
     document.body.classList.add("index");
@@ -38,6 +42,11 @@ function Index() {
       <IndexNavbar />
       <IndexHeader />
       <div className="main">
+        <div>
+          {/* Usefull links */}
+          <Button color="primary" onClick={() => history.push("revision-landing-page")}> Revision Page </Button>
+          <Button color="primary" onClick={() => history.push("dashboard")}> Dashboard Page </Button>
+        </div>
         <SectionButtons />
         <SectionNavbars />
         <SectionNavigation /> 
