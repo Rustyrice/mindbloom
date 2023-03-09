@@ -22,7 +22,7 @@ import {
 import ExamplesNavbar from "components/Navbars/ExamplesNavbar.js";
 import LandingPageHeader from "components/Headers/LandingPageHeader.js";
 import DemoFooter from "components/Footers/DemoFooter.js";
-import IndexHeader from "components/Headers/IndexHeader.js";
+import IndexNavbar from "components/Navbars/IndexNavbar";
 
 
 function RevisionWeeklyPage(){
