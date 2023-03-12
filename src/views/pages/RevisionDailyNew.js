@@ -12,86 +12,85 @@ import {
 
 // core components
 import IndexNavbar from "components/Navbars/IndexNavbar";
-import ExamplesNavbar from "components/Navbars/ExamplesNavbar.js";
-import LandingPageHeader from "components/Headers/LandingPageHeader.js";
-import DemoFooter from "components/Footers/DemoFooter.js";
-import { ListItem } from "components/ListGroupItem";
+// import DemoFooter from "components/Footers/DemoFooter.js";
+
+import { PomodoroTimer, ListItem } from "components/RevisionDailyComponents.js";
 
 
 function RevisionDailyPage() {
-    const Ref = useRef(null);
-    const [timer, setTimer] = useState('00:00:00');
-    const [isRunning, setIsRunning] = useState(false);
-    const [endTime, setEndTime] = useState(null);
+    // const Ref = useRef(null);
+    // const [timer, setTimer] = useState('00:00:00');
+    // const [isRunning, setIsRunning] = useState(false);
+    // const [endTime, setEndTime] = useState(null);
 
-    const getTimeRemaining = (endTime) => {
-        const total = Date.parse(endTime) - Date.parse(new Date());
-        const hours = Math.floor((total / (1000 * 60 * 60)) % 24);
-        const minutes = Math.floor((total / (1000 * 60)) % 60);
-        const seconds = Math.floor((total / 1000) % 60);
-        return {
-          total,
-          hours,
-          minutes,
-          seconds,
-        };
-    };
+    // const getTimeRemaining = (endTime) => {
+    //     const total = Date.parse(endTime) - Date.parse(new Date());
+    //     const hours = Math.floor((total / (1000 * 60 * 60)) % 24);
+    //     const minutes = Math.floor((total / (1000 * 60)) % 60);
+    //     const seconds = Math.floor((total / 1000) % 60);
+    //     return {
+    //       total,
+    //       hours,
+    //       minutes,
+    //       seconds,
+    //     };
+    // };
     
-    const startTimer = () => {
-        let { total, hours, minutes, seconds } = getTimeRemaining(endTime);
-        if (total >= 0 && timer != '00:00:00') {
-            // update the timer
-            // check if less than 10 then we need to
-            // add '0' at the beginning of the variable
-            setTimer(
-                (hours > 9 ? hours : '0' + hours) +
-                ':' +
-                (minutes > 9 ? minutes : '0' + minutes) +
-                ':' +
-                (seconds > 9 ? seconds : '0' + seconds)
-            );
-            setEndTime(new Date(endTime.getTime() - 1000));
-        } else {
-            // pause the timer
-            setIsRunning(false);
-            if (Ref.current) clearInterval(Ref.current);
-            setTimer('00:00:00');
-        }
-    };
+    // const startTimer = () => {
+    //     let { total, hours, minutes, seconds } = getTimeRemaining(endTime);
+    //     if (total >= 0 && timer != '00:00:00') {
+    //         // update the timer
+    //         // check if less than 10 then we need to
+    //         // add '0' at the beginning of the variable
+    //         setTimer(
+    //             (hours > 9 ? hours : '0' + hours) +
+    //             ':' +
+    //             (minutes > 9 ? minutes : '0' + minutes) +
+    //             ':' +
+    //             (seconds > 9 ? seconds : '0' + seconds)
+    //         );
+    //         setEndTime(new Date(endTime.getTime() - 1000));
+    //     } else {
+    //         // pause the timer
+    //         setIsRunning(false);
+    //         if (Ref.current) clearInterval(Ref.current);
+    //         setTimer('00:00:00');
+    //     }
+    // };
     
-    const onClickStartPause = () => {
-        if (!isRunning) {
-            // start the timer
-            const endTime = new Date();
-            endTime.setSeconds(endTime.getSeconds() + 1500);
-            setEndTime(endTime);
-            setIsRunning(true);
-            const id = setInterval(() => {
-                startTimer();
-            }, 1000);
-            Ref.current = id;
-        } else {
-            // pause the timer
-            setIsRunning(false);
-            if (Ref.current) clearInterval(Ref.current);
-            setEndTime(new Date(endTime.getTime() + (new Date() - new Date(endTime))));
-        }
-    };
+    // const onClickStartPause = () => {
+    //     if (!isRunning) {
+    //         // start the timer
+    //         const endTime = new Date();
+    //         endTime.setSeconds(endTime.getSeconds() + 1500);
+    //         setEndTime(endTime);
+    //         setIsRunning(true);
+    //         const id = setInterval(() => {
+    //             startTimer();
+    //         }, 1000);
+    //         Ref.current = id;
+    //     } else {
+    //         // pause the timer
+    //         setIsRunning(false);
+    //         if (Ref.current) clearInterval(Ref.current);
+    //         setEndTime(new Date(endTime.getTime() + (new Date() - new Date(endTime))));
+    //     }
+    // };
     
-    const clearTimer = () => {
-        // set the timer to 25 mins
-        setTimer('00:25:00');
-        const endTime = new Date();
-        endTime.setMinutes(endTime.getMinutes() + 25);
-        endTime.setSeconds(0);
-        setEndTime(endTime);
-        // clear the timer
-        if (Ref.current) clearInterval(Ref.current);
-    };
+    // const clearTimer = () => {
+    //     // set the timer to 25 mins
+    //     setTimer('00:25:00');
+    //     const endTime = new Date();
+    //     endTime.setMinutes(endTime.getMinutes() + 25);
+    //     endTime.setSeconds(0);
+    //     setEndTime(endTime);
+    //     // clear the timer
+    //     if (Ref.current) clearInterval(Ref.current);
+    // };
     
-    useEffect(() => {
-        clearTimer();
-    }, []);
+    // useEffect(() => {
+    //     clearTimer();
+    // }, []);
 
   document.documentElement.classList.remove("nav-open");
   React.useEffect(() => {
@@ -112,11 +111,12 @@ function RevisionDailyPage() {
             height: "40vh",
             backgroundImage: "url(https://images.unsplash.com/photo-1468657988500-aca2be09f4c6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2670&q=80)",
         }}>
-            <div style={{backgroundColor: "white", borderRadius: "5px", display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column", padding: "0px 50px 10px 50px"}}>
+            {/* <div style={{backgroundColor: "white", borderRadius: "5px", display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column", padding: "0px 50px 10px 50px"}}>
                 <h1 style={{marginBottom: "10px"}}>{timer}</h1>
                 <Button color="danger" onClick={onClickStartPause}>{isRunning ? 'Pause' : 'Start'}</Button>
 
-            </div>
+            </div> */}
+            <PomodoroTimer expiryTimestamp={Date.now() + 1000 * 60 * 25} />
 
         </div>
           <div className="content-center" style={{paddingTop: "30px"}}>
