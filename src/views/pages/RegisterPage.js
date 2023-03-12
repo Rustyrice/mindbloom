@@ -11,6 +11,8 @@ function RegisterPage() {
   const [password, setPassword] = useState();
   const [name, setName] = useState();
 
+  const [signupError, setSignupError] = useState(null);
+
   let history = useHistory();
 
   document.documentElement.classList.remove("nav-open");
@@ -34,6 +36,7 @@ function RegisterPage() {
     });
     if (error) {
       console.log("error", error);
+      setSignupError(error.message);
     } else {
       history.push("/profile-page");
     }
@@ -66,6 +69,7 @@ function RegisterPage() {
                   <Button block className="btn-round" color="danger" type={"submit"}>
                     Register
                   </Button>
+                  <p>{signupError}</p>
                 </Form>
 
                 <div className="forgot">
