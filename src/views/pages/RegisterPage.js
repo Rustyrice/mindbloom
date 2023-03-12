@@ -24,8 +24,8 @@ function RegisterPage() {
   const handleSignUp = async (e) => {
     e.preventDefault();
     const { error } = await supabase.auth.signUp({
-      email,
-      password,
+      email: email,
+      password: password,
       options: {
         data: {
           name: name
@@ -34,10 +34,21 @@ function RegisterPage() {
     });
     if (error) {
       console.log("error", error);
+      document.getElementById("error_text").style.display = "block"; // Display error message
     } else {
-      history.push("/profile-page");
+      history.push("/dashboard"); // redirect to dashboard page
     }
   };
+
+  const handleGoogleLogIn = async () => { // Log In function
+    const { data, error } = await supabase.auth.signInWithOAuth({ // Log In with Google, see https://supabase.io/docs/reference/javascript/auth-signinwithoauth
+      provider: "google",
+      options: {
+        redirectTo: "http://localhost:3000/dashboard",
+        scopes: 'https://www.googleapis.com/auth/fitness.blood_pressure.read https://www.googleapis.com/auth/fitness.heart_rate.read https://www.googleapis.com/auth/fitness.activity.read https://www.googleapis.com/auth/fitness.body.read'
+      }
+    });
+  }
 
   return (
     <>
@@ -54,7 +65,19 @@ function RegisterPage() {
             <Col className="ml-auto mr-auto" lg="4">
               <Card className="card-register ml-auto mr-auto">
                 <h3 className="title mx-auto">Hello Stranger 👋</h3>
-                
+                <div className="social-line text-center">
+
+                  {/* Google Log In Button */}
+                  <Button
+                    className="btn-neutral btn-just-icon mr-1"
+                    color="google"
+                    onClick={handleGoogleLogIn}
+                  >
+                    <i className="fa fa-google-plus" />
+                  </Button>
+
+                </div>
+                {/* Register form */}
                 <Form className="register-form" onSubmit={handleSignUp}>
                   <label>Email</label>
                   <Input placeholder="Email" type="text" value={email} onChange={e => setEmail(e.target.value)} />
@@ -66,6 +89,7 @@ function RegisterPage() {
                   <Button block className="btn-round" color="danger" type={"submit"}>
                     Register
                   </Button>
+                  <p color="danger" className="text-center" id="error_text" display="none"></p>
                 </Form>
 
                 <div className="forgot">

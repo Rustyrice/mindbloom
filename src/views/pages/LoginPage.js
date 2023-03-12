@@ -30,7 +30,7 @@ function LoginPage() {
   supabase.auth.onAuthStateChange((event, session) => {
     console.log("onAuthStateChange", event, session);
     if (event !== "SIGNED_OUT") { // If user is signed in
-      history.push("/profile-page"); // Redirect to profile page
+      history.push("/dashboard"); // Redirect to dashboard
     }
   }); // See https://supabase.io/docs/reference/javascript/auth-onauthstatechange
 
@@ -44,9 +44,8 @@ function LoginPage() {
     if (error) {
       console.log("Error logging in", error);
       document.getElementById("error_text").style.display = "block"; // Display error message
-
     } else {
-      history.push("/profile-page"); // Redirect to profile page
+      history.push("/dashboard"); // Redirect to dashboard page
     }
   };
 
@@ -54,11 +53,11 @@ function LoginPage() {
     const { data, error } = await supabase.auth.signInWithOAuth({ // Log In with Google, see https://supabase.io/docs/reference/javascript/auth-signinwithoauth
       provider: "google",
       options: {
-        redirectTo: "http://localhost:3000/profile-page",
+        redirectTo: "http://localhost:3000/dashboard",
         scopes: 'https://www.googleapis.com/auth/fitness.blood_pressure.read https://www.googleapis.com/auth/fitness.heart_rate.read https://www.googleapis.com/auth/fitness.activity.read https://www.googleapis.com/auth/fitness.body.read'
       }
     });
-    }
+  }
 
 
   return (

@@ -41,9 +41,9 @@ export function PomodoroTimer({ expiryTimestamp }) {
     }
 
     const handleRestart = () => {
-        // Restarts to 10 minutes timer
+        // Restarts to 25 minutes timer
         const time = new Date();
-        time.setSeconds(time.getSeconds() + 10 * 60);
+        time.setSeconds(time.getSeconds() + 25 * 60);
         restart(time)
         pause()
         setHasStarted(false);
@@ -69,7 +69,7 @@ export function PomodoroTimer({ expiryTimestamp }) {
 
         {displayButton()}
 
-        {hasStarted ? <Button onClick={handleRestart}>Restart</Button> : null }
+        {hasStarted ? <Button style={{marginTop: "10px"}} onClick={handleRestart}>Restart</Button> : null }
 
         {/* <button onClick={() => {
           // Restarts to 5 minutes timer
