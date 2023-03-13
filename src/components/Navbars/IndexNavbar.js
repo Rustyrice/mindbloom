@@ -17,45 +17,36 @@ import { supabase } from "config/client";
 function IndexNavbar() {
   const [navbarColor, setNavbarColor] = useState("navbar-transparent");
   const [navbarCollapse, setNavbarCollapse] = useState(false);
-  const [userState, setUserState] = useState();
+  const [loggedIn, setLoggedin] = useState(false);
 
   let history = useHistory();
 
+  async function checkLoggedIn() {
+    const { data } = await supabase.auth.getSession()
+    if (data.session) { // if there is a session, user is logged in
+      setLoggedin(true);
+    } else {
+      setLoggedin(false);
+    }
+  }
+
   useEffect(() => {
-    supabase.auth.onAuthStateChange((event, session) => {
-      console.log("onAuthStateChange", event, session);
-      if (event !== "SIGNED_OUT") { // If user is signed in
-        setUserState(session.user);
-      } else {
-        setUserState(null);
-      }
-    });
-  }, [window.location]);
+    checkLoggedIn() // check if user is logged in on page load
+  }, []);
 
-  // supabase.auth.onAuthStateChange((event, session) => {
-  //   console.log("onAuthStateChange", event, session);
-  //   if (event !== "SIGNED_OUT") { // If user is signed in
-  //     setUserState(session.user);
-  //   } else {
-  //     setUserState(null);
-  //   }
-  // });
-
-  console.log("userState", userState);
-
-    const handleSignOut = async () => {
-      const { error } = await supabase.auth.signOut();
-      if (error) console.log("Error signing out:", error);
-      setUserState(null);
-      history.push("/index");
-    };
+  const handleSignOut = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) console.log("Error signing out:", error);
+    setLoggedin(false);
+    history.push("/index");
+  };
 
   const toggleNavbarCollapse = () => {
     setNavbarCollapse(!navbarCollapse);
     document.documentElement.classList.toggle("nav-open");
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     const updateNavbarColor = () => {
       if (
         document.documentElement.scrollTop > 299 ||
@@ -76,6 +67,7 @@ function IndexNavbar() {
       window.removeEventListener("scroll", updateNavbarColor);
     };
   });
+
   return (
     <Navbar className={classnames("fixed-top", navbarColor)} expand="lg">
       <Container>
@@ -103,7 +95,8 @@ function IndexNavbar() {
           navbar
           isOpen={navbarCollapse}
         >
-          {userState ? 
+
+          {loggedIn ? 
             <Nav navbar>
              <NavItem>
              <Button

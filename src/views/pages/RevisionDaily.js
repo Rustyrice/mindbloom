@@ -1,5 +1,4 @@
 import React from "react";
-
 import {
     ListGroup,
     ListGroupItem,
@@ -71,9 +70,10 @@ function RevisionDailyPage() {
                 <div style={{height: "30px"}}/>
                 <ListGroup>
                     <ListItem title="maths" goal="3" progress="2"/>
-                    <ListItem title="ai" goal="3" progress="1"/>
+                    <ListItem title="ai" goal="2" progress="1"/>
                     <ListItem title="system arch" goal="3" progress="1"/>
                 </ListGroup>
+
             </Container>
           </div>
         </div>

@@ -1,30 +1,21 @@
-import React, { useState } from "react";
+import React from "react";
+import { useHistory } from "react-router-dom";
 
-// reactstrap components
-import {
-  Button,
-  Card,
-  CardBody,
-  CardFooter,
-  CardTitle,
-  Form,
-  Input,
-  InputGroupAddon,
-  InputGroupText,
-  InputGroup,
-  Container,
-  Row,
-  Col
-} from "reactstrap";
-import {ReactComponent as Plant} from 'assets/img/plant-1573.svg';
-// core components
+
+import { Container } from "reactstrap";
+import { ReactComponent as Plant } from 'assets/img/plant-1573.svg';
+
 function RevisionHeader() {
+  let history = useHistory();
+
   function dailyView(){
-    window.location.href = "/revision-daily";
+    history.push("/revision-daily");
   }
+
   function weeklyView(){
-    window.location.href = "/revision-weekly";
+    history.push("/revision-weekly");
   }
+
   return (
     <>
       <div
@@ -45,13 +36,13 @@ function RevisionHeader() {
               This is the revision page for our Software Processes Coursework!
             </h2>
             <div className="padded-div">
-            < button className="daily-own" onClick={dailyView}>
+            <button className="daily-own" onClick={dailyView}>
               <span class="text">Daily View</span>
             </button>
 
             </div>
             <div className="padded-div">
-            <button className="daily-own" role="button" onclick="weeklyView()">
+            <button className="daily-own" onClick={weeklyView}>
               <span class="text">Weekly View</span>
             </button>
             </div>
