@@ -1,13 +1,19 @@
 import React, { useState } from "react";
 import { Button, ListGroupItem } from "reactstrap";
 import { useTimer } from 'react-timer-hook'; // https://www.npmjs.com/package/react-timer-hook
+import {ReactComponent as Plant} from 'assets/img/plant-1573.svg';
 
 export function ListItem({title, progress, goal}) {
+    const arr = [];
+    const arr1 = [<Plant/>, <Plant/>, <Plant/>];
+    for (let i = 0; i < progress; i++) {
+        arr.push(<Plant key={i}/>);
+    }
     return(
     <ListGroupItem>
         <div style={{flexDirection: "row", display: "flex", justifyContent: "space-between", alignItems: "center"}}>
             <b style={{width: "100px"}}>{title}</b>
-            <p>{progress}/{goal}</p>
+            <p>{arr}<span class = "plant-div">/</span>{arr1}</p>
             <Button color="danger">Delete</Button>
         </div>
     </ListGroupItem>

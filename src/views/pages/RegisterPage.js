@@ -11,6 +11,8 @@ function RegisterPage() {
   const [password, setPassword] = useState();
   const [name, setName] = useState();
 
+  const [signupError, setSignupError] = useState(null);
+
   let history = useHistory();
 
   document.documentElement.classList.remove("nav-open");
@@ -34,7 +36,6 @@ function RegisterPage() {
     });
     if (error) {
       console.log("error", error);
-      document.getElementById("error_text").style.display = "block"; // Display error message
     } else {
       history.push("/dashboard"); // redirect to dashboard page
     }
@@ -89,7 +90,6 @@ function RegisterPage() {
                   <Button block className="btn-round" color="danger" type={"submit"}>
                     Register
                   </Button>
-                  <p color="danger" className="text-center" id="error_text" display="none"></p>
                 </Form>
 
                 <div className="forgot">

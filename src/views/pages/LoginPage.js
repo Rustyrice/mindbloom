@@ -12,6 +12,8 @@ function LoginPage() {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
 
+  const [failedLogIn, setFailedLogIn] = useState(null);
+
   let history = useHistory();
 
   // React Router hook, used to redirect to other pages, see https://reactrouter.com/en/6.8.1/components/navigate
@@ -44,6 +46,7 @@ function LoginPage() {
     if (error) {
       console.log("Error logging in", error);
       document.getElementById("error_text").style.display = "block"; // Display error message
+
     } else {
       history.push("/dashboard"); // Redirect to dashboard page
     }
@@ -97,7 +100,9 @@ function LoginPage() {
                   <Button block className="btn-round" color="danger" type={"submit"}>
                     Log In
                   </Button>
-                  <p color="danger" className="text-center" id="error_text" display="none">Please enter a valid email and password</p>
+
+                  {failedLogIn && <p color="danger" className="text-center" id="error_text">Please enter a valid email and password</p>}
+
                 </Form>
 
                 {/* Forgot password and Don't have an account? */}
