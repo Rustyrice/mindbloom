@@ -10,7 +10,6 @@ import "assets/demo/demo.css?v=1.3.0";
 import Index from "views/Index.js";
 import NucleoIcons from "views/NucleoIcons.js";
 import LandingPage from "views/pages/LandingPage.js";
-import ProfilePage from "views/pages/ProfilePage.js";
 import RegisterPage from "views/pages/RegisterPage.js";
 import LoginPage from "views/pages/LoginPage.js";
 import RevisionPage from "views/pages/RevisionLandingPage.js";
@@ -33,10 +32,6 @@ root.render(
       <Route
         path="/landing-page"
         render={(props) => <LandingPage {...props} />}
-      />
-      <Route
-        path="/profile-page"
-        render={(props) => <ProfilePage {...props} />}
       />
       <Route
         path="/register-page"

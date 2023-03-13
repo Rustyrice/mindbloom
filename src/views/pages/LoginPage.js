@@ -45,8 +45,7 @@ function LoginPage() {
     });
     if (error) {
       console.log("Error logging in", error);
-      document.getElementById("error_text").style.display = "block"; // Display error message
-
+      setFailedLogIn(true);
     } else {
       history.push("/dashboard"); // Redirect to dashboard page
     }
@@ -100,9 +99,7 @@ function LoginPage() {
                   <Button block className="btn-round" color="danger" type={"submit"}>
                     Log In
                   </Button>
-
-                  {failedLogIn && <p color="danger" className="text-center" id="error_text">Please enter a valid email and password</p>}
-
+                  {failedLogIn && <p color="danger" className="text-center" id="error_text" display="none">Your email and/or password is incorrect</p>}
                 </Form>
 
                 {/* Forgot password and Don't have an account? */}

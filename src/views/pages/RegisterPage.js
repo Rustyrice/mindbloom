@@ -36,6 +36,7 @@ function RegisterPage() {
     });
     if (error) {
       console.log("error", error);
+      setSignupError(error.message);
     } else {
       history.push("/dashboard"); // redirect to dashboard page
     }
@@ -81,7 +82,7 @@ function RegisterPage() {
                 {/* Register form */}
                 <Form className="register-form" onSubmit={handleSignUp}>
                   <label>Email</label>
-                  <Input placeholder="Email" type="text" value={email} onChange={e => setEmail(e.target.value)} />
+                  <Input placeholder="Email" type="email" value={email} onChange={e => setEmail(e.target.value)} />
                   <label>Name</label>
                   <Input placeholder="Name" type="text" value={name} onChange={e => setName(e.target.value)} />
                   <label>Password</label>
@@ -90,6 +91,7 @@ function RegisterPage() {
                   <Button block className="btn-round" color="danger" type={"submit"}>
                     Register
                   </Button>
+                  <p color="danger">{signupError}</p>
                 </Form>
 
                 <div className="forgot">
