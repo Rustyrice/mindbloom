@@ -28,7 +28,6 @@ export function PomodoroTimer({ expiryTimestamp }) {
       seconds,
       minutes,
       hours,
-      days,
       isRunning,
       start,
       pause,

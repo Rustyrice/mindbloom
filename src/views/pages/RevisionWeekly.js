@@ -1,28 +1,6 @@
-import React, {Component} from 'react';
-import {DayPilot, DayPilotCalendar, DayPilotNavigator} from "@daypilot/daypilot-lite-react";
+import React from 'react';
+import {DayPilot, DayPilotNavigator} from "@daypilot/daypilot-lite-react";
 
-// reactstrap components
-import {
-    Button,
-    Card,
-    CardBody,
-    CardFooter,
-    CardTitle,
-    Form,
-    Input,
-    InputGroupAddon,
-    InputGroupText,
-    InputGroup,
-    Container,
-    Row,
-    Col
-  } from "reactstrap";
-
-// core components
-import ExamplesNavbar from "components/Navbars/ExamplesNavbar.js";
-import LandingPageHeader from "components/Headers/LandingPageHeader.js";
-import DemoFooter from "components/Footers/DemoFooter.js";
-import IndexNavbar from "components/Navbars/IndexNavbar";
 function getTaskWeek(){
   var startDate = new DayPilot.Date().firstDayOfWeek();
   var endDate = startDate.addDays(7);

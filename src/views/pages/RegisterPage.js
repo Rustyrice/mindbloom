@@ -43,7 +43,7 @@ function RegisterPage() {
   };
 
   const handleGoogleLogIn = async () => { // Log In function
-    const { data, error } = await supabase.auth.signInWithOAuth({ // Log In with Google, see https://supabase.io/docs/reference/javascript/auth-signinwithoauth
+    await supabase.auth.signInWithOAuth({ // Log In with Google, see https://supabase.io/docs/reference/javascript/auth-signinwithoauth
       provider: "google",
       options: {
         redirectTo: "http://localhost:3000/dashboard",

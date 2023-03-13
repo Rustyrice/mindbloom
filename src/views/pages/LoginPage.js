@@ -16,10 +16,6 @@ function LoginPage() {
 
   let history = useHistory();
 
-  // React Router hook, used to redirect to other pages, see https://reactrouter.com/en/6.8.1/components/navigate
-  // const navigate = useNavigate();
-
-
   document.documentElement.classList.remove("nav-open");
   useEffect(() => {
     document.body.classList.add("register-page");
@@ -39,7 +35,7 @@ function LoginPage() {
 
   const handleLogIn = async (e) => { // Log In function
     e.preventDefault();
-    const { data, error } = await supabase.auth.signInWithPassword({ // Log In with email and password
+    const { error } = await supabase.auth.signInWithPassword({ // Log In with email and password
       email: email,
       password: password,
     });
@@ -52,7 +48,7 @@ function LoginPage() {
   };
 
   const handleGoogleLogIn = async () => { // Log In function
-    const { data, error } = await supabase.auth.signInWithOAuth({ // Log In with Google, see https://supabase.io/docs/reference/javascript/auth-signinwithoauth
+    await supabase.auth.signInWithOAuth({ // Log In with Google, see https://supabase.io/docs/reference/javascript/auth-signinwithoauth
       provider: "google",
       options: {
         redirectTo: "http://localhost:3000/dashboard",
