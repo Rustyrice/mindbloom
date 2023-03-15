@@ -4,7 +4,7 @@ import { useTimer } from 'react-timer-hook'; // https://www.npmjs.com/package/re
 
 import {ReactComponent as Plant} from 'assets/img/plant-1573.svg';
 import { BsSkipEnd } from "react-icons/bs";
-
+import { RiPlantLine, RiPlantFill } from "react-icons/ri";
 
 export function ListItem({title, progress, goal}) {
 
@@ -17,11 +17,28 @@ export function ListItem({title, progress, goal}) {
         return arr;
     }
 
+    const progressPlants = () => {
+        const arr = [];
+        for (let i = 0; i < progress; i++) {
+            arr.push(<RiPlantFill key={i}/>);
+        }
+        return arr;
+    }
+
+    const goalPlants = () => {
+        const arr = [];
+        for (let i = 0; i < (goal - progress); i++) {
+            arr.push(<RiPlantLine key={i}/>);
+        }
+        return arr;
+    }
+
     return(
     <ListGroupItem>
         <div style={{flexDirection: "row", display: "flex", justifyContent: "space-between", alignItems: "center"}}>
             <b style={{width: "100px"}}>{title}</b>
-            <p>{plants(progress)}<span class = "plant-div">/</span>{plants(goal)}</p>
+            {/* <p>{plants(progress)}<span class = "plant-div">/</span>{plants(goal)}</p> */}
+            <p>{progressPlants()}{goalPlants()}</p>
             <Button color="danger">Delete</Button>
         </div>
     </ListGroupItem>
