@@ -3,7 +3,7 @@ import { supabase } from "../../config/client";
 import { useHistory } from "react-router-dom";
 
 // reactstrap components
-import { Button, Card, Form, Input, Container, Row, Col } from "reactstrap";
+import { Button, Card, Form, Input, Container, Row, Col, InputGroup, InputGroupAddon, InputGroupText } from "reactstrap";
 
 // core components
 import ExamplesNavbar from "components/Navbars/ExamplesNavbar.js";
@@ -89,9 +89,23 @@ function LoginPage() {
                 {/* Log In form */}
                 <Form className="register-form" onSubmit={handleLogIn}>
                   <label>Email</label>
-                  <Input placeholder="Email" type="email" value={email} onChange={e => setEmail(e.target.value)} />
+                  <InputGroup className="form-group-no-border">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="nc-icon nc-email-85" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input placeholder="Email" type="email" value={email} onChange={e => setEmail(e.target.value)} />
+                  </InputGroup>
                   <label>Password</label>
-                  <Input placeholder="Password" type="password" value={password} onChange={e => setPassword(e.target.value)}/>
+                  <InputGroup className="form-group-no-border">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="nc-icon nc-key-25" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input placeholder="Password" type="password" value={password} onChange={e => setPassword(e.target.value)}/>
+                  </InputGroup>
                   <Button block className="btn-round" color="danger" type={"submit"}>
                     Log In
                   </Button>

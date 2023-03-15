@@ -20,7 +20,7 @@ import SectionJavaScript from "views/index-sections/SectionJavaScript.js";
 import SectionCarousel from "views/index-sections/SectionCarousel.js";
 import SectionNucleoIcons from "views/index-sections/SectionNucleoIcons.js";
 import SectionDark from "views/index-sections/SectionDark.js";
-// import SectionLogin from "views/index-sections/SectionLogin.js";
+import SectionLogin from "views/index-sections/SectionLogin.js";
 import SectionAboutUs from "views/index-sections/SectionAboutUs";
 // import SectionDownload from "views/index-sections/SectionDownload.js";
 import SectionCards from "views/index-sections/SectionCards";
@@ -58,7 +58,7 @@ function Index() {
         <SectionAboutUs />
         <SectionNucleoIcons /> 
         <SectionDark />
-        {/* <SectionLogin /> */}
+        <SectionLogin />
         {/* <SectionDownload /> */}
         <DemoFooter />
       </div>

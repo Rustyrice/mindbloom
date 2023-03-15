@@ -72,12 +72,22 @@ function IndexNavbar() {
     <Navbar className={classnames("fixed-top", navbarColor)} expand="lg">
       <Container>
         <div className="navbar-translate">
-          <NavbarBrand
-            data-placement="bottom"
-            href="/index"
-          >
-            mindbloom
-          </NavbarBrand>
+          {loggedIn ?
+            <NavbarBrand
+              data-placement="bottom"
+              href="/dashboard"
+            >
+              Dashboard
+            </NavbarBrand>
+            :
+            <NavbarBrand
+              data-placement="bottom"
+              href="/index"
+            >
+              mindbloom
+            </NavbarBrand>
+            
+          }
           <button
             aria-expanded={navbarCollapse}
             className={classnames("navbar-toggler navbar-toggler", {

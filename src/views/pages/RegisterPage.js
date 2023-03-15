@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Card, Form, Input, Container, Row, Col } from "reactstrap";
+import { Button, Card, Form, Input, Container, Row, Col, InputGroup, InputGroupAddon, InputGroupText } from "reactstrap";
 import { useHistory } from "react-router-dom";
 
 import { supabase } from "config/client";
@@ -59,6 +59,7 @@ function RegisterPage() {
         className="page-header"
         style={{
           backgroundImage: "url(" + require("assets/img/login-image.jpg") + ")"
+
         }}
       >
         <div className="filter" />
@@ -66,7 +67,7 @@ function RegisterPage() {
           <Row>
             <Col className="ml-auto mr-auto" lg="4">
               <Card className="card-register ml-auto mr-auto">
-                <h3 className="title mx-auto">Hello Stranger 👋</h3>
+                <h3 className="title mx-auto">Hello Stranger</h3>
                 <div className="social-line text-center">
 
                   {/* Google Log In Button */}
@@ -82,12 +83,32 @@ function RegisterPage() {
                 {/* Register form */}
                 <Form className="register-form" onSubmit={handleSignUp}>
                   <label>Email</label>
-                  <Input placeholder="Email" type="email" value={email} onChange={e => setEmail(e.target.value)} />
+                  <InputGroup className="form-group-no-border">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="nc-icon nc-email-85" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input placeholder="Email" type="email" value={email} onChange={e => setEmail(e.target.value)} />
+                  </InputGroup>
                   <label>Name</label>
-                  <Input placeholder="Name" type="text" value={name} onChange={e => setName(e.target.value)} />
+                  <InputGroup className="form-group-no-border">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="nc-icon nc-single-02" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input placeholder="Name" type="name" value={name} onChange={e => setName(e.target.value)} />
+                  </InputGroup>
                   <label>Password</label>
-                  <Input placeholder="Password" type="password" value={password} onChange={e => setPassword(e.target.value)} />
-
+                  <InputGroup className="form-group-no-border">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="nc-icon nc-key-25" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input placeholder="Password" type="password" value={password} onChange={e => setPassword(e.target.value)} />
+                  </InputGroup>
                   <Button block className="btn-round" color="danger" type={"submit"}>
                     Register
                   </Button>
