@@ -13,8 +13,11 @@ function TodoList() {
   const [todos, setTodos] = useState([]);
   const [inputValue, setInputValue] = useState('');
   const [dueDate, setDueDate] = useState('');
+  const [selectedWeek, setSelectedWeek] = useState(1);
 
-
+  const handleWeekChange = (event) => {
+    setSelectedWeek(event.target.value);
+  };
   const handleInputChange = (event) => {
     setInputValue(event.target.value);
   };
@@ -41,6 +44,14 @@ function TodoList() {
           "url(" + require("assets/img/blue-gradient-background-6517.jpeg") + ")"
       }}>
       <h1 className='presentation-title'>Weekly To-Do List</h1>
+      <div>
+        <select value={selectedWeek} onChange={handleWeekChange}>
+          {Array.from({ length: 52 }, (_, i) => i + 1).map((week) => (
+            <option key={week} value={week}>Week {week}</option>
+          ))}
+        </select>
+      {/* your task components here */}
+      </div>
       <form onSubmit={handleSubmit}>
         <input type="text" value={inputValue} onChange={handleInputChange} placeholder="Input task..."/>
         <input type="date" value={dueDate} onChange={handleDueDateChange} />
@@ -48,21 +59,23 @@ function TodoList() {
                   color="danger">Add</Button>
       </form>
       <ul>
-        {todos.map((todo, index) => (
-          <li key={index}>
-            <div>
-              <span>{todo.text}</span>
-            </div>
-            {todo.dueDate.length > 0 &&
-                <div className="due-date">
-                    Due: {todo.dueDate}
-                </div>
-            }
-            
-            <Button className="btn-round"
-                  color="danger" onClick={() => handleDelete(index)}>Delete</Button>
-          </li>
-        ))}
+        <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+          {todos.map((todo, index) => (
+            <li key={index} className="my-li task" >
+              <div>
+                <span>{todo.text}</span>
+              </div>
+              {todo.dueDate.length > 0 &&
+                  <div className="due-date">
+                      Due: {todo.dueDate}
+                  </div>
+              }
+              
+              <Button className="btn-round"
+                    color="danger" onClick={() => handleDelete(index)}>Delete</Button>
+            </li>
+          ))}
+        </div>
       </ul>
     </div>
   );

@@ -114,7 +114,7 @@ ul {
   padding: 0;
 }
 
-li {
+.my-li {
   font-size: 1.3rem;
   font-weight: 400;
   padding: 0.4rem 0.9rem;
@@ -126,6 +126,8 @@ li {
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
 }
 
 li button {
@@ -136,3 +138,4 @@ li .due-date {
   color: gray;
   margin-top: 0.5rem;
 }
+
