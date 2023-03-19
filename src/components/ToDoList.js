@@ -39,11 +39,7 @@ function TodoList() {
   };
 
   return (
-    <div className='todo-list-container' style={{
-        backgroundImage:
-          "url(" + require("assets/img/blue-gradient-background-6517.jpeg") + ")"
-      }}>
-      <h1 className='presentation-title'>Weekly To-Do List</h1>
+    <div className='todo-list-container'>
       <div>
         <select value={selectedWeek} onChange={handleWeekChange}>
           {Array.from({ length: 52 }, (_, i) => i + 1).map((week) => (
@@ -56,7 +52,7 @@ function TodoList() {
         <input type="text" value={inputValue} onChange={handleInputChange} placeholder="Input task..."/>
         <input type="date" value={dueDate} onChange={handleDueDateChange} />
         <Button className="btn-round"
-                  color="danger">Add</Button>
+        color="danger">Add</Button>
       </form>
       <ul>
         <div style={{ display: 'flex', flexWrap: 'wrap' }}>
