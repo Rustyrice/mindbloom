@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import classnames from "classnames"; // used for making className more dynamic
+
 import {
   Button,
   Collapse,
@@ -11,6 +12,7 @@ import {
   Nav,
   Container
 } from "reactstrap";
+import { IoArrowBack } from "react-icons/io5";
 
 import { supabase } from "config/client";
 
@@ -18,6 +20,7 @@ function IndexNavbar() {
   const [navbarColor, setNavbarColor] = useState("navbar-transparent");
   const [navbarCollapse, setNavbarCollapse] = useState(false);
   const [loggedIn, setLoggedin] = useState(false);
+  const [backButton, setBackButton] = useState(false);
 
   let history = useHistory();
 
@@ -68,16 +71,37 @@ function IndexNavbar() {
     };
   });
 
+  useEffect(() => {
+    if (history.length > 2 && history.location.pathname !== "/dashboard" && history.location.pathname !== "/index") {
+      setBackButton(true);
+    } else {
+      setBackButton(false);
+    }
+  }, [history]);
+
+
   return (
     <Navbar className={classnames("fixed-top", navbarColor)} expand="lg">
       <Container>
         <div className="navbar-translate">
-          <NavbarBrand
-            data-placement="bottom"
-            href="/index"
-          >
-            mindbloom
-          </NavbarBrand>
+          {backButton && <Button outline color="danger" onClick={() => history.goBack()} className="btn-round"> <IoArrowBack /> </Button>}
+          
+          {loggedIn ?
+            <NavbarBrand
+              data-placement="bottom"
+              href="/dashboard"
+            >
+              Dashboard
+            </NavbarBrand>
+            :
+            <NavbarBrand
+              data-placement="bottom"
+              href="/index"
+            >
+              mindbloom
+            </NavbarBrand>
+            
+          }
           <button
             aria-expanded={navbarCollapse}
             className={classnames("navbar-toggler navbar-toggler", {
