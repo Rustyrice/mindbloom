@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect} from "react";
 import {
     ListGroup,
     ListGroupItem,
@@ -9,14 +9,91 @@ import {
     Button
 } from "reactstrap";
 
-// core components
 import IndexNavbar from "components/Navbars/IndexNavbar";
-// import DemoFooter from "components/Footers/DemoFooter.js";
-
 import { PomodoroTimer, ListItem } from "components/RevisionDailyComponents.js";
+
+import { supabase } from "config/client";
 
 
 function RevisionDailyPage() {
+    const [dailyRevision, setDailyRevision] = useState([]);
+
+    const [topic, setTopic] = useState("");
+    const [amount, setAmount] = useState(0);
+
+    const [dataUpdated, setDataUpdated] = useState(false);
+
+    async function getUserId() {
+        const { data, error } = await supabase.auth.getSession()
+        if (data.session) { // if there is a session, user is logged in
+            return data.session.user.id;
+        }
+        throw error;
+    }
+
+
+    const handleSubmit = async (e) => {
+        var date = new Date();
+
+        var year = date.toLocaleString("default", { year: "numeric" });
+        var month = date.toLocaleString("default", { month: "2-digit" });
+        var day = date.toLocaleString("default", { day: "2-digit" });
+
+        // Generate yyyy-mm-dd date string
+        var formattedDate = year + "-" + month + "-" + day;
+
+
+        e.preventDefault();
+        try {
+            const { data, error } = await supabase
+                .from("revision")
+                .insert([
+                    { topic: topic, goal: amount, progress: 0, date: formattedDate, user_id: await getUserId() },
+                ]);
+            if (error) throw error;
+            alert("Success!");
+            setDataUpdated(!dataUpdated);
+        } catch (error) {
+            alert(error.message);
+            console.log("error", error);
+        }
+    };
+
+    const getDailyRevision = async () => {
+        var date = new Date();
+
+        var year = date.toLocaleString("default", { year: "numeric" });
+        var month = date.toLocaleString("default", { month: "2-digit" });
+        var day = date.toLocaleString("default", { day: "2-digit" });
+
+        // Generate yyyy-mm-dd date string
+        var formattedDate = year + "-" + month + "-" + day;
+
+        const { data, error } = await supabase
+            .from("revision")
+            .select("*")
+            .eq("date", formattedDate)
+            .eq("user_id", await getUserId());
+        if (error) throw error;
+        
+        setDailyRevision(data);
+    };
+
+
+    useEffect(() => {
+        getDailyRevision();
+        console.log(dailyRevision);
+    }, [dataUpdated]);
+
+    const ListItems = dailyRevision.map((item) => (
+        <ListItem
+            key={item.id}
+            title={item.topic}
+            goal={item.goal}
+            progress={item.progress}
+        />
+    ));
+
 
   document.documentElement.classList.remove("nav-open");
   React.useEffect(() => {
@@ -51,27 +128,28 @@ function RevisionDailyPage() {
                                 <InputGroupText>
                                     Topic
                                 </InputGroupText>
-                                <Input addon placeholder="Maths" type="text" />
+                                <Input addon type="text" value={topic} onChange={(e) => setTopic(e.target.value)}/>
                             </InputGroup>
 
                             <InputGroup style={{width: "30%"}}>
                                 <InputGroupText>
                                     Amount
                                 </InputGroupText>
-                                <Input addon placeholder="2" type="text" />
+                                <Input addon type="text" value={amount} onChange={(e) => setAmount(e.target.value)}/>
                             </InputGroup>
                         </div>
 
-                        <Button color="success">Add</Button>
+                        <Button color="success" onClick={handleSubmit}>Add</Button>
 
                     </ListGroupItem>
                 </ListGroup>
 
                 <div style={{height: "30px"}}/>
                 <ListGroup>
-                    <ListItem title="maths" goal="3" progress="2"/>
+                    {ListItems}
+                    {/* <ListItem title="maths" goal="3" progress="2"/>
                     <ListItem title="ai" goal="2" progress="1"/>
-                    <ListItem title="system arch" goal="3" progress="1"/>
+                    <ListItem title="system arch" goal="3" progress="1"/> */}
                 </ListGroup>
 
             </Container>

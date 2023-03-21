@@ -18,7 +18,7 @@ function DashboardPage() {
   useEffect(() => {
     supabase.auth.getUser().then((value) => {
       if (value.data?.user) {
-        console.log("user", value.data.user);
+        // console.log("user", value.data.user);
         setUser(value.data.user);
       } else {
         console.log("no user");
