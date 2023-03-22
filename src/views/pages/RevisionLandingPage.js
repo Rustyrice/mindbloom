@@ -1,6 +1,7 @@
 import React from "react";
 
 import RevisionHeader from "components/Headers/RevisionHeader.js";
+import IndexNavbar from "components/Navbars/IndexNavbar.js";
 
 
 function RevisionPage(){
@@ -13,6 +14,7 @@ function RevisionPage(){
     });
     return (
         <>
+            <IndexNavbar />
             <RevisionHeader />
         </>
     );
