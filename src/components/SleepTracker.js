@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { VictoryBar, VictoryChart, VictoryAxis, VictoryTheme,VictoryLine  } from 'victory';
-import InputSpinner from 'react-bootstrap-input-spinner';
+// import { VictoryBar, VictoryChart, VictoryAxis, VictoryTheme,VictoryLine  } from 'victory';
+// import InputSpinner from 'react-bootstrap-input-spinner';
 
 
 const SleepTracker = () => {
@@ -18,21 +18,21 @@ const SleepTracker = () => {
       {/* Counter for hours slept */}
       <div>
         <h2>Hours slept:</h2>
-        <InputSpinner
+        {/* <InputSpinner
           type={'real'}
           precision={2}
           value={hoursSlept}
           onChange={(num) => setHoursSlept(num)}
           min={0}
           step={0.5}
-        />
+        /> */}
         <button onClick={addSleepData}>Add to history</button>
       </div>
 
       {/* Graph for sleep history */}
       <div style={{blockSize: "600px", alignItems:"left"}}>
         <h2>Sleep history</h2>
-        <VictoryChart
+        {/* <VictoryChart
           theme={VictoryTheme.material}
           domainPadding={10}
           scale={{ x: 'time' }}
@@ -64,20 +64,20 @@ const SleepTracker = () => {
             y={() => sleepGoal}
             labels={['Sleep goal']}
           />
-        </VictoryChart>
+        </VictoryChart> */}
       </div>
 
       {/* Counter for sleep goal */}
       <div>
         <h2>Sleep goal:</h2>
-        <InputSpinner
+        {/* <InputSpinner
           type={'real'}
           precision={2}
           value={sleepGoal}
           onChange={(num) => setSleepGoal(num)}
           min={0}
           step={0.5}
-        />
+        /> */}
       </div>
     </div>
   );

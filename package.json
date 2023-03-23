@@ -8,7 +8,6 @@
     "moment": "2.29.4",
     "nouislider": "14.5.0",
     "react": "^18.2.0",
-    "react-bootstrap-input-spinner": "^1.0.2",
     "react-datetime": "3.1.1",
     "react-dom": "^18.2.0",
     "react-icons": "^4.8.0",
@@ -16,8 +15,7 @@
     "react-scripts": "5.0.1",
     "react-timer-hook": "^3.0.5",
     "reactstrap": "^8.9.0",
-    "sass": "1.53.0",
-    "victory": "^36.6.8"
+    "sass": "1.53.0"
   },
   "scripts": {
     "start": "react-scripts start",

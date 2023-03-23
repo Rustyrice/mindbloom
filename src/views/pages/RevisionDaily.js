@@ -23,6 +23,9 @@ function RevisionDailyPage() {
 
     const [dataUpdated, setDataUpdated] = useState(false);
 
+    const [active, setActive] = useState(0);
+    const [currentItem, setCurrentItem] = useState();
+
     async function getUserId() {
         const { data, error } = await supabase.auth.getSession()
         if (data.session) { // if there is a session, user is logged in
@@ -31,8 +34,23 @@ function RevisionDailyPage() {
         throw error;
     }
 
+    useEffect(() => {
+        setCurrentItem(dailyRevision.find(item => item.id === active));
+    }, [active]);
+
+    useEffect(() => {
+        getDailyRevision();
+        console.log(dailyRevision);
+    }, [dataUpdated]);
+
 
     const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!topic || !amount) {
+            alert("Please fill in all the required fields");
+            return;
+        }
+
         var date = new Date();
 
         var year = date.toLocaleString("default", { year: "numeric" });
@@ -77,20 +95,19 @@ function RevisionDailyPage() {
         if (error) throw error;
         
         setDailyRevision(data);
+        console.log(data);
     };
-
-
-    useEffect(() => {
-        getDailyRevision();
-        console.log(dailyRevision);
-    }, [dataUpdated]);
 
     const ListItems = dailyRevision.map((item) => (
         <ListItem
             key={item.id}
+            setActive = {() => setActive(item.id)}
+            active={active === item.id}
+            id={item.id}
             title={item.topic}
             goal={item.goal}
             progress={item.progress}
+            deletedItem={() => setDataUpdated(!dataUpdated)}
         />
     ));
 
@@ -114,7 +131,7 @@ function RevisionDailyPage() {
             height: "40vh",
             backgroundImage: "url(https://images.unsplash.com/photo-1468657988500-aca2be09f4c6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2670&q=80)",
         }}>
-            <PomodoroTimer expiryTimestamp={Date.now() + 1000 * 60 * 25} />
+            <PomodoroTimer expiryTimestamp={Date.now() + 1000 * 60 * 25} item={currentItem} itemUpdated={() => setDataUpdated(!dataUpdated)} />
 
         </div>
           <div className="content-center" style={{paddingTop: "30px"}}>
@@ -128,14 +145,36 @@ function RevisionDailyPage() {
                                 <InputGroupText>
                                     Topic
                                 </InputGroupText>
-                                <Input addon type="text" value={topic} onChange={(e) => setTopic(e.target.value)}/>
+                                <Input 
+                                    addon 
+                                    type="text" 
+                                    value={topic} 
+                                    maxLength={25} 
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        if (value.length <= 30) {
+                                            setTopic(value);
+                                        }
+                                    }}
+                                />
                             </InputGroup>
 
                             <InputGroup style={{width: "30%"}}>
                                 <InputGroupText>
                                     Amount
                                 </InputGroupText>
-                                <Input addon type="text" value={amount} onChange={(e) => setAmount(e.target.value)}/>
+                                <Input 
+                                    addon 
+                                    type="text" 
+                                    value={amount}
+                                    max={1}
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        if (!isNaN(value) && value <= 5) {
+                                            setAmount(value);
+                                        }
+                                    }}
+                                />
                             </InputGroup>
                         </div>
 
