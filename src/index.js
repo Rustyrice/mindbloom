@@ -16,6 +16,7 @@ import RevisionPage from "views/pages/RevisionLandingPage.js";
 import RevisionDailyPage from "views/pages/RevisionDaily.js";
 import RevisionWeeklyPage from "views/pages/RevisionWeekly.js";
 import DashboardPage from "views/pages/DashboardPage.js";
+import SleepPage from "views/pages/SleepPage.js";
 // others
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -55,6 +56,10 @@ root.render(
       <Route
         path ="/dashboard"
         render={(props) => <DashboardPage {...props} />}
+      />
+      <Route
+        path ="/sleep-page"
+        render={(props) => <SleepPage {...props} />}
       />
       <Redirect to="/index" />
     </Switch>
