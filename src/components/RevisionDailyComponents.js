@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, memo } from "react";
 import { ButtonGroup, Button, ListGroupItem, Row } from "reactstrap";
 import { useTimer } from 'react-timer-hook'; // https://www.npmjs.com/package/react-timer-hook
 
@@ -8,6 +8,8 @@ import { RiPlantLine, RiPlantFill } from "react-icons/ri";
 
 import { supabase } from "config/client";
 
+
+// A component to display a list item
 export function ListItem({title, progress, goal, id, setActive, active = false, deletedItem}) {
 
     const handleDelete = async () => {
@@ -52,10 +54,10 @@ export function ListItem({title, progress, goal, id, setActive, active = false, 
 }
 
 
-export function PomodoroTimer({ expiryTimestamp, item, itemUpdated }) {
+// A component to display a timer
+export const PomodoroTimer = ({ expiryTimestamp = Date.now() + 1000 * 60 * 25 , completed }) => {
     const [hasStarted, setHasStarted] = useState(false);
     const [option, setOption] = useState(1); // 1 = pomodoro, 2 = break, 3 = long break
-
 
     const {
       seconds,
@@ -74,24 +76,14 @@ export function PomodoroTimer({ expiryTimestamp, item, itemUpdated }) {
     var minutesString = minutes.toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false})
     var secondsString = seconds.toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false})
 
-    const updateProgress = async () => {
-        const { progressData, progressErr } = await supabase
-            .from("revision")
-            .select("progress")
-            .eq("id", item.id);
-        if (progressErr) throw error;
+    // When the timer is completed, call the completed function
+    useEffect(() => {
+        console.log("help")
+        if (option === 2 && !isRunning) {
+            completed();
+        }
+    }, [isRunning]);
 
-        const progress = progressData[0].progress + 1;
-        console.log(progress);
-
-        if (progress > item.goal) return; // Don't update if the progress is greater than the goal (shouldn't happen)
-        const { data, error } = await supabase
-            .from("revision")
-            .update({ progress })
-            .eq("id", item.id);
-        if (error) throw error;
-        itemUpdated();
-    }
 
     const handleStart = () => {
         setHasStarted(true);
@@ -112,8 +104,6 @@ export function PomodoroTimer({ expiryTimestamp, item, itemUpdated }) {
     const handleSkip = () => {
         if (option === 1) {
             handleRestart(5, 2);
-            console.log("skipped");
-            updateProgress();
         } else if (option === 2) {
             handleRestart(25, 1);
         } else {
@@ -159,4 +149,4 @@ export function PomodoroTimer({ expiryTimestamp, item, itemUpdated }) {
 
       </div>
     );
-  }
+  };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect, useCallback , memo} from "react";
 import {
     ListGroup,
     ListGroupItem,
@@ -16,16 +16,42 @@ import { supabase } from "config/client";
 
 
 function RevisionDailyPage() {
-    const [dailyRevision, setDailyRevision] = useState([]);
+    const [revisionData, setRevisionData] = useState([]);
 
+    // Data for the form, to add a new revision item
     const [topic, setTopic] = useState("");
     const [amount, setAmount] = useState(0);
 
+    // If data is updated, this changes, which triggers a useEffect to update the data
     const [dataUpdated, setDataUpdated] = useState(false);
 
+    // For the list of items
     const [active, setActive] = useState(0);
-    const [currentItem, setCurrentItem] = useState();
 
+    // When the data is updated, update the revisionData
+    useEffect(() => {
+        getRevisionData();
+        console.log(revisionData);
+    }, [dataUpdated]);
+
+
+    // Get the current date, in the format yyyy-mm-dd
+    const dateNow = ()  => {
+        var date = new Date(); // Get the current date
+
+        // Get the year, month, and day
+        var year = date.toLocaleString("default", { year: "numeric" });
+        var month = date.toLocaleString("default", { month: "2-digit" });
+        var day = date.toLocaleString("default", { day: "2-digit" });
+
+        var formattedDate = year + "-" + month + "-" + day; // Generate yyyy-mm-dd date string
+
+        return formattedDate;
+    }
+
+    // Supabase functions
+
+    // Get the user's id
     async function getUserId() {
         const { data, error } = await supabase.auth.getSession()
         if (data.session) { // if there is a session, user is logged in
@@ -34,70 +60,77 @@ function RevisionDailyPage() {
         throw error;
     }
 
-    useEffect(() => {
-        setCurrentItem(dailyRevision.find(item => item.id === active));
-    }, [active]);
-
-    useEffect(() => {
-        getDailyRevision();
-        console.log(dailyRevision);
-    }, [dataUpdated]);
-
-
+    // Handle the form submission, to add a new revision item
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!topic || !amount) {
+        e.preventDefault(); // Prevent the page from refreshing
+        
+
+        if (!topic || !amount) { // If the topic or amount is empty, don't submit
             alert("Please fill in all the required fields");
             return;
         }
 
-        var date = new Date();
+        const date = dateNow(); // Get the current date
 
-        var year = date.toLocaleString("default", { year: "numeric" });
-        var month = date.toLocaleString("default", { month: "2-digit" });
-        var day = date.toLocaleString("default", { day: "2-digit" });
-
-        // Generate yyyy-mm-dd date string
-        var formattedDate = year + "-" + month + "-" + day;
-
-
-        e.preventDefault();
         try {
             const { data, error } = await supabase
                 .from("revision")
                 .insert([
-                    { topic: topic, goal: amount, progress: 0, date: formattedDate, user_id: await getUserId() },
-                ]);
+                    { topic: topic, goal: amount, progress: 0, date: date, user_id: await getUserId() },
+                ]); // Insert the new item into the database
             if (error) throw error;
-            setDataUpdated(!dataUpdated);
+            setTopic(""); // Clear the topic
+            setDataUpdated(!dataUpdated); // Update the data, to show the new item
         } catch (error) {
             alert(error.message);
             console.log("error", error);
         }
     };
 
-    const getDailyRevision = async () => {
-        var date = new Date();
-
-        var year = date.toLocaleString("default", { year: "numeric" });
-        var month = date.toLocaleString("default", { month: "2-digit" });
-        var day = date.toLocaleString("default", { day: "2-digit" });
-
-        // Generate yyyy-mm-dd date string
-        var formattedDate = year + "-" + month + "-" + day;
+    // Get the revision data from the database
+    const getRevisionData = async () => {
+        const date = dateNow(); // Get the current date
 
         const { data, error } = await supabase
             .from("revision")
             .select("*")
-            .eq("date", formattedDate)
-            .eq("user_id", await getUserId());
+            .eq("date", date)
+            .eq("user_id", await getUserId()); // Get the items for the current date
         if (error) throw error;
         
-        setDailyRevision(data);
-        console.log(data);
+        setRevisionData(data);
     };
 
-    const ListItems = dailyRevision.map((item) => (
+
+    // Handle the pomodoro timer completing
+    const handlePomodoroComplete = async () => {
+        console.log("Pomodoro complete");
+
+        // Update the progress of the current item
+        if (active === 0) return; // If there is no active item, don't do anything
+        const item = revisionData.find((item) => item.id === active); // Get the current item
+        const newProgress = item.progress + 1; // Increment the progress
+
+        // If the progress is equal to the goal, delete the item
+        if (newProgress === item.goal) {
+            const { data, error } = await supabase
+                .from("revision")
+                .delete()
+                .eq("id", active); // Delete the item
+            if (error) throw error;
+        }
+
+        const { data, error } = await supabase
+            .from("revision") 
+            .update({ progress: newProgress })
+            .eq("id", active); // Update the progress of the current item
+        if (error) throw error;
+
+        setDataUpdated(!dataUpdated); // Update the data, to show the new progress
+    };
+
+    // Create a ListItem for each item in the database
+    const ListItems = revisionData.map((item) => (
         <ListItem
             key={item.id}
             setActive = {() => setActive(item.id)}
@@ -130,8 +163,7 @@ function RevisionDailyPage() {
             height: "40vh",
             backgroundImage: "url(https://images.unsplash.com/photo-1468657988500-aca2be09f4c6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2670&q=80)",
         }}>
-            <PomodoroTimer expiryTimestamp={Date.now() + 1000 * 60 * 25} item={currentItem} itemUpdated={() => setDataUpdated(!dataUpdated)} />
-
+            <PomodoroTimer completed={handlePomodoroComplete} />
         </div>
           <div className="content-center" style={{paddingTop: "30px"}}>
             <Container>
@@ -185,9 +217,6 @@ function RevisionDailyPage() {
                 <div style={{height: "30px"}}/>
                 <ListGroup>
                     {ListItems}
-                    {/* <ListItem title="maths" goal="3" progress="2"/>
-                    <ListItem title="ai" goal="2" progress="1"/>
-                    <ListItem title="system arch" goal="3" progress="1"/> */}
                 </ListGroup>
 
             </Container>
