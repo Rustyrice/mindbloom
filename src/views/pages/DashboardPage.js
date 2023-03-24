@@ -46,7 +46,7 @@ function DashboardPage() {
             backgroundImage: "url(https://images.unsplash.com/photo-1468657988500-aca2be09f4c6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2670&q=80)",
         }}>
         <Container>
-          <h1 style={{fontWeight: "bold", color: "white"}}>Hi {user?.user_metadata.name}</h1>
+          <h1 style={{fontWeight: "bold", color: "white"}}>Hi {user?.user_metadata.name}, welcome to mindbloom</h1>
         </Container>
 
         </div>

@@ -25,13 +25,19 @@ function RevisionWeeklyPage() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (!topic) return;
+    if (!topic || !date) {
+      alert("Please fill in all the required fields");
+      return;
+    }
     setTodos([...todos, { text: topic, date: date }]);
     setTopic('');
     setDate('');
   };
 
   const handleDelete = (index) => {
+    const confirmed = window.confirm("Are you sure you want to delete this task?");
+    if (!confirmed) return;
+
     const newTodos = [...todos];
     newTodos.splice(index, 1);
     setTodos(newTodos);
@@ -69,7 +75,7 @@ function RevisionWeeklyPage() {
         height: "40vh",
         backgroundImage: "url(https://images.unsplash.com/photo-1468657988500-aca2be09f4c6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2670&q=80)",
       }}>
-        <h1 className='presentation-title'>Weekly To-Do List</h1>
+        <h1 className='presentation-title' style={{marginTop: '45px'}}>Weekly To-Do List</h1>
       </div>
 
       {/* <ToDoList/> 
@@ -98,12 +104,23 @@ function RevisionWeeklyPage() {
                     <InputGroupText>
                       Topic
                     </InputGroupText>
-                    <Input addon type="text" value={topic} onChange={(e) => setTopic(e.target.value)} />
+                    <Input 
+                      addon 
+                      type="text" 
+                      value={topic} 
+                      maxLength={25}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        if (value.length <= 30) {
+                          setTopic(value);
+                        }
+                      }}
+                    />
                   </InputGroup>
 
                   <InputGroup style={{ width: "35%" }}>
                     <InputGroupText>
-                      Date
+                      Due Date
                     </InputGroupText>
                     <Input addon type="date" value={date} onChange={(e) => setDate(e.target.value)} />
                   </InputGroup>

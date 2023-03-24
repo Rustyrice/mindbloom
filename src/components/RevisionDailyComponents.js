@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ButtonGroup, Button, ListGroupItem, Row } from "reactstrap";
 import { useTimer } from 'react-timer-hook'; // https://www.npmjs.com/package/react-timer-hook
 
@@ -6,15 +6,20 @@ import {ReactComponent as Plant} from 'assets/img/plant-1573.svg';
 import { BsSkipEnd } from "react-icons/bs";
 import { RiPlantLine, RiPlantFill } from "react-icons/ri";
 
-export function ListItem({title, progress, goal}) {
+import { supabase } from "config/client";
 
-    // Create an array of plants
-    const plants = (n) => {
-        const arr = [];
-        for (let i = 0; i < n; i++) {
-            arr.push(<Plant key={i}/>);
-        }
-        return arr;
+export function ListItem({title, progress, goal, id, setActive, active = false, deletedItem}) {
+
+    const handleDelete = async () => {
+        const confirmed = window.confirm("Are you sure you want to delete this task?");
+        if (!confirmed) return;
+        
+        const { data, error } = await supabase
+            .from("revision")
+            .delete()
+            .eq("id", id);
+        if (error) throw error;
+        deletedItem();
     }
 
     const progressPlants = () => {
@@ -33,22 +38,24 @@ export function ListItem({title, progress, goal}) {
         return arr;
     }
 
-    return(
-    <ListGroupItem>
-        <div style={{flexDirection: "row", display: "flex", justifyContent: "space-between", alignItems: "center"}}>
-            <b style={{width: "100px"}}>{title}</b>
-            {/* <p>{plants(progress)}<span class = "plant-div">/</span>{plants(goal)}</p> */}
-            <p>{progressPlants()}{goalPlants()}</p>
-            <Button color="danger">Delete</Button>
-        </div>
-    </ListGroupItem>
+    return (
+        <ListGroupItem outline onClick={setActive} active={active} style={{border: "2px solid #dadada", borderRadius: "7px"}}>
+            <div style={{flexDirection: "row", display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+                <b style={{width: "100px"}}>{title}</b>
+                {/* <p>{plants(progress)}<span class = "plant-div">/</span>{plants(goal)}</p> */}
+                <p>{progressPlants()}{goalPlants()}</p>
+                <Button onClick={handleDelete} color="danger">Delete</Button>
+            </div>
+        </ListGroupItem>
+
     );
 }
 
 
-export function PomodoroTimer({ expiryTimestamp }) {
+export function PomodoroTimer({ expiryTimestamp, item, itemUpdated }) {
     const [hasStarted, setHasStarted] = useState(false);
     const [option, setOption] = useState(1); // 1 = pomodoro, 2 = break, 3 = long break
+
 
     const {
       seconds,
@@ -59,12 +66,32 @@ export function PomodoroTimer({ expiryTimestamp }) {
       pause,
       resume,
       restart,
-    } = useTimer({ expiryTimestamp, autoStart: false, onExpire: () => console.warn('onExpire called') });
+    } = useTimer({ expiryTimestamp, autoStart: false });
+
 
     // Format the time values to add leading 0, if required
     var hoursString = hours.toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false})
     var minutesString = minutes.toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false})
     var secondsString = seconds.toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false})
+
+    const updateProgress = async () => {
+        const { progressData, progressErr } = await supabase
+            .from("revision")
+            .select("progress")
+            .eq("id", item.id);
+        if (progressErr) throw error;
+
+        const progress = progressData[0].progress + 1;
+        console.log(progress);
+
+        if (progress > item.goal) return; // Don't update if the progress is greater than the goal (shouldn't happen)
+        const { data, error } = await supabase
+            .from("revision")
+            .update({ progress })
+            .eq("id", item.id);
+        if (error) throw error;
+        itemUpdated();
+    }
 
     const handleStart = () => {
         setHasStarted(true);
@@ -85,6 +112,8 @@ export function PomodoroTimer({ expiryTimestamp }) {
     const handleSkip = () => {
         if (option === 1) {
             handleRestart(5, 2);
+            console.log("skipped");
+            updateProgress();
         } else if (option === 2) {
             handleRestart(25, 1);
         } else {

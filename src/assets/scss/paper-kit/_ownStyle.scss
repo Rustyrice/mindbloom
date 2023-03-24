@@ -139,7 +139,15 @@
   margin-top: 1rem;
   
 }
+.sleep-tracker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
+.sleep-tracker > div {
+  margin: 20px;
+}
 // li button {
 //   margin-left: 1rem;
 // }
