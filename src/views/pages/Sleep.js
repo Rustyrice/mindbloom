@@ -11,7 +11,7 @@ import {
 
 import IndexNavbar from "components/Navbars/IndexNavbar";
 import { ListItem } from "components/RevisionDailyComponents.js";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from 'recharts';
 
 import { supabase } from "config/client";
 
@@ -19,52 +19,25 @@ import { supabase } from "config/client";
 function SleepPage() {
     const [dailyRevision, setDailyRevision] = useState([]);
 
-    const [topic, setTopic] = useState("");
-    const [from, to] = useState("");
+    const [from, setFrom] = useState("");
+    const [to, setTo] = useState("");
+    const [quality, setQuality] = useState("");
     const [amount, setAmount] = useState(0);
+    const [notes, setNotes] = useState("");
+    const [goal, setGoal] = useState("");
 
     const data = [
         {
-            name: 'Page A',
-            uv: 4000,
+            name: 'Sleep',
+            uv: 8,
             pv: 2400,
             amt: 2400,
         },
         {
-            name: 'Page B',
-            uv: 3000,
+            name: 'Goal',
+            uv: 9,
             pv: 1398,
             amt: 2210,
-        },
-        {
-            name: 'Page C',
-            uv: 2000,
-            pv: 9800,
-            amt: 2290,
-        },
-        {
-            name: 'Page D',
-            uv: 2780,
-            pv: 3908,
-            amt: 2000,
-        },
-        {
-            name: 'Page E',
-            uv: 1890,
-            pv: 4800,
-            amt: 2181,
-        },
-        {
-            name: 'Page F',
-            uv: 2390,
-            pv: 3800,
-            amt: 2500,
-        },
-        {
-            name: 'Page G',
-            uv: 3490,
-            pv: 4300,
-            amt: 2100,
         },
     ];
 
@@ -80,32 +53,15 @@ function SleepPage() {
     }
 
 
-    const handleSubmit = async (e) => {
-        var date = new Date();
-
-        var year = date.toLocaleString("default", { year: "numeric" });
-        var month = date.toLocaleString("default", { month: "2-digit" });
-        var day = date.toLocaleString("default", { day: "2-digit" });
-
-        // Generate yyyy-mm-dd date string
-        var formattedDate = year + "-" + month + "-" + day;
-
-
+    const handleSleepSubmit = async (e) => {
+        let value = to - from;
+        data[0].uv = value;
+        setDataUpdated(!dataUpdated);
         e.preventDefault();
-        try {
-            const { data, error } = await supabase
-                .from("revision")
-                .insert([
-                    { topic: topic, goal: amount, progress: 0, date: formattedDate, user_id: await getUserId() },
-                ]);
-            if (error) throw error;
-            alert("Success!");
-            setDataUpdated(!dataUpdated);
-        } catch (error) {
-            alert(error.message);
-            console.log("error", error);
-        }
     };
+    const handleSubmit = async (e) => {
+
+    }
 
     const getDailyRevision = async () => {
         var date = new Date();
@@ -175,7 +131,7 @@ function SleepPage() {
                     <Button color="success" onClick={handleSubmit}>Next</Button>
                 </ListGroupItem>
                 <br/>
-                <LineChart
+                <BarChart 
                     width={1000}
                     height={600}
                     data={data}
@@ -189,11 +145,9 @@ function SleepPage() {
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="name" />
                     <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Line type="monotone" dataKey="pv" stroke="#8884d8" activeDot={{ r: 8 }} />
-                    <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
-                </LineChart>
+                    <Bar dataKey="uv" barSize={30} fill="#8884d8"
+                        />
+                </BarChart>
                 <br/>
                 <ListGroup>
                     <ListGroupItem style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
@@ -207,14 +161,14 @@ function SleepPage() {
                                 <InputGroupText>
                                     From
                                 </InputGroupText>
-                                <Input addon type="text" value={from} onChange={(e) => setAmount(e.target.value)}/>
+                                <Input addon type="number" value={from} onChange={(e) => setFrom(e.target.value)}/>
                                 <InputGroupText>
                                     To
                                 </InputGroupText>
-                                <Input addon type="text" value={to} onChange={(e) => setAmount(e.target.value)}/>
+                                <Input addon type="number" value={to} onChange={(e) => setTo(e.target.value)}/>
                             </InputGroup>
                         </div>
-                        <Button color="success" onClick={handleSubmit}>Add</Button>
+                        <Button color="success" onClick={handleSleepSubmit}>Add</Button>
                     </ListGroupItem>
                     <ListGroupItem style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
                         <div  style={{display: "flex", flexDirection: "row", width: "60%"}}>
@@ -224,7 +178,7 @@ function SleepPage() {
                                 </InputGroupText>
                             </InputGroup>
                             <InputGroup style={{width: "90%"}}>
-                                <Input addon type="text" value={from} onChange={(e) => setAmount(e.target.value)}/>
+                                <Input addon type="text" value={quality} onChange={(e) => setQuality(e.target.value)}/>
                             </InputGroup>
                         </div>
                         <Button color="success" onClick={handleSubmit}>Add</Button>
@@ -233,11 +187,11 @@ function SleepPage() {
                         <div  style={{display: "flex", flexDirection: "row", width: "60%"}}>
                             <InputGroup style={{width: "60%", marginRight: "10px"}}>
                                 <InputGroupText>
-                                    Time in bed
+                                    Goal
                                 </InputGroupText>
                             </InputGroup>
                             <InputGroup style={{width: "90%"}}>
-                                <Input addon type="text" value={from} onChange={(e) => setAmount(e.target.value)}/>
+                                <Input addon type="text" value={goal} onChange={(e) => setGoal(e.target.value)}/>
                             </InputGroup>
                         </div>
                         <Button color="success" onClick={handleSubmit}>Add</Button>
@@ -250,7 +204,7 @@ function SleepPage() {
                                 </InputGroupText>
                             </InputGroup>
                             <InputGroup style={{width: "90%"}}>
-                                <Input addon type="text" value={from} onChange={(e) => setAmount(e.target.value)}/>
+                                <Input addon type="text" value={notes} onChange={(e) => setNotes(e.target.value)}/>
                             </InputGroup>
                         </div>
                         <Button color="success" onClick={handleSubmit}>Add</Button>
