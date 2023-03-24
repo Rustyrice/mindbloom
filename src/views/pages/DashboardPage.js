@@ -54,6 +54,9 @@ function DashboardPage() {
         <Container style={{marginTop: "10px"}}>
           {/* Usefull links */}
           <Button style={{marginRight: "10px"}} onClick={() => history.push("revision-landing-page")}> Revision Page </Button>
+          <Button style={{marginRight: "10px"}} onClick={() => history.push("sleep")}> Sleep Page </Button>
+          <Button style={{marginRight: "10px"}} onClick={() => history.push("water")}> Water Page </Button>
+          <Button style={{marginRight: "10px"}} onClick={() => history.push("alcohol")}> Alcohol Page </Button>
           {/* <Button onClick={() => history.push("dashboard")}> Dashboard Page </Button> */}
           <br />
           <br />

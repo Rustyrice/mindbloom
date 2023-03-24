@@ -69,7 +69,6 @@ function RevisionDailyPage() {
                     { topic: topic, goal: amount, progress: 0, date: formattedDate, user_id: await getUserId() },
                 ]);
             if (error) throw error;
-            alert("Success!");
             setDataUpdated(!dataUpdated);
         } catch (error) {
             alert(error.message);
