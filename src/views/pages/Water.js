@@ -10,7 +10,7 @@ import {
 } from "reactstrap";
 
 import IndexNavbar from "components/Navbars/IndexNavbar";
-import { ListItem } from "components/RevisionDailyComponents.js";
+import { ListItem } from "components/RevisionComponents.js";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 import { supabase } from "config/client";
@@ -153,7 +153,7 @@ function WaterPage() {
 
     return (
       <div>
-        <IndexNavbar />
+        <IndexNavbar title="• Water"/>
         <div style={{
             display: "flex",
             justifyContent: "center",

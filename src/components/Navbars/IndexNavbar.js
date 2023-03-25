@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import classnames from "classnames"; // used for making className more dynamic
 
 import {
@@ -16,7 +16,7 @@ import { IoArrowBack } from "react-icons/io5";
 
 import { supabase } from "config/client";
 
-function IndexNavbar() {
+function IndexNavbar({ title }) {
   const [navbarColor, setNavbarColor] = useState("navbar-transparent");
   const [navbarCollapse, setNavbarCollapse] = useState(false);
   const [loggedIn, setLoggedin] = useState(false);
@@ -79,6 +79,8 @@ function IndexNavbar() {
     }
   }, [history]);
 
+  let location = useLocation();
+
 
   return (
     <Navbar className={classnames("fixed-top", navbarColor)} expand="lg">
@@ -91,7 +93,7 @@ function IndexNavbar() {
               data-placement="bottom"
               href="/dashboard"
             >
-              Dashboard
+              Dashboard {title}
             </NavbarBrand>
             :
             <NavbarBrand

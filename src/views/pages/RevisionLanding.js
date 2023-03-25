@@ -14,7 +14,7 @@ function RevisionPage(){
     });
     return (
         <>
-            <IndexNavbar />
+            <IndexNavbar title="• Revision"/>
             <RevisionHeader />
         </>
     );

@@ -1,8 +1,16 @@
 import React, { useEffect, useState, memo } from "react";
-import { ButtonGroup, Button, ListGroupItem, Row } from "reactstrap";
+import {
+    ButtonGroup,
+    Button,
+    ListGroupItem,
+    Row,
+    CardBody,
+    CardTitle,
+    CardSubtitle,
+    CardText,
+} from "reactstrap";
 import { useTimer } from 'react-timer-hook'; // https://www.npmjs.com/package/react-timer-hook
 
-import {ReactComponent as Plant} from 'assets/img/plant-1573.svg';
 import { BsSkipEnd } from "react-icons/bs";
 import { RiPlantLine, RiPlantFill } from "react-icons/ri";
 
@@ -150,3 +158,50 @@ export const PomodoroTimer = ({ expiryTimestamp = Date.now() + 1000 * 60 * 25 , 
       </div>
     );
   };
+
+
+// A component to display a revision card, for revision weekly page
+export const RevisionCard = ({topic, date, goal, progress, id, deletedItem}) => {
+
+      const handleDelete = async () => {
+        const confirmed = window.confirm("Are you sure you want to delete this task?");
+        if (!confirmed) return;
+        
+        const { data, error } = await supabase
+            .from("revision")
+            .delete()
+            .eq("id", id);
+        if (error) throw error;
+        deletedItem();
+    }
+    
+
+    const goalPlants = () => {
+        const arr = [];
+        for (let i = 0; i < (goal - progress); i++) {
+            arr.push(<RiPlantLine key={i}/>);
+        }
+        return arr;
+    }
+
+    const progressPlants = () => {
+        const arr = [];
+        for (let i = 0; i < progress; i++) {
+            arr.push(<RiPlantFill key={i}/>);
+        }
+        return arr;
+    }
+
+    return (
+
+    <CardBody className="my-li">
+      <CardTitle tag="h5">{topic}</CardTitle>
+      <CardSubtitle className="mb-2 text-muted">Due: {date}</CardSubtitle>
+      <CardText>
+        {progressPlants()}{goalPlants()}
+      </CardText>
+      <Button onClick={handleDelete}>Delete</Button>
+    </CardBody>
+
+    );
+}

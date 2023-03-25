@@ -7,15 +7,14 @@ import "bootstrap/scss/bootstrap.scss";
 import "assets/scss/paper-kit.scss?v=1.3.0";
 import "assets/demo/demo.css?v=1.3.0";
 // pages
-import Index from "views/Index.js";
-import NucleoIcons from "views/NucleoIcons.js";
-import LandingPage from "views/pages/LandingPage.js";
-import RegisterPage from "views/pages/RegisterPage.js";
-import LoginPage from "views/pages/LoginPage.js";
-import RevisionPage from "views/pages/RevisionLandingPage.js";
+import LandingPage from "views/pages/Landing.js";
+// import NucleoIcons from "views/NucleoIcons.js";
+import RegisterPage from "views/pages/Register.js";
+import LoginPage from "views/pages/Login.js";
+import RevisionPage from "views/pages/RevisionLanding.js";
 import RevisionDailyPage from "views/pages/RevisionDaily.js";
 import RevisionWeeklyPage from "views/pages/RevisionWeekly.js";
-import DashboardPage from "views/pages/DashboardPage.js";
+import DashboardPage from "views/pages/Dashboard.js";
 import SleepPage from "views/pages/Sleep.js";
 import WaterPage from "views/pages/Water.js";
 import AlcoholPage from "views/pages/Alcohol.js";
@@ -26,18 +25,17 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <BrowserRouter>
     <Switch>
-      <Route path="/index" render={(props) => <Index {...props} />} />
       <Route
-        path="/nucleo-icons"
-        render={(props) => <NucleoIcons {...props} />}
-      />
-      <Route
-        path="/landing-page"
+        path="/index"
         render={(props) => <LandingPage {...props} />}
       />
       <Route
         path="/register-page"
         render={(props) => <RegisterPage {...props} />}
+      />
+      <Route
+        path="/login-page"
+        render={(props) => <LoginPage {...props} />}
       />
        <Route
         path="/revision-landing-page"
@@ -50,10 +48,6 @@ root.render(
       <Route
         path="/revision-weekly"
         render={(props) => <RevisionWeeklyPage {...props} />}
-      />
-      <Route
-        path="/login-page"
-        render={(props) => <LoginPage {...props} />}
       />
       <Route
         path ="/dashboard"

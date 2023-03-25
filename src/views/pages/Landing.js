@@ -26,7 +26,7 @@ import SectionAboutUs from "views/index-sections/SectionAboutUs";
 import SectionCards from "views/index-sections/SectionCards";
 
 
-function Index() {
+function LandingPage() {
   const history = useHistory();
 
   document.documentElement.classList.remove("nav-open");
@@ -69,4 +69,4 @@ function Index() {
   );
 }
 
-export default Index;
+export default LandingPage;

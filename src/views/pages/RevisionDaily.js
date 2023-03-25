@@ -10,7 +10,7 @@ import {
 } from "reactstrap";
 
 import IndexNavbar from "components/Navbars/IndexNavbar";
-import { PomodoroTimer, ListItem } from "components/RevisionDailyComponents.js";
+import { PomodoroTimer, ListItem } from "components/RevisionComponents.js";
 
 import { supabase } from "config/client";
 
@@ -154,7 +154,7 @@ function RevisionDailyPage() {
   
     return (
       <div>
-        <IndexNavbar />
+        <IndexNavbar title="• Revision"/>
         <div style={{
             display: "flex",
             justifyContent: "center",

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ListGroup,
   ListGroupItem,
@@ -14,46 +14,86 @@ import {
 } from "reactstrap";
 
 import IndexNavbar from 'components/Navbars/IndexNavbar';
+import { RevisionCard } from 'components/RevisionComponents.js';
+
+import { supabase } from 'config/client';
 
 
 function RevisionWeeklyPage() {
+  const [revisionData, setRevisionData] = useState([]);
+  const [dataUpdated, setDataUpdated] = useState(false);
   const [selectedWeek, setSelectedWeek] = useState(1);
-  const [todos, setTodos] = useState([]);
 
-  const [topic, setTopic] = useState('');
+  // Form states
+  const [topic, setTopic] = useState(''); 
   const [date, setDate] = useState('');
+  const [goal, setGoal] = useState(0);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  useEffect(() => {
+    getRevisionData();
+  }, [dataUpdated]);
+
+  async function getUserId() {
+    const { data, error } = await supabase.auth.getSession()
+    if (data.session) { // if there is a session, user is logged in
+        return data.session.user.id;
+    }
+    throw error;
+  }
+
+  async function getRevisionData() {
+    const userId = await getUserId();
+    const { data, error } = await supabase
+      .from('revision')
+      .select('*')
+      .eq('user_id', userId)
+      .order('date', { ascending: true });
+    if (data) {
+      setRevisionData(data);
+    }
+    throw error;
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Validation
     if (!topic || !date) {
       alert("Please fill in all the required fields");
       return;
     }
-    setTodos([...todos, { text: topic, date: date }]);
+
+    // Add new todo
+    const { data, error } = await supabase
+        .from("revision")
+        .insert([
+            { topic: topic, goal: goal, progress: 0, date: date, user_id: await getUserId() },
+        ]); // Insert the new item into the database
+    if (error) throw error;
+
+    setDataUpdated(!dataUpdated); // Update the data, to show the new item
+
+    // Clear form
     setTopic('');
     setDate('');
   };
 
-  const handleDelete = (index) => {
-    const confirmed = window.confirm("Are you sure you want to delete this task?");
-    if (!confirmed) return;
-
-    const newTodos = [...todos];
-    newTodos.splice(index, 1);
-    setTodos(newTodos);
+  const handleWeekChange = (e) => {
+    setSelectedWeek(e.target.value);
   };
 
-  const handleWeekChange = (event) => {
-    setSelectedWeek(event.target.value);
-  };
-
-  // const handleInputChange = (event) => {
-  //   setTopic(event.target.value);
-  // };
-  // const handledateChange = (event) => {
-  //   setDate(event.target.value);
-  // };
-
+  // Create a ListItem for each item in the database
+  const revisionCards = revisionData.map((item) => (
+    <RevisionCard
+      key={item.id}
+      id={item.id}
+      topic={item.topic}
+      goal={item.goal}
+      progress={item.progress}
+      date={item.date}
+      deletedItem={() => setDataUpdated(!dataUpdated)}
+    />
+));
 
   document.documentElement.classList.remove("nav-open");
   React.useEffect(() => {
@@ -62,11 +102,13 @@ function RevisionWeeklyPage() {
       document.body.classList.remove("revision-page");
     };
   });
+
   return (
     <div>
 
-      <IndexNavbar />
+      <IndexNavbar title="• Revision"/>
 
+      {/* Header */}
       <div style={{
         display: "flex",
         justifyContent: "center",
@@ -78,8 +120,6 @@ function RevisionWeeklyPage() {
         <h1 className='presentation-title' style={{marginTop: '45px'}}>Weekly To-Do List</h1>
       </div>
 
-      {/* <ToDoList/> 
-       */}
 
       <div className='todo-list-container'>
         <div style={{paddingTop: "30px"}} />
@@ -96,10 +136,12 @@ function RevisionWeeklyPage() {
            </div>
 
 
+            {/* Form */}
             <ListGroup style={{ padding: "10px 0" }}>
               <ListGroupItem style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
 
-                <div style={{ display: 'flex', flexDirection: 'row', width: '60%' }}>
+                <div style={{ display: 'flex', flexDirection: 'row' }}>
+
                   <InputGroup style={{ width: "60%", marginRight: "10px" }}>
                     <InputGroupText>
                       Topic
@@ -118,12 +160,31 @@ function RevisionWeeklyPage() {
                     />
                   </InputGroup>
 
-                  <InputGroup style={{ width: "35%" }}>
+                  <InputGroup style={{ width: "35%", marginRight: "10px" }}>
                     <InputGroupText>
                       Due Date
                     </InputGroupText>
                     <Input addon type="date" value={date} onChange={(e) => setDate(e.target.value)} />
                   </InputGroup>
+
+                  <InputGroup style={{width: "30%"}}>
+                      <InputGroupText>
+                          Amount
+                      </InputGroupText>
+                      <Input 
+                          addon 
+                          type="text" 
+                          value={goal}
+                          max={1}
+                          onChange={(e) => {
+                              const value = e.target.value;
+                              if (!isNaN(value) && value <= 5) {
+                                  setGoal(value);
+                              }
+                          }}
+                      />
+                  </InputGroup>
+
                 </div>
 
                 <Button color="success" onClick={handleSubmit}>Add</Button>
@@ -131,43 +192,10 @@ function RevisionWeeklyPage() {
               </ListGroupItem>
             </ListGroup>
 
-
-         
-
-          {/* <form onSubmit={handleSubmit}>
-            <input type="text" value={topic}  placeholder="Input task..." />
-            <input type="date" value={date}  />
-            <Button className="btn-round"
-              color="danger">Add</Button>
-          </form> */}
-
+            {/* List */}
+  
             <div className="revisionCardContainer">
-              {todos.map((todo, index) => (
-
-                <CardBody className="my-li" key={index}>
-                  <CardTitle tag="h5">{todo.text}</CardTitle>
-                  <CardSubtitle className="mb-2 text-muted">Due: {todo.date}</CardSubtitle>
-                  <CardText>
-                    ...
-                  </CardText>
-                  <Button onClick={() => handleDelete(index)}>Delete</Button>
-                </CardBody>
-
-                // <li key={index} className="my-li task" >
-                //   <div>
-                //     <span>{todo.text}</span>
-                //   </div>
-                //   {todo.date.length > 0 &&
-                //     <div className="due-date">
-                //       Due: {todo.date}
-                //     </div>
-                //   }
-
-                //   <Button className="btn-round"
-                //     color="danger" onClick={() => handleDelete(index)}>Delete</Button>
-                // </li>
-
-              ))}
+              {revisionCards}
             </div>
 
         </Container>
