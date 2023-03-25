@@ -161,7 +161,17 @@ function SleepPage() {
                                 <InputGroupText>
                                     From
                                 </InputGroupText>
-                                <Input addon type="number" value={from} onChange={(e) => setFrom(e.target.value)}/>
+                                <Input 
+                                    addon 
+                                    type="number" 
+                                    value={from} 
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        if (!isNaN(value) && value > 0 && value < 24) {
+                                            setFrom(value);
+                                        }
+                                    }}
+                                    />
                                 <InputGroupText>
                                     To
                                 </InputGroupText>
@@ -178,7 +188,17 @@ function SleepPage() {
                                 </InputGroupText>
                             </InputGroup>
                             <InputGroup style={{width: "90%"}}>
-                                <Input addon type="text" value={quality} onChange={(e) => setQuality(e.target.value)}/>
+                                <Input 
+                                    addon 
+                                    type="text" 
+                                    value={quality} 
+                                    onChange={(e) => {
+                                        const value = e.target.value
+                                        if (value.length <= 30) {
+                                            setQuality(value);
+                                        }
+                                    }}
+                                        />
                             </InputGroup>
                         </div>
                         <Button color="success" onClick={handleSubmit}>Add</Button>
@@ -187,11 +207,21 @@ function SleepPage() {
                         <div  style={{display: "flex", flexDirection: "row", width: "60%"}}>
                             <InputGroup style={{width: "60%", marginRight: "10px"}}>
                                 <InputGroupText>
-                                    Goal
+                                    Goal (hrs)
                                 </InputGroupText>
                             </InputGroup>
                             <InputGroup style={{width: "90%"}}>
-                                <Input addon type="text" value={goal} onChange={(e) => setGoal(e.target.value)}/>
+                                <Input 
+                                    addon 
+                                    type="number" 
+                                    value={goal} 
+                                    onChange={(e) => {
+                                        const value = e.target.value
+                                        if (!isNaN(value) && value > 0 && value < 16) {
+                                            setGoal(value);
+                                        }
+                                    }}
+                                        />
                             </InputGroup>
                         </div>
                         <Button color="success" onClick={handleSubmit}>Add</Button>
@@ -204,7 +234,17 @@ function SleepPage() {
                                 </InputGroupText>
                             </InputGroup>
                             <InputGroup style={{width: "90%"}}>
-                                <Input addon type="text" value={notes} onChange={(e) => setNotes(e.target.value)}/>
+                                <Input 
+                                    addon 
+                                    type="text" 
+                                    value={notes} 
+                                    onChange={(e) => {
+                                        const value = e.target.value
+                                        if (value.length <= 50) {
+                                            setNotes(value);
+                                        }
+                                    }}
+                                        />
                             </InputGroup>
                         </div>
                         <Button color="success" onClick={handleSubmit}>Add</Button>

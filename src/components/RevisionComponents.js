@@ -49,7 +49,7 @@ export function ListItem({title, progress, goal, id, setActive, active = false, 
     }
 
     return (
-        <ListGroupItem outline onClick={setActive} active={active} style={{border: "2px solid #dadada", borderRadius: "7px"}}>
+        <ListGroupItem onClick={setActive} active={active} style={{border: "2px solid #dadada", borderRadius: "7px"}}>
             <div style={{flexDirection: "row", display: "flex", justifyContent: "space-between", alignItems: "center"}}>
                 <b style={{width: "100px"}}>{title}</b>
                 {/* <p>{plants(progress)}<span class = "plant-div">/</span>{plants(goal)}</p> */}
