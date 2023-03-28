@@ -25,22 +25,10 @@ function SleepPage() {
     const [quality, setQuality] = useState("");
     const [amount, setAmount] = useState(0);
     const [notes, setNotes] = useState("");
-    const [goal, setGoal] = useState("");
+    const [goal, setGoal] = useState(8);
+    const [focusBar, setFocusBar] = useState(null);
+    const [data, setData] = React.useState([{ name: "Sleep", data: 8 }, { name: "Goal", data: 8 }]);
 
-    const data = [
-        {
-            name: 'Sleep',
-            uv: 8,
-            pv: 2400,
-            amt: 2400,
-        },
-        {
-            name: 'Goal',
-            uv: 9,
-            pv: 1398,
-            amt: 2210,
-        },
-    ];
 
 
     const [dataUpdated, setDataUpdated] = useState(false);
@@ -55,10 +43,9 @@ function SleepPage() {
 
     const handleSleepSubmit = async (e) => {
         let value = to - from;
-        data[0].uv = value;
-        setDataUpdated(!dataUpdated);
-        e.preventDefault();
+        setData((old) => [{ name: 'Sleep', data: value }, { name: 'Goal', data: goal }]);
     };
+
 
     const handleSubmit = async (e) => {
 
@@ -80,24 +67,27 @@ function SleepPage() {
     //         .eq("date", formattedDate)
     //         .eq("user_id", await getUserId());
     //     if (error) throw error;
-        
+
     //     setDailyRevision(data);
     // };
 
+    const CustomTooltip = ({ active, payload, label }) => {
+        if (active && payload && payload.length) {
+          return (
+            <div className="custom-tooltip">
+              <p >{`${label} : ${payload[0].value}`}</p>
+              <p className="desc">Quality: {quality}</p>
+              <p className="desc">Notes: {notes}</p>
+            </div>
+          );
+        }
 
-    // useEffect(() => {
-    //     getDailyRevision();
-    //     console.log(dailyRevision);
-    // }, [dataUpdated]);
-
-    const ListItems = dailyRevision.map((item) => (
-        <ListItem
-            key={item.id}
-            title={item.topic}
-            goal={item.goal}
-            progress={item.progress}
-        />
-    ));
+        return null;
+      };
+    useEffect(() => {
+        getDailyRevision();
+        console.log(dailyRevision);
+    }, [dataUpdated]);
 
 
   document.documentElement.classList.remove("nav-open");
@@ -131,7 +121,7 @@ function SleepPage() {
             </div>
         </div>
           <div className="content-center" style={{paddingTop: "30px"}}>
-            <Container>
+          <Container>
                 <ListGroupItem style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
                     {/*<div  style={{display: "flex", flexDirection: "row", width: "60%"}}>*/}
                     {/*    */}
@@ -141,23 +131,28 @@ function SleepPage() {
                     <Button color="success" onClick={() => { {/*  Do Something  */} }}>Next</Button>
                 </ListGroupItem>
                 <br/>
-                <BarChart 
-                    width={1000}
-                    height={600}
-                    data={data}
-                    margin={{
-                        top: 5,
-                        right: 30,
-                        left: 20,
-                        bottom: 5,
-                    }}
-                >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Bar dataKey="uv" barSize={30} fill="#8884d8"
+
+                    <BarChart
+                        width={1000}
+                        height={600}
+                        data={data}
+                        margin={{
+                            top: 5,
+                            right: 30,
+                            left: 20,
+                            bottom: 5,
+
+                        }}
+                        key={`lc_${data.length}`}
+                    >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="name" />
+                        <YAxis />
+                        <Tooltip cursor={{fill: '#fff'}} content={<CustomTooltip />} />
+                        <Bar dataKey="data" barSize={30} fill="#8884d8"
+                        key={`l_${data.length}`}
                         />
-                </BarChart>
+                    </BarChart>
                 <br/>
                 <ListGroup>
                     {/* <ListGroupItem style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
@@ -171,13 +166,13 @@ function SleepPage() {
                                 <InputGroupText>
                                     From
                                 </InputGroupText>
-                                <Input 
-                                    addon 
-                                    type="number" 
-                                    value={from} 
+                                <Input
+                                    addon
+                                    type="number"
+                                    value={from}
                                     onChange={(e) => {
                                         const value = e.target.value;
-                                        if (!isNaN(value) && value > 0 && value < 24) {
+                                        if (!isNaN(value) && value >= 0 && value < 24) {
                                             setFrom(value);
                                         }
                                     }}
@@ -185,7 +180,12 @@ function SleepPage() {
                                 <InputGroupText>
                                     To
                                 </InputGroupText>
-                                <Input addon type="number" value={to} onChange={(e) => setTo(e.target.value)}/>
+                                <Input addon type="number" value={to} onChange={(e) => {
+                                        const value = e.target.value;
+                                        if (!isNaN(value) && value >= 0 && value < 24) {
+                                            setTo(value);
+                                        }
+                                    }}/>
                             </InputGroup>
                         </div>
                         <Button color="success" onClick={handleSleepSubmit}>Add</Button> */}
@@ -198,10 +198,10 @@ function SleepPage() {
                                 </InputGroupText>
                             </InputGroup>
                             <InputGroup style={{width: "90%"}}>
-                                <Input 
-                                    addon 
-                                    type="text" 
-                                    value={quality} 
+                                <Input
+                                    addon
+                                    type="text"
+                                    value={quality}
                                     onChange={(e) => {
                                         const value = e.target.value
                                         if (value.length <= 30) {
@@ -221,10 +221,10 @@ function SleepPage() {
                                 </InputGroupText>
                             </InputGroup>
                             <InputGroup style={{width: "90%"}}>
-                                <Input 
-                                    addon 
-                                    type="number" 
-                                    value={goal} 
+                                <Input
+                                    addon
+                                    type="number"
+                                    value={goal}
                                     onChange={(e) => {
                                         const value = e.target.value
                                         if (!isNaN(value) && value > 0 && value < 16) {
@@ -234,7 +234,7 @@ function SleepPage() {
                                         />
                             </InputGroup>
                         </div>
-                        <Button color="success" onClick={handleSubmit}>Add</Button>
+                        <Button color="success" onClick={handleSleepSubmit}>Add</Button>
                     </ListGroupItem>
                     {/* <ListGroupItem style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
                         <div  style={{display: "flex", flexDirection: "row", width: "60%"}}>
@@ -244,10 +244,10 @@ function SleepPage() {
                                 </InputGroupText>
                             </InputGroup>
                             <InputGroup style={{width: "90%"}}>
-                                <Input 
-                                    addon 
-                                    type="text" 
-                                    value={notes} 
+                                <Input
+                                    addon
+                                    type="text"
+                                    value={notes}
                                     onChange={(e) => {
                                         const value = e.target.value
                                         if (value.length <= 50) {
@@ -261,17 +261,12 @@ function SleepPage() {
                     </ListGroupItem> */}
                 </ListGroup>
                 <div style={{height: "30px"}}/>
-                <ListGroup>
-                    {ListItems}
-                    {/* <ListItem title="maths" goal="3" progress="2"/>
-                    <ListItem title="ai" goal="2" progress="1"/>
-                    <ListItem title="system arch" goal="3" progress="1"/> */}
-                </ListGroup>
+
 
             </Container>
           </div>
         </div>
-      
+
     );
 }
 
