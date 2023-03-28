@@ -51,25 +51,25 @@ function SleepPage() {
 
     }
 
-    // const getDailyRevision = async () => {
-    //     var date = new Date();
+    const getDailyRevision = async () => {
+        var date = new Date();
 
-    //     var year = date.toLocaleString("default", { year: "numeric" });
-    //     var month = date.toLocaleString("default", { month: "2-digit" });
-    //     var day = date.toLocaleString("default", { day: "2-digit" });
+        var year = date.toLocaleString("default", { year: "numeric" });
+        var month = date.toLocaleString("default", { month: "2-digit" });
+        var day = date.toLocaleString("default", { day: "2-digit" });
 
-    //     // Generate yyyy-mm-dd date string
-    //     var formattedDate = year + "-" + month + "-" + day;
+        // Generate yyyy-mm-dd date string
+        var formattedDate = year + "-" + month + "-" + day;
 
-    //     const { data, error } = await supabase
-    //         .from("revision")
-    //         .select("*")
-    //         .eq("date", formattedDate)
-    //         .eq("user_id", await getUserId());
-    //     if (error) throw error;
+        const { data, error } = await supabase
+            .from("revision")
+            .select("*")
+            .eq("date", formattedDate)
+            .eq("user_id", await getUserId());
+        if (error) throw error;
 
-    //     setDailyRevision(data);
-    // };
+        setDailyRevision(data);
+    };
 
     const CustomTooltip = ({ active, payload, label }) => {
         if (active && payload && payload.length) {
@@ -111,10 +111,15 @@ function SleepPage() {
         }}>
             <div style={{display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column"}}>
 
-                <div style={{backgroundColor: "grey", borderRadius: "5px", display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "row", padding: "0px 40px 23px 40px"}}>
+                <div style={{backgroundColor: "grey", borderRadius: "5px", display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column", padding: "0px 40px 23px 40px"}}>
+                <div style={{ display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "row"}}>
                     <Button onClick={() => setAmount(amount - 1)} style={{marginTop: "30px"}} disabled={amount <= 0}><AiOutlineMinus /></Button>
                     <h1 style={{color: "white", fontWeight: "bold", padding: "0 20px"}}>{amount}</h1>
                     <Button  onClick={() => setAmount(amount + 1)} style={{marginTop: "30px"}} disabled={amount >= 20}><AiOutlinePlus /></Button>
+                </div>
+                    <InputGroup style={{width: "100%", marginTop: "10px", fontColor: "white"}}>
+                        <Input placeholder="Quality" type="text" onChange={(e) => setQuality(e.target.value)} color="white" style={{backgroundColor: "grey", color: "white"}}/>
+                    </InputGroup>
                 </div>
 
                 <Button color="success" onClick={handleSleepSubmit} style={{width: "100%", marginTop: "10px"}}>Submit</Button>
