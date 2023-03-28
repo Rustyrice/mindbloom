@@ -12,6 +12,7 @@ import {
 import IndexNavbar from "components/Navbars/IndexNavbar";
 import { ListItem } from "components/RevisionComponents.js";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from 'recharts';
+import { AiOutlinePlus, AiOutlineMinus } from "react-icons/ai";
 
 import { supabase } from "config/client";
 
@@ -52,42 +53,42 @@ function SleepPage() {
         throw error;
     }
 
-
     const handleSleepSubmit = async (e) => {
         let value = to - from;
         data[0].uv = value;
         setDataUpdated(!dataUpdated);
         e.preventDefault();
     };
+
     const handleSubmit = async (e) => {
 
     }
 
-    const getDailyRevision = async () => {
-        var date = new Date();
+    // const getDailyRevision = async () => {
+    //     var date = new Date();
 
-        var year = date.toLocaleString("default", { year: "numeric" });
-        var month = date.toLocaleString("default", { month: "2-digit" });
-        var day = date.toLocaleString("default", { day: "2-digit" });
+    //     var year = date.toLocaleString("default", { year: "numeric" });
+    //     var month = date.toLocaleString("default", { month: "2-digit" });
+    //     var day = date.toLocaleString("default", { day: "2-digit" });
 
-        // Generate yyyy-mm-dd date string
-        var formattedDate = year + "-" + month + "-" + day;
+    //     // Generate yyyy-mm-dd date string
+    //     var formattedDate = year + "-" + month + "-" + day;
 
-        const { data, error } = await supabase
-            .from("revision")
-            .select("*")
-            .eq("date", formattedDate)
-            .eq("user_id", await getUserId());
-        if (error) throw error;
+    //     const { data, error } = await supabase
+    //         .from("revision")
+    //         .select("*")
+    //         .eq("date", formattedDate)
+    //         .eq("user_id", await getUserId());
+    //     if (error) throw error;
         
-        setDailyRevision(data);
-    };
+    //     setDailyRevision(data);
+    // };
 
 
-    useEffect(() => {
-        getDailyRevision();
-        console.log(dailyRevision);
-    }, [dataUpdated]);
+    // useEffect(() => {
+    //     getDailyRevision();
+    //     console.log(dailyRevision);
+    // }, [dataUpdated]);
 
     const ListItems = dailyRevision.map((item) => (
         <ListItem
@@ -118,7 +119,16 @@ function SleepPage() {
             height: "40vh",
             backgroundImage: "url(https://images.unsplash.com/photo-1468657988500-aca2be09f4c6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2670&q=80)",
         }}>
-        <h1 className='presentation-title'>Sleep</h1>
+            <div style={{display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column"}}>
+
+                <div style={{backgroundColor: "grey", borderRadius: "5px", display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "row", padding: "0px 40px 23px 40px"}}>
+                    <Button onClick={() => setAmount(amount - 1)} style={{marginTop: "30px"}} disabled={amount <= 0}><AiOutlineMinus /></Button>
+                    <h1 style={{color: "white", fontWeight: "bold", padding: "0 20px"}}>{amount}</h1>
+                    <Button  onClick={() => setAmount(amount + 1)} style={{marginTop: "30px"}} disabled={amount >= 20}><AiOutlinePlus /></Button>
+                </div>
+
+                <Button color="success" onClick={handleSleepSubmit} style={{width: "100%", marginTop: "10px"}}>Submit</Button>
+            </div>
         </div>
           <div className="content-center" style={{paddingTop: "30px"}}>
             <Container>
@@ -126,9 +136,9 @@ function SleepPage() {
                     {/*<div  style={{display: "flex", flexDirection: "row", width: "60%"}}>*/}
                     {/*    */}
                     {/*</div>*/}
-                    <Button color="success" onClick={handleSubmit}>Prev</Button>
+                    <Button color="success" onClick={() => { {/*  Do Something  */} }}>Prev</Button>
                     <h1 className='content-center'>Today</h1>
-                    <Button color="success" onClick={handleSubmit}>Next</Button>
+                    <Button color="success" onClick={() => { {/*  Do Something  */} }}>Next</Button>
                 </ListGroupItem>
                 <br/>
                 <BarChart 
@@ -150,7 +160,7 @@ function SleepPage() {
                 </BarChart>
                 <br/>
                 <ListGroup>
-                    <ListGroupItem style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
+                    {/* <ListGroupItem style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
                         <div  style={{display: "flex", flexDirection: "row", width: "60%"}}>
                             <InputGroup style={{width: "60%", marginRight: "10px"}}>
                                 <InputGroupText>
@@ -178,8 +188,8 @@ function SleepPage() {
                                 <Input addon type="number" value={to} onChange={(e) => setTo(e.target.value)}/>
                             </InputGroup>
                         </div>
-                        <Button color="success" onClick={handleSleepSubmit}>Add</Button>
-                    </ListGroupItem>
+                        <Button color="success" onClick={handleSleepSubmit}>Add</Button> */}
+                    {/* </ListGroupItem>
                     <ListGroupItem style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
                         <div  style={{display: "flex", flexDirection: "row", width: "60%"}}>
                             <InputGroup style={{width: "60%", marginRight: "10px"}}>
@@ -202,7 +212,7 @@ function SleepPage() {
                             </InputGroup>
                         </div>
                         <Button color="success" onClick={handleSubmit}>Add</Button>
-                    </ListGroupItem>
+                    </ListGroupItem> */}
                     <ListGroupItem style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
                         <div  style={{display: "flex", flexDirection: "row", width: "60%"}}>
                             <InputGroup style={{width: "60%", marginRight: "10px"}}>
@@ -226,7 +236,7 @@ function SleepPage() {
                         </div>
                         <Button color="success" onClick={handleSubmit}>Add</Button>
                     </ListGroupItem>
-                    <ListGroupItem style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
+                    {/* <ListGroupItem style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
                         <div  style={{display: "flex", flexDirection: "row", width: "60%"}}>
                             <InputGroup style={{width: "60%", marginRight: "10px"}}>
                                 <InputGroupText>
@@ -248,7 +258,7 @@ function SleepPage() {
                             </InputGroup>
                         </div>
                         <Button color="success" onClick={handleSubmit}>Add</Button>
-                    </ListGroupItem>
+                    </ListGroupItem> */}
                 </ListGroup>
                 <div style={{height: "30px"}}/>
                 <ListGroup>
