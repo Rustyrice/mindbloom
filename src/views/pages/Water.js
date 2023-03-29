@@ -11,65 +11,44 @@ import {
 
 import IndexNavbar from "components/Navbars/IndexNavbar";
 import { ListItem } from "components/RevisionComponents.js";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { AiOutlinePlus, AiOutlineMinus } from "react-icons/ai";
 
 import { supabase } from "config/client";
 
 
 function WaterPage() {
-    const [dailyRevision, setDailyRevision] = useState([]);
+    const [waterData, setWaterData] = useState([]);
 
-    const [topic, setTopic] = useState("");
-    const [from, to] = useState("");
+    const [from, setFrom] = useState("");
+    const [to, setTo] = useState("");
+    const [quality, setQuality] = useState("");
     const [amount, setAmount] = useState(0);
+    const [goal, setGoal] = useState(8);
+    const [focusBar, setFocusBar] = useState(null);
+    const [data, setData] = React.useState([{ name: "Water", data: 8 }, { name: "Goal", data: 8 }]);
 
-    const data = [
-        {
-            name: 'Page A',
-            uv: 4000,
-            pv: 2400,
-            amt: 2400,
-        },
-        {
-            name: 'Page B',
-            uv: 3000,
-            pv: 1398,
-            amt: 2210,
-        },
-        {
-            name: 'Page C',
-            uv: 2000,
-            pv: 9800,
-            amt: 2290,
-        },
-        {
-            name: 'Page D',
-            uv: 2780,
-            pv: 3908,
-            amt: 2000,
-        },
-        {
-            name: 'Page E',
-            uv: 1890,
-            pv: 4800,
-            amt: 2181,
-        },
-        {
-            name: 'Page F',
-            uv: 2390,
-            pv: 3800,
-            amt: 2500,
-        },
-        {
-            name: 'Page G',
-            uv: 3490,
-            pv: 4300,
-            amt: 2100,
-        },
-    ];
 
 
     const [dataUpdated, setDataUpdated] = useState(false);
+
+    useEffect(() => {
+        getWater();
+    }, [dataUpdated]);
+
+       // get the current date, in the format yyyy-mm-dd
+       const dateNow = ()  => {
+        var date = new Date(); // Get the current date
+
+        // Get the year, month, and day
+        var year = date.toLocaleString("default", { year: "numeric" });
+        var month = date.toLocaleString("default", { month: "2-digit" });
+        var day = date.toLocaleString("default", { day: "2-digit" });
+
+        var formattedDate = year + "-" + month + "-" + day; // Generate yyyy-mm-dd date string
+
+        return formattedDate;
+    }
 
     async function getUserId() {
         const { data, error } = await supabase.auth.getSession()
@@ -79,68 +58,70 @@ function WaterPage() {
         throw error;
     }
 
+    const handleGoalSubmit = async (e) => {
+        e.preventDefault(); // Prevent the page from refreshing
+        
+        // Do something
+    }
 
-    const handleSubmit = async (e) => {
-        var date = new Date();
+    const handleWaterSubmit = async (e) => {
+        // let value = to - from;
+        // setData((old) => [{ name: 'Water', data: value}, { name: 'Goal', data: goal }]);
 
-        var year = date.toLocaleString("default", { year: "numeric" });
-        var month = date.toLocaleString("default", { month: "2-digit" });
-        var day = date.toLocaleString("default", { day: "2-digit" });
+        e.preventDefault(); // Prevent the page from refreshing
+        
 
-        // Generate yyyy-mm-dd date string
-        var formattedDate = year + "-" + month + "-" + day;
+        if (!amount) { // If the quality or amount is empty, don't submit
+            alert("Please fill in all the required fields");
+            return;
+        }
 
+        const date = dateNow(); // Get the current date
 
-        e.preventDefault();
         try {
             const { data, error } = await supabase
-                .from("revision")
+                .from("water")
                 .insert([
-                    { topic: topic, goal: amount, progress: 0, date: formattedDate, user_id: await getUserId() },
-                ]);
+                    { amount: amount, date: date, user_id: await getUserId() },
+                ]); // Insert the new item into the database
             if (error) throw error;
-            alert("Success!");
-            setDataUpdated(!dataUpdated);
+            setWaterData(null); // Clear the topic
+            setDataUpdated(!dataUpdated); // Update the data, to show the new item
         } catch (error) {
             alert(error.message);
             console.log("error", error);
         }
     };
-
-    const getDailyRevision = async () => {
-        var date = new Date();
-
-        var year = date.toLocaleString("default", { year: "numeric" });
-        var month = date.toLocaleString("default", { month: "2-digit" });
-        var day = date.toLocaleString("default", { day: "2-digit" });
-
-        // Generate yyyy-mm-dd date string
-        var formattedDate = year + "-" + month + "-" + day;
+    
+    const getWater = async () => {
+        
 
         const { data, error } = await supabase
-            .from("revision")
+            .from("water")
             .select("*")
-            .eq("date", formattedDate)
             .eq("user_id", await getUserId());
         if (error) throw error;
-        
-        setDailyRevision(data);
+
+        setWaterData(data);
+        console.log(waterData);
+        console.log(data);
     };
 
+    const CustomTooltip = ({ active, payload, label }) => {
+        if (active && payload && payload.length) {
+          return (
+            <div className="custom-tooltip">
+              <p >{`${label} : ${payload[0].value}`}</p>
+            </div>
+          );
+        }
 
+        return null;
+      };
     useEffect(() => {
-        getDailyRevision();
-        console.log(dailyRevision);
+        getWater();
+        console.log(waterData);
     }, [dataUpdated]);
-
-    const ListItems = dailyRevision.map((item) => (
-        <ListItem
-            key={item.id}
-            title={item.topic}
-            goal={item.goal}
-            progress={item.progress}
-        />
-    ));
 
 
   document.documentElement.classList.remove("nav-open");
@@ -162,112 +143,87 @@ function WaterPage() {
             height: "40vh",
             backgroundImage: "url(https://images.unsplash.com/photo-1468657988500-aca2be09f4c6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2670&q=80)",
         }}>
-        <h1 className='presentation-title'>Water</h1>
+            <div style={{display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column"}}>
+
+                <div style={{ display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column"}}>
+                <p style={{color: "white", fontWeight: "bold", padding: "7px 0", marginBottom: "10px", backgroundColor: "grey", borderRadius: "5px", width: "100%", textAlign: "center" }}>Cups</p>
+                <div style={{ backgroundColor: "grey", borderRadius: "5px", display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "row", padding: "23px 40px"}}>
+                    <Button onClick={() => setAmount(amount - 1)} disabled={amount <= 0}><AiOutlineMinus /></Button>
+                    <h1 style={{color: "white", fontWeight: "bold", padding: "0 20px", margin: "0"}}>{amount}</h1>
+                    <Button  onClick={() => setAmount(amount + 1)} disabled={amount >= 20}><AiOutlinePlus /></Button>
+                </div>
+                </div>
+
+                <Button color="success" onClick={handleWaterSubmit} style={{width: "100%", marginTop: "10px"}}>Submit</Button>
+            </div>
         </div>
           <div className="content-center" style={{paddingTop: "30px"}}>
-            <Container>
+          <Container>
                 <ListGroupItem style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
-                    {/*<div  style={{display: "flex", flexDirection: "row", width: "60%"}}>*/}
-                    {/*    */}
-                    {/*</div>*/}
-                    <Button color="success" onClick={handleSubmit}>Prev</Button>
+                   
+                    <Button color="success" onClick={() => { {/*  Do Something  */} }}>Prev</Button>
                     <h1 className='content-center'>Today</h1>
-                    <Button color="success" onClick={handleSubmit}>Next</Button>
+                    <Button color="success" onClick={() => { {/*  Do Something  */} }}>Next</Button>
                 </ListGroupItem>
                 <br/>
-                <LineChart
-                    width={1000}
-                    height={600}
-                    data={data}
-                    margin={{
-                        top: 5,
-                        right: 30,
-                        left: 20,
-                        bottom: 5,
-                    }}
-                >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Line type="monotone" dataKey="pv" stroke="#8884d8" activeDot={{ r: 8 }} />
-                    <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
-                </LineChart>
+
+                <div style={{display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column", borderRadius: "5px", border: "0.5px solid #ebebeb" ,boxShadow: "3px 3px 5px #d1d1d1"}}>
+                    <AreaChart
+                        width={1000}
+                        height={400}
+                        data={waterData}
+                        margin={{
+                            top: 10,
+                            right: 30,
+                            left: 20,
+                            bottom: 5,
+
+                        }}
+                    >
+                        {/* <CartesianGrid strokeDasharray="3 3" /> */}
+                        <XAxis dataKey="Day" />
+                        <YAxis />
+                        <Tooltip cursor={{fill: '#fff'}} content={<CustomTooltip />} />
+                        <Area dataKey="amount" barSize={30} fill="#8884d8" />
+                    </AreaChart>
+                </div>
+                    
+
                 <br/>
                 <ListGroup>
+                    
                     <ListGroupItem style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
                         <div  style={{display: "flex", flexDirection: "row", width: "60%"}}>
                             <InputGroup style={{width: "60%", marginRight: "10px"}}>
                                 <InputGroupText>
-                                    In Bed
+                                    Goal (hrs)
                                 </InputGroupText>
                             </InputGroup>
                             <InputGroup style={{width: "90%"}}>
-                                <InputGroupText>
-                                    From
-                                </InputGroupText>
-                                <Input addon type="text" value={from} onChange={(e) => setAmount(e.target.value)}/>
-                                <InputGroupText>
-                                    To
-                                </InputGroupText>
-                                <Input addon type="text" value={to} onChange={(e) => setAmount(e.target.value)}/>
+                                <Input
+                                    addon
+                                    type="number"
+                                    value={goal}
+                                    onChange={(e) => {
+                                        const value = e.target.value
+                                        if (!isNaN(value) && value > 0 && value < 16) {
+                                            setGoal(value);
+                                        }
+                                    }}
+                                        />
                             </InputGroup>
                         </div>
-                        <Button color="success" onClick={handleSubmit}>Add</Button>
+                        <Button color="success" onClick={handleGoalSubmit}>Add</Button>
                     </ListGroupItem>
-                    <ListGroupItem style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
-                        <div  style={{display: "flex", flexDirection: "row", width: "60%"}}>
-                            <InputGroup style={{width: "60%", marginRight: "10px"}}>
-                                <InputGroupText>
-                                   Sleep Quality
-                                </InputGroupText>
-                            </InputGroup>
-                            <InputGroup style={{width: "90%"}}>
-                                <Input addon type="text" value={from} onChange={(e) => setAmount(e.target.value)}/>
-                            </InputGroup>
-                        </div>
-                        <Button color="success" onClick={handleSubmit}>Add</Button>
-                    </ListGroupItem>
-                    <ListGroupItem style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
-                        <div  style={{display: "flex", flexDirection: "row", width: "60%"}}>
-                            <InputGroup style={{width: "60%", marginRight: "10px"}}>
-                                <InputGroupText>
-                                    Time in bed
-                                </InputGroupText>
-                            </InputGroup>
-                            <InputGroup style={{width: "90%"}}>
-                                <Input addon type="text" value={from} onChange={(e) => setAmount(e.target.value)}/>
-                            </InputGroup>
-                        </div>
-                        <Button color="success" onClick={handleSubmit}>Add</Button>
-                    </ListGroupItem>
-                    <ListGroupItem style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
-                        <div  style={{display: "flex", flexDirection: "row", width: "60%"}}>
-                            <InputGroup style={{width: "60%", marginRight: "10px"}}>
-                                <InputGroupText>
-                                    Sleep Notes
-                                </InputGroupText>
-                            </InputGroup>
-                            <InputGroup style={{width: "90%"}}>
-                                <Input addon type="text" value={from} onChange={(e) => setAmount(e.target.value)}/>
-                            </InputGroup>
-                        </div>
-                        <Button color="success" onClick={handleSubmit}>Add</Button>
-                    </ListGroupItem>
+                
                 </ListGroup>
                 <div style={{height: "30px"}}/>
-                <ListGroup>
-                    {ListItems}
-                    {/* <ListItem title="maths" goal="3" progress="2"/>
-                    <ListItem title="ai" goal="2" progress="1"/>
-                    <ListItem title="system arch" goal="3" progress="1"/> */}
-                </ListGroup>
+
 
             </Container>
           </div>
         </div>
-      
+
     );
 }
 

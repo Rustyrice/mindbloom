@@ -6,8 +6,9 @@ import { Container, Button } from "reactstrap";
 
 // core components
 import IndexNavbar from "components/Navbars/IndexNavbar";
-import ProfilePageHeader from "components/Headers/ProfilePageHeader.js";
 import DemoFooter from "components/Footers/DemoFooter.js";
+import Overview from "components/Overview";
+
 import { supabase } from "config/client";
 
 function DashboardPage() {
@@ -51,32 +52,26 @@ function DashboardPage() {
 
         </div>
       <div className="section profile-content">
-        <Container style={{marginTop: "10px"}}>
-          {/* Usefull links */}
+        <Container style={{marginTop: "10px"}}>          
+         
+          <h3 style={{fontWeight: "bold", color: "black"}}>Revision</h3>
+          <br />
+          <Overview />
           <Button style={{marginRight: "10px"}} onClick={() => history.push("revision-landing-page")}> Revision Page </Button>
+          <br />
+          <br />
+          <h3 style={{fontWeight: "bold", color: "black"}}>Wellbeing</h3>
+          <br />
           <Button style={{marginRight: "10px"}} onClick={() => history.push("sleep")}> Sleep Page </Button>
           <Button style={{marginRight: "10px"}} onClick={() => history.push("water")}> Water Page </Button>
           <Button style={{marginRight: "10px"}} onClick={() => history.push("alcohol")}> Alcohol Page </Button>
-          {/* <Button onClick={() => history.push("dashboard")}> Dashboard Page </Button> */}
+
+
           <br />
           <br />
           <p>This page will show all the data and trends about Personal Informatics according to user Input</p>
 
-          {/* <div className="owner">
-            <div className="avatar">
-              <img
-                alt="..."
-                className="img-circle img-no-padding img-responsive"
-                src={require("assets/img/default-avatar.png")}
-              />
-            </div>
-            <div className="name">
-              <h4 className="title">
-                Hi {user?.user_metadata.name} <br />
-              </h4>
-              <p>This page will show all the data and trends about Personal Informatics according to user Input</p>
-            </div>
-          </div> */}
+          
           
         </Container>
       </div>

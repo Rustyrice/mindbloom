@@ -11,28 +11,47 @@ import {
 
 import IndexNavbar from "components/Navbars/IndexNavbar";
 import { ListItem } from "components/RevisionComponents.js";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import { AiOutlinePlus, AiOutlineMinus } from "react-icons/ai";
 
 import { supabase } from "config/client";
 
 
 function SleepPage() {
-    const [dailyRevision, setDailyRevision] = useState([]);
+    const [sleepData, setSleepData] = useState([]);
 
-    const [from, setFrom] = useState("");
-    const [to, setTo] = useState("");
     const [quality, setQuality] = useState("");
     const [amount, setAmount] = useState(0);
-    const [notes, setNotes] = useState("");
     const [goal, setGoal] = useState(8);
-    const [focusBar, setFocusBar] = useState(null);
     const [data, setData] = React.useState([{ name: "Sleep", data: 8 }, { name: "Goal", data: 8 }]);
 
 
 
     const [dataUpdated, setDataUpdated] = useState(false);
 
+    // when data is updated, update sleepData
+    useEffect(() => {
+        getSleepData();
+        console.log(sleepData);
+    }, [dataUpdated]);
+
+    // get the current date, in the format yyyy-mm-dd
+    const dateNow = ()  => {
+        var date = new Date(); // Get the current date
+
+        // Get the year, month, and day
+        var year = date.toLocaleString("default", { year: "numeric" });
+        var month = date.toLocaleString("default", { month: "2-digit" });
+        var day = date.toLocaleString("default", { day: "2-digit" });
+
+        var formattedDate = year + "-" + month + "-" + day; // Generate yyyy-mm-dd date string
+
+        return formattedDate;
+    }
+
+    // supabase functions
+
+    // get the user's id
     async function getUserId() {
         const { data, error } = await supabase.auth.getSession()
         if (data.session) { // if there is a session, user is logged in
@@ -42,16 +61,59 @@ function SleepPage() {
     }
 
     const handleSleepSubmit = async (e) => {
-        let value = to - from;
-        setData((old) => [{ name: 'Sleep', data: value }, { name: 'Goal', data: goal }]);
+        // let value = to - from;
+        // setData((old) => [{ name: 'Sleep', data: value }, { name: 'Goal', data: goal }]);
+
+        e.preventDefault(); // Prevent the page from refreshing
+        
+
+        if (!quality || !amount) { // If the quality or amount is empty, don't submit
+            alert("Please fill in all the required fields");
+            return;
+        }
+
+        const date = dateNow(); // Get the current date
+
+        try {
+            const { data, error } = await supabase
+                .from("sleep")
+                .insert([
+                    { quality: quality, amount: amount, date: date, user_id: await getUserId() },
+                ]); // Insert the new item into the database
+            if (error) throw error;
+            
+            setSleepData(null); // Clear the topic
+            setDataUpdated(!dataUpdated); // Update the data, to show the new item
+        } catch (error) {
+            alert(error.message);
+            console.log("error", error);
+        }
     };
 
+    
+     const handleGoalSubmit = async (e) => {
+         e.preventDefault(); // Prevent the page from refreshing
+         if (!goal) { // If the quality or amount is empty, don't submit
+             alert("Please fill in all the required fields");
+             return;
+         }
 
-    const handleSubmit = async (e) => {
-
+         try {
+             const { data, error } = await supabase
+                 .from("goal")
+                 .update({ goalSleep: goal })
+                 .eq("user_id", await getUserId());
+             if (error) throw error;
+             setGoal(8); // Clear the topic
+             setDataUpdated(!dataUpdated); // Update the data, to show the new item
+         } catch (error) {
+             alert(error.message);
+             console.log("error", error);
+         }
     }
 
-    const getDailyRevision = async () => {
+
+    const getSleepData = async () => {
         var date = new Date();
 
         var year = date.toLocaleString("default", { year: "numeric" });
@@ -61,14 +123,14 @@ function SleepPage() {
         // Generate yyyy-mm-dd date string
         var formattedDate = year + "-" + month + "-" + day;
 
-        const { data, error } = await supabase
-            .from("revision")
+        const { data,  error } = await supabase
+            .from("sleep")
             .select("*")
             .eq("date", formattedDate)
             .eq("user_id", await getUserId());
         if (error) throw error;
 
-        setDailyRevision(data);
+    setSleepData(data);
     };
 
     const CustomTooltip = ({ active, payload, label }) => {
@@ -77,7 +139,6 @@ function SleepPage() {
             <div className="custom-tooltip">
               <p >{`${label} : ${payload[0].value}`}</p>
               <p className="desc">Quality: {quality}</p>
-              <p className="desc">Notes: {notes}</p>
             </div>
           );
         }
@@ -85,10 +146,9 @@ function SleepPage() {
         return null;
       };
     useEffect(() => {
-        getDailyRevision();
-        console.log(dailyRevision);
+        getSleepData();
+        console.log(sleepData);
     }, [dataUpdated]);
-
 
   document.documentElement.classList.remove("nav-open");
   React.useEffect(() => {
@@ -111,15 +171,18 @@ function SleepPage() {
         }}>
             <div style={{display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column"}}>
 
-                <div style={{backgroundColor: "grey", borderRadius: "5px", display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column", padding: "0px 40px 23px 40px"}}>
-                <div style={{ display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "row"}}>
-                    <Button onClick={() => setAmount(amount - 1)} style={{marginTop: "30px"}} disabled={amount <= 0}><AiOutlineMinus /></Button>
-                    <h1 style={{color: "white", fontWeight: "bold", padding: "0 20px"}}>{amount}</h1>
-                    <Button  onClick={() => setAmount(amount + 1)} style={{marginTop: "30px"}} disabled={amount >= 20}><AiOutlinePlus /></Button>
-                </div>
-                    <InputGroup style={{width: "100%", marginTop: "10px", fontColor: "white"}}>
-                        <Input placeholder="Quality" type="text" onChange={(e) => setQuality(e.target.value)} color="white" style={{backgroundColor: "grey", color: "white"}}/>
+                <div style={{ display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column"}}>
+                    <p style={{color: "white", fontWeight: "bold", padding: "7px 0", marginBottom: "10px", backgroundColor: "grey", borderRadius: "5px", width: "100%", textAlign: "center" }}>Hours</p>
+                    <div style={{ backgroundColor: "grey", borderRadius: "5px", padding: "0px 40px 23px 40px"}}>
+                        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "row"}}>
+                            <Button onClick={() => setAmount(amount - 1)} style={{marginTop: "30px"}} disabled={amount <= 0}><AiOutlineMinus /></Button>
+                            <h1 style={{color: "white", fontWeight: "bold", padding: "0 20px"}}>{amount}</h1>
+                            <Button  onClick={() => setAmount(amount + 1)} style={{marginTop: "30px"}} disabled={amount >= 20}><AiOutlinePlus /></Button>
+                        </div>
+                        <InputGroup style={{width: "100%", marginTop: "10px", fontColor: "white"}}>
+                            <Input placeholder="Quality" type="text" onChange={(e) => setQuality(e.target.value)} color="white" style={{backgroundColor: "grey", color: "white"}}/>
                     </InputGroup>
+                    </div>
                 </div>
 
                 <Button color="success" onClick={handleSleepSubmit} style={{width: "100%", marginTop: "10px"}}>Submit</Button>
@@ -128,36 +191,34 @@ function SleepPage() {
           <div className="content-center" style={{paddingTop: "30px"}}>
           <Container>
                 <ListGroupItem style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
-                    {/*<div  style={{display: "flex", flexDirection: "row", width: "60%"}}>*/}
-                    {/*    */}
-                    {/*</div>*/}
+                    
                     <Button color="success" onClick={() => { {/*  Do Something  */} }}>Prev</Button>
                     <h1 className='content-center'>Today</h1>
                     <Button color="success" onClick={() => { {/*  Do Something  */} }}>Next</Button>
                 </ListGroupItem>
-                <br/>
+                <br/>                   
 
-                    <BarChart
+
+                <div style={{display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column", borderRadius: "5px", border: "0.5px solid #ebebeb" ,boxShadow: "3px 3px 5px #d1d1d1"}}>
+                    <AreaChart
                         width={1000}
-                        height={600}
-                        data={data}
+                        height={400}
+                        data={sleepData}
                         margin={{
-                            top: 5,
+                            top: 10,
                             right: 30,
                             left: 20,
                             bottom: 5,
 
                         }}
-                        key={`lc_${data.length}`}
                     >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="name" />
+                        {/* <CartesianGrid strokeDasharray="3 3" /> */}
+                        <XAxis dataKey="Day" />
                         <YAxis />
                         <Tooltip cursor={{fill: '#fff'}} content={<CustomTooltip />} />
-                        <Bar dataKey="data" barSize={30} fill="#8884d8"
-                        key={`l_${data.length}`}
-                        />
-                    </BarChart>
+                        <Area dataKey="amount" barSize={30} fill="#8884d8" />
+                    </AreaChart>
+                </div>
                 <br/>
                 <ListGroup>
                     {/* <ListGroupItem style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
