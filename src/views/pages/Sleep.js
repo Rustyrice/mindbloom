@@ -124,9 +124,11 @@ function SleepPage() {
               .single();
       
             if (insertError) throw insertError;
-      
+            
             setDataUpdated(!dataUpdated); // Update the data, to show the new item
           }
+          alert("Goal set successfully!");
+
       
           setGoal(8); // Clear the topic
         } catch (error) {
