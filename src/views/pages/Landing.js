@@ -49,7 +49,7 @@ function LandingPage() {
             <Button color="primary" onClick={() => history.push("water")}> Water Page </Button>
             <Button color="primary" onClick={() => history.push("alcohol")}> Alcohol Page </Button>
         </div>
-        {/*<SectionButtons />*/}
+        {/* <SectionButtons />*/}
         {/*<SectionNavbars />*/}
         {/*<SectionNavigation /> */}
         {/*<SectionProgress />*/}
@@ -63,7 +63,7 @@ function LandingPage() {
         {/*<SectionDark />*/}
         {/*<SectionLogin />*/}
         {/* <SectionDownload /> */}
-        {/*<DemoFooter />*/}
+        {/*<DemoFooter /> */}
       </div>
     </>
   );

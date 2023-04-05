@@ -19,20 +19,21 @@ import { supabase } from "config/client";
 
 function SleepPage() {
     const [sleepData, setSleepData] = useState([]);
+    const [goalData, setGoalData] = useState([]);
 
     const [quality, setQuality] = useState("");
     const [amount, setAmount] = useState(0);
     const [goal, setGoal] = useState(8);
     const [data, setData] = React.useState([{ name: "Sleep", data: 8 }, { name: "Goal", data: 8 }]);
 
-
-
     const [dataUpdated, setDataUpdated] = useState(false);
 
     // when data is updated, update sleepData
     useEffect(() => {
         getSleepData();
+        getCurrentGoal();
         console.log(sleepData);
+        console.log(goalData);
     }, [dataUpdated]);
 
     // get the current date, in the format yyyy-mm-dd
@@ -61,13 +62,10 @@ function SleepPage() {
     }
 
     const handleSleepSubmit = async (e) => {
-        // let value = to - from;
-        // setData((old) => [{ name: 'Sleep', data: value }, { name: 'Goal', data: goal }]);
+        e.preventDefault();
 
-        e.preventDefault(); // Prevent the page from refreshing
-        
-
-        if (!quality || !amount) { // If the quality or amount is empty, don't submit
+        // If the quality or amount is empty, don't submit
+        if (!quality || !amount) {
             alert("Please fill in all the required fields");
             return;
         }
@@ -79,7 +77,7 @@ function SleepPage() {
                 .from("sleep")
                 .insert([
                     { quality: quality, amount: amount, date: date, user_id: await getUserId() },
-                ]); // Insert the new item into the database
+                ]);
             if (error) throw error;
             
             setSleepData(null); // Clear the topic
@@ -89,30 +87,54 @@ function SleepPage() {
             console.log("error", error);
         }
     };
-
     
-     const handleGoalSubmit = async (e) => {
-         e.preventDefault(); // Prevent the page from refreshing
-         if (!goal) { // If the quality or amount is empty, don't submit
-             alert("Please fill in all the required fields");
-             return;
-         }
-
-         try {
-             const { data, error } = await supabase
-                 .from("goal")
-                 .update({ goalSleep: goal })
-                 .eq("user_id", await getUserId());
-             if (error) throw error;
-             setGoal(8); // Clear the topic
-             setDataUpdated(!dataUpdated); // Update the data, to show the new item
-         } catch (error) {
-             alert(error.message);
-             console.log("error", error);
-         }
-    }
-
-
+    const handleGoalSubmit = async (e) => {
+        e.preventDefault();
+      
+        // If the quality or amount is empty, don't submit
+        if (!goal) {
+          alert("Please fill in the required field");
+          return;
+        }
+      
+        try {
+          const { data: existingData, error: existingError } = await supabase
+            .from("goal")
+            .select()
+            .eq("user_id", await getUserId());
+      
+          if (existingError) throw existingError;
+      
+          if (existingData && existingData.length > 0) {
+            // Update the existing row
+            const { data: updatedData, error: updateError } = await supabase
+              .from("goal")
+              .update({ goalSleep: goal })
+              .eq("id", existingData[0].id)
+              .eq("user_id", await getUserId());
+      
+            if (updateError) throw updateError;
+      
+            setDataUpdated(!dataUpdated); // Update the data, to show the new item
+          } else {
+            // Insert a new row
+            const { data: insertedData, error: insertError } = await supabase
+              .from("goal")
+              .insert({ user_id: await getUserId(), goalSleep: goal })
+              .single();
+      
+            if (insertError) throw insertError;
+      
+            setDataUpdated(!dataUpdated); // Update the data, to show the new item
+          }
+      
+          setGoal(8); // Clear the topic
+        } catch (error) {
+          alert(error.message);
+          console.log("error", error);
+        }
+    };
+      
     const getSleepData = async () => {
         var date = new Date();
 
@@ -133,6 +155,21 @@ function SleepPage() {
     setSleepData(data);
     };
 
+    const getCurrentGoal = async () => {
+        const { data, error } = await supabase
+            .from("goal")
+            .select("goalSleep")
+            .eq("user_id", await getUserId())
+            .limit();
+        if (error) throw error;
+
+        if (data) {
+            setGoalData( { goalSleep: data[0].goalSleep });
+        } else {
+            setGoalData({ goalSleep: 8 });
+        }
+    };
+
     const CustomTooltip = ({ active, payload, label }) => {
         if (active && payload && payload.length) {
           return (
@@ -147,7 +184,9 @@ function SleepPage() {
       };
     useEffect(() => {
         getSleepData();
+        getCurrentGoal();
         console.log(sleepData);
+        console.log(goalData);
     }, [dataUpdated]);
 
   document.documentElement.classList.remove("nav-open");
@@ -300,31 +339,15 @@ function SleepPage() {
                                         />
                             </InputGroup>
                         </div>
-                        <Button color="success" onClick={handleSleepSubmit}>Add</Button>
+                        <Button color="success" onClick={handleGoalSubmit}>Add</Button>
                     </ListGroupItem>
-                    {/* <ListGroupItem style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
+                    <ListGroupItem style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
                         <div  style={{display: "flex", flexDirection: "row", width: "60%"}}>
-                            <InputGroup style={{width: "60%", marginRight: "10px"}}>
-                                <InputGroupText>
-                                    Sleep Notes
-                                </InputGroupText>
-                            </InputGroup>
-                            <InputGroup style={{width: "90%"}}>
-                                <Input
-                                    addon
-                                    type="text"
-                                    value={notes}
-                                    onChange={(e) => {
-                                        const value = e.target.value
-                                        if (value.length <= 50) {
-                                            setNotes(value);
-                                        }
-                                    }}
-                                        />
-                            </InputGroup>
+                                <h3>
+                                    Current goal: <b>{goalData.goalSleep}</b> hours of sleep
+                                </h3>
                         </div>
-                        <Button color="success" onClick={handleSubmit}>Add</Button>
-                    </ListGroupItem> */}
+                    </ListGroupItem>
                 </ListGroup>
                 <div style={{height: "30px"}}/>
 
