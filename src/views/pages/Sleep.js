@@ -73,15 +73,29 @@ function SleepPage() {
         const date = dateNow(); // Get the current date
 
         try {
-            const { data, error } = await supabase
+            const { data: existingData, error: existingError } = await supabase
                 .from("sleep")
-                .insert([
-                    { quality: quality, amount: amount, date: date, user_id: await getUserId() },
-                ]);
-            if (error) throw error;
+                .select()
+                .eq("date", date)
+                .eq("user_id", await getUserId());
             
-            setSleepData(null); // Clear the topic
-            setDataUpdated(!dataUpdated); // Update the data, to show the new item
+            if (existingError) throw existingError;
+
+            if (existingData && existingData.length > 0) {
+                alert("You've already logged your sleep for today");
+            } else {
+                const { data, error } = await supabase
+                    .from("sleep")
+                    .insert([
+                        { quality: quality, amount: amount, date: date, user_id: await getUserId() },
+                    ]);
+                if (error) throw error;
+            
+                setSleepData(null); // Clear the topic
+                setDataUpdated(!dataUpdated); // Update the data, to show the new item
+                alert("Sleep has been recorded successfully!");
+            }
+
         } catch (error) {
             alert(error.message);
             console.log("error", error);
