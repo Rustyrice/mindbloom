@@ -64,7 +64,6 @@ function SleepPage() {
     const handleSleepSubmit = async (e) => {
         e.preventDefault();
 
-        // If the quality or amount is empty, don't submit
         if (!quality || !amount) {
             alert("Please fill in all the required fields");
             return;
@@ -227,15 +226,15 @@ function SleepPage() {
             <div style={{display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column"}}>
 
                 <div style={{ display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column"}}>
-                    <p style={{color: "white", fontWeight: "bold", padding: "7px 0", marginBottom: "10px", backgroundColor: "grey", borderRadius: "5px", width: "100%", textAlign: "center" }}>Hours</p>
+                    <p style={{color: "white", fontWeight: "bold", padding: "7px 0", marginBottom: "10px", backgroundColor: "grey", borderRadius: "5px", width: "100%", textAlign: "center" }}>Hour(s)</p>
                     <div style={{ backgroundColor: "grey", borderRadius: "5px", padding: "0px 40px 23px 40px"}}>
                         <div style={{ display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "row"}}>
-                            <Button onClick={() => setAmount(amount - 1)} style={{marginTop: "30px"}} disabled={amount <= 0}><AiOutlineMinus /></Button>
+                            <Button onClick={() => setAmount(amount - 1)} style={{marginTop: "30px"}} disabled={amount <= 1}><AiOutlineMinus /></Button>
                             <h1 style={{color: "white", fontWeight: "bold", padding: "0 20px"}}>{amount}</h1>
-                            <Button  onClick={() => setAmount(amount + 1)} style={{marginTop: "30px"}} disabled={amount >= 20}><AiOutlinePlus /></Button>
+                            <Button  onClick={() => setAmount(amount + 1)} style={{marginTop: "30px"}} disabled={amount >= 15}><AiOutlinePlus /></Button>
                         </div>
                         <InputGroup style={{width: "100%", marginTop: "10px", fontColor: "white"}}>
-                            <Input placeholder="Quality" type="text" onChange={(e) => setQuality(e.target.value)} color="white" style={{backgroundColor: "grey", color: "white"}}/>
+                            <Input placeholder="Quality" type="text" onChange={(e) => setQuality(e.target.value)} className="placeholder-white" style={{backgroundColor: "grey", color: "white"}}/>
                     </InputGroup>
                     </div>
                 </div>

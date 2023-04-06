@@ -19,6 +19,7 @@ import { supabase } from "config/client";
 
 function WaterPage() {
     const [waterData, setWaterData] = useState([]);
+    const [goalData, setGoalData] = useState([]);
 
     const [from, setFrom] = useState("");
     const [to, setTo] = useState("");
@@ -34,6 +35,8 @@ function WaterPage() {
 
     useEffect(() => {
         getWater();
+        getCurrentGoal();
+        console.log(waterData);
     }, [dataUpdated]);
 
        // get the current date, in the format yyyy-mm-dd
@@ -58,20 +61,10 @@ function WaterPage() {
         throw error;
     }
 
-    const handleGoalSubmit = async (e) => {
-        e.preventDefault(); // Prevent the page from refreshing
-        
-        // Do something
-    }
-
     const handleWaterSubmit = async (e) => {
-        // let value = to - from;
-        // setData((old) => [{ name: 'Water', data: value}, { name: 'Goal', data: goal }]);
+        e.preventDefault();
 
-        e.preventDefault(); // Prevent the page from refreshing
-        
-
-        if (!amount) { // If the quality or amount is empty, don't submit
+        if (!amount) {
             alert("Please fill in all the required fields");
             return;
         }
@@ -79,14 +72,71 @@ function WaterPage() {
         const date = dateNow(); // Get the current date
 
         try {
-            const { data, error } = await supabase
+            const { data: existingData, error: existingError } = await supabase
                 .from("water")
-                .insert([
-                    { amount: amount, date: date, user_id: await getUserId() },
-                ]); // Insert the new item into the database
-            if (error) throw error;
-            setWaterData(null); // Clear the topic
-            setDataUpdated(!dataUpdated); // Update the data, to show the new item
+                .select()
+                .eq("date", date)
+                .eq("user_id", await getUserId());
+
+            if (existingError) throw existingError;
+
+            if (existingData && existingData.length > 0) {
+                alert("You've already logged your water consumption for today");
+            } else {
+                const { data, error } = await supabase
+                    .from("water")
+                    .insert([
+                        { amount: amount, date: date, user_id: await getUserId() },
+                    ]); // Insert the new item into the database
+                if (error) throw error;
+                setWaterData(null); // Clear the topic
+                setDataUpdated(!dataUpdated); // Update the data, to show the new item
+                alert("Water has been recorded successfully!");
+            }
+        } catch (error) {
+            alert(error.message);
+            console.log("error", error);
+        }
+    };
+
+    const handleGoalSubmit = async (e) => {
+        e.preventDefault();
+        
+        if (!goal) {
+            alert("Please fill in the required field");
+            return;
+        }
+
+        try {
+            const { data: existingData, error: existingError } = await supabase
+                .from("goal")
+                .select()
+                .eq("user_id", await getUserId());
+            
+            if (existingError) throw existingError;
+
+            if (existingData && existingData.length > 0) {
+                const { data: updatedData, error: updateError } = await supabase
+                    .from("goal")
+                    .update({ goalWater: goal })
+                    .eq("id", existingData[0].id)
+                    .eq("user_id", await getUserId());
+
+                if (updateError) throw updateError;
+                
+                setDataUpdated(!dataUpdated);
+            } else {
+                const { data: insertedData, error: insertError } = await supabase
+                    .from("goal")
+                    .insert({ goalWater: goal, user_id: await getUserId() })
+                    .single();
+
+                if (insertError) throw insertError;
+
+                setDataUpdated(!dataUpdated);
+            }
+            alert("Goal has been updated successfully!");
+            setGoal(8);
         } catch (error) {
             alert(error.message);
             console.log("error", error);
@@ -95,7 +145,6 @@ function WaterPage() {
     
     const getWater = async () => {
         
-
         const { data, error } = await supabase
             .from("water")
             .select("*")
@@ -105,6 +154,21 @@ function WaterPage() {
         setWaterData(data);
         console.log(waterData);
         console.log(data);
+    };
+
+    const getCurrentGoal = async () => {
+        const { data, error } = await supabase
+            .from("goal")
+            .select("goalWater")
+            .eq("user_id", await getUserId())
+            .limit();
+        if (error) throw error;
+
+        if (data) {
+            setGoalData( { goalWater: data[0].goalWater });
+        } else {
+            setGoalData({ goalWater: 8 });
+        }
     };
 
     const CustomTooltip = ({ active, payload, label }) => {
@@ -120,6 +184,7 @@ function WaterPage() {
       };
     useEffect(() => {
         getWater();
+        getCurrentGoal();
         console.log(waterData);
     }, [dataUpdated]);
 
@@ -146,11 +211,11 @@ function WaterPage() {
             <div style={{display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column"}}>
 
                 <div style={{ display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column"}}>
-                <p style={{color: "white", fontWeight: "bold", padding: "7px 0", marginBottom: "10px", backgroundColor: "grey", borderRadius: "5px", width: "100%", textAlign: "center" }}>Cups</p>
+                <p style={{color: "white", fontWeight: "bold", padding: "7px 0", marginBottom: "10px", backgroundColor: "grey", borderRadius: "5px", width: "100%", textAlign: "center" }}>Cup(s) (250mL)</p>
                 <div style={{ backgroundColor: "grey", borderRadius: "5px", display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "row", padding: "23px 40px"}}>
                     <Button onClick={() => setAmount(amount - 1)} disabled={amount <= 0}><AiOutlineMinus /></Button>
                     <h1 style={{color: "white", fontWeight: "bold", padding: "0 20px", margin: "0"}}>{amount}</h1>
-                    <Button  onClick={() => setAmount(amount + 1)} disabled={amount >= 20}><AiOutlinePlus /></Button>
+                    <Button  onClick={() => setAmount(amount + 1)} disabled={amount >= 30}><AiOutlinePlus /></Button>
                 </div>
                 </div>
 
@@ -206,7 +271,7 @@ function WaterPage() {
                                     value={goal}
                                     onChange={(e) => {
                                         const value = e.target.value
-                                        if (!isNaN(value) && value > 0 && value < 16) {
+                                        if (!isNaN(value) && value > 0 && value < 31) {
                                             setGoal(value);
                                         }
                                     }}
@@ -215,7 +280,13 @@ function WaterPage() {
                         </div>
                         <Button color="success" onClick={handleGoalSubmit}>Add</Button>
                     </ListGroupItem>
-                
+                    <ListGroupItem style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
+                        <div  style={{display: "flex", flexDirection: "row", width: "60%"}}>
+                                <h3>
+                                    Current goal: <b>{goalData.goalWater}</b> cups of water
+                                </h3>
+                        </div>
+                    </ListGroupItem>
                 </ListGroup>
                 <div style={{height: "30px"}}/>
 
