@@ -28,17 +28,20 @@ function SleepPage() {
 
     const [dataUpdated, setDataUpdated] = useState(false);
 
+    
+
     // when data is updated, update sleepData
     useEffect(() => {
         getSleepData();
         getCurrentGoal();
+        getCurrentGoal();
         console.log(sleepData);
         console.log(goalData);
+        console.log(data);
     }, [dataUpdated]);
 
-    // get the current date, in the format yyyy-mm-dd
-    const dateNow = ()  => {
-        var date = new Date(); // Get the current date
+    const formattedDate = (date) => {
+        var date = new Date(date); // Get the current date
 
         // Get the year, month, and day
         var year = date.toLocaleString("default", { year: "numeric" });
@@ -48,6 +51,31 @@ function SleepPage() {
         var formattedDate = year + "-" + month + "-" + day; // Generate yyyy-mm-dd date string
 
         return formattedDate;
+    }
+
+    // get the current date, in the format yyyy-mm-dd
+    const dateNow = ()  => {
+        var date = new Date(); // Get the current date
+
+        return formattedDate(date);
+    }
+
+    const weekDates = () => {
+        var date = new Date(); // Get the current date
+
+        // Get monday of the current week
+        var day = date.getDay(); // Get the current day of the week, 0 = sunday, 1 = monday, etc.
+        var diff = date.getDate() - day + (day == 0 ? -6:1); // adjust when day is sunday
+
+        date = new Date(date.setDate(diff)); // set date to monday of the current week
+    
+        var dates = [];
+        for (var i = 0; i < 7; i++) {
+            dates.push(formattedDate(date));
+            date.setDate(date.getDate() + 1);
+        }
+
+        return dates;
     }
 
     // supabase functions
@@ -86,7 +114,7 @@ function SleepPage() {
                 const { data, error } = await supabase
                     .from("sleep")
                     .insert([
-                        { quality: quality, amount: amount, date: date, user_id: await getUserId() },
+                        { quality: quality, amount: amount, date: date, user_id: await getUserId(), goal_amount: goalData.goalSleep },
                     ]);
                 if (error) throw error;
             
@@ -150,26 +178,29 @@ function SleepPage() {
         }
     };
       
+    // get the sleep data for the current day
     const getSleepData = async () => {
-        var date = new Date();
+        var dates = weekDates(); // Get the dates of the current week
 
-        var year = date.toLocaleString("default", { year: "numeric" });
-        var month = date.toLocaleString("default", { month: "2-digit" });
-        var day = date.toLocaleString("default", { day: "2-digit" });
-
-        // Generate yyyy-mm-dd date string
-        var formattedDate = year + "-" + month + "-" + day;
+        console.log("dates");
+        console.log(dates);
 
         const { data,  error } = await supabase
             .from("sleep")
             .select("*")
-            .eq("date", formattedDate)
+            .in("date", dates)
+            .order("date", { ascending: true })
             .eq("user_id", await getUserId());
         if (error) throw error;
 
-    setSleepData(data);
+        console.log("sleepDate");
+        console.log(data);
+
+        setSleepData(data);
+
     };
 
+    // get the current goal
     const getCurrentGoal = async () => {
         const { data, error } = await supabase
             .from("goal")
@@ -196,21 +227,16 @@ function SleepPage() {
         }
 
         return null;
-      };
-    useEffect(() => {
-        getSleepData();
-        getCurrentGoal();
-        console.log(sleepData);
-        console.log(goalData);
-    }, [dataUpdated]);
-
-  document.documentElement.classList.remove("nav-open");
-  React.useEffect(() => {
-    document.body.classList.add("revision-landing-page");
-    return function cleanup() {
-      document.body.classList.remove("revision-landing-page");
     };
-  });
+
+
+    document.documentElement.classList.remove("nav-open");
+    React.useEffect(() => {
+        document.body.classList.add("revision-landing-page");
+        return function cleanup() {
+        document.body.classList.remove("revision-landing-page");
+        };
+    });
 
     return (
       <div>
@@ -244,25 +270,17 @@ function SleepPage() {
         </div>
           <div className="content-center" style={{paddingTop: "30px"}}>
           <Container>
-                <ListGroupItem style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
-                    
-                    <Button color="success" onClick={() => { {/*  Do Something  */} }}>Prev</Button>
-                    <h1 className='content-center'>Today</h1>
-                    <Button color="success" onClick={() => { {/*  Do Something  */} }}>Next</Button>
-                </ListGroupItem>
-                <br/>                   
-
-
+                
                 <div style={{display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column", borderRadius: "5px", border: "0.5px solid #ebebeb" ,boxShadow: "3px 3px 5px #d1d1d1"}}>
                     <AreaChart
                         width={1000}
                         height={400}
                         data={sleepData}
                         margin={{
-                            top: 10,
-                            right: 30,
-                            left: 20,
-                            bottom: 5,
+                            top: 20,
+                            right: 0,
+                            left: 0,
+                            bottom: 20,
 
                         }}
                     >
@@ -271,6 +289,8 @@ function SleepPage() {
                         <YAxis />
                         <Tooltip cursor={{fill: '#fff'}} content={<CustomTooltip />} />
                         <Area dataKey="amount" barSize={30} fill="#8884d8" />
+                        <Area dataKey="goal_amount" barSize={30} fill="#82ca9d" />
+                        <Legend />
                     </AreaChart>
                 </div>
                 <br/>

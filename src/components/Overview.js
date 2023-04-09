@@ -1,7 +1,10 @@
 import { Button } from "reactstrap";
 import { LineChart, AreaChart, Line, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { useHistory } from "react-router-dom";
 
-function Overview({ title = "fnull", AvgPoints = "null", decriptionTitle = "null", description = "null"}) {
+function Overview({ title = "No title", AvgPoints = "null", subject = "no subject", subjectNum = "null", navigate="revision-landing-page"}, ) {
+
+    const history = useHistory();
 
     const data = [
         {
@@ -49,11 +52,11 @@ function Overview({ title = "fnull", AvgPoints = "null", decriptionTitle = "null
       ];
 
   return (
-    <div style={{border: "1px solid black", borderRadius: "10px", padding: "10px"}}>
+    <div style={{border: "1px solid black", padding: "10px", borderRadius: "5px", border: "0.5px solid #ebebeb" ,boxShadow: "3px 3px 5px #d1d1d1"}}>
       <p style={{fontWeight: "bold"}}>{title}</p>
       <div style={{display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between"}}>
-        <div style={{display: "flex", flexDirection: "column"}}>
-            <ResponsiveContainer width="100%" height={200}>
+        {/* <div style={{display: "flex", flexDirection: "column"}}> */}
+            <ResponsiveContainer width="90%" height={200}>
                 <AreaChart
                     data={data}
                     margin={{
@@ -63,22 +66,23 @@ function Overview({ title = "fnull", AvgPoints = "null", decriptionTitle = "null
                     bottom: 0,
                     }}
                 >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
+                    <CartesianGrid strokeDasharray="4 20" />
+                    <XAxis dataKey="name" stroke="#d1d1d1"/>
+                    <YAxis stroke="#d1d1d1"/>
                     <Tooltip />
+                    {/* <Legend /> */}
                     <Area type="monotone" dataKey="uv" troke="#8884d8" fill="#8884d8" />
                 </AreaChart>
             </ResponsiveContainer>
-        </div>
+        {/* </div> */}
 
-        <div style={{ display: "flex", flexDirection: "column", width: "40%"}}>
+        <div style={{ display: "flex", flexDirection: "column", width: "40%", marginLeft: "20px"}}>
             <p>Avg. points: {AvgPoints}</p>
-            <p>{decriptionTitle}: {description}</p>
+            <p>{subject}: {subjectNum}</p>
         </div>
 
       </div>
-      <Button style={{width: "100%"}}> View </Button>
+      <Button style={{width: "100%"}} onClick={() => history.push(navigate)}> View </Button>
     </div>
   );
 }
