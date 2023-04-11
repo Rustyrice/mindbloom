@@ -28,8 +28,7 @@ function WaterPage() {
     const [goal, setGoal] = useState(8);
     const [focusBar, setFocusBar] = useState(null);
     const [data, setData] = React.useState([{ name: "Water", data: 8 }, { name: "Goal", data: 8 }]);
-
-
+    const [points, setPoints] = useState(0);
 
     const [dataUpdated, setDataUpdated] = useState(false);
 
@@ -83,16 +82,36 @@ function WaterPage() {
             if (existingData && existingData.length > 0) {
                 alert("You've already logged your water consumption for today");
             } else {
-                const { data, error } = await supabase
+                const { data: waterData, error:waterError } = await supabase
                     .from("water")
                     .insert([
                         { amount: amount, date: date, user_id: await getUserId() },
                     ]); // Insert the new item into the database
-                if (error) throw error;
+                if (waterError) throw waterError;
+
+                const waterAmount = parseInt(amount);
+
+                const { data: pointsData, error: pointsError } = await supabase
+                    .from("points")
+                    .insert([
+                        {
+                            user_id: await getUserId(),
+                            date: date,
+                            points: waterAmount,
+                            type: "water",
+                        }
+                    ]);
+                if (pointsError) throw pointsError;
+
                 setWaterData(null); // Clear the topic
                 setDataUpdated(!dataUpdated); // Update the data, to show the new item
                 alert("Water has been recorded successfully!");
+
+                // update the points
+                setPoints(points + waterAmount);
+                alert("You have earned " + waterAmount + " points for drinking water today!");
             }
+
         } catch (error) {
             alert(error.message);
             console.log("error", error);

@@ -28,6 +28,8 @@ function RevisionDailyPage() {
     // For the list of items
     const [active, setActive] = useState(0);
 
+    const [points, setPoints] = useState(0);
+
     // When the data is updated, update the revisionData
     useEffect(() => {
         getRevisionData();
@@ -79,6 +81,7 @@ function RevisionDailyPage() {
                     { topic: topic, goal: amount, progress: 0, date: date, user_id: await getUserId() },
                 ]); // Insert the new item into the database
             if (error) throw error;
+
             setTopic(""); // Clear the topic
             setDataUpdated(!dataUpdated); // Update the data, to show the new item
         } catch (error) {
@@ -127,6 +130,28 @@ function RevisionDailyPage() {
         if (error) throw error;
 
         setDataUpdated(!dataUpdated); // Update the data, to show the new progress
+
+        const date = dateNow(); // Get the current date
+        const pomodoroCount = 1;
+
+        const { data: pointsData, error: pointsError } = await supabase
+            .from("points")
+            .insert([
+                {
+                    user_id: await getUserId(),
+                    date: date,
+                    points: pomodoroCount * 5,
+                    type: "revision",
+                },
+            ]);
+        if (pointsError) throw pointsError;
+
+        setTopic(""); // Clear the topic
+        setDataUpdated(!dataUpdated); // Update the data, to show the new item
+
+        // Update the points
+        setPoints(points + pomodoroCount * 5);
+        alert("You have earned " + pomodoroCount * 5 + " points for completing a pomodoro!");
     };
 
     // Create a ListItem for each item in the database
@@ -221,6 +246,7 @@ function RevisionDailyPage() {
 
             </Container>
           </div>
+
         </div>
       
     );

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 
 // reactstrap components
-import { Container, Button } from "reactstrap";
+import { Container, Button, Progress } from "reactstrap";
 
 // core components
 import IndexNavbar from "components/Navbars/IndexNavbar";
@@ -13,6 +13,7 @@ import { supabase } from "config/client";
 
 function DashboardPage() {
   const [user, setUser] = useState(null);
+  const [totalPoints, setTotalPoints] = useState(0);
 
   let history = useHistory();
 
@@ -21,11 +22,28 @@ function DashboardPage() {
       if (value.data?.user) {
         // console.log("user", value.data.user);
         setUser(value.data.user);
+        getPoints(value.data.user.id);
       } else {
         console.log("no user");
       }
     });
   }, []);
+
+  const getPoints = async (userId) => {
+    const { data, error } = await supabase
+      .from("points")
+      .select("*")
+      .eq("user_id", userId);
+    
+    if (error) {
+      console.log(error.message);
+    } else {
+      const points = data.reduce((acc, point) => acc + point.points, 0);
+      setTotalPoints(points);
+    }
+  };
+  console.log(totalPoints);
+
 
   document.documentElement.classList.remove("nav-open");
   React.useEffect(() => {
@@ -53,10 +71,20 @@ function DashboardPage() {
         </div>
       <div className="section profile-content">
         <Container style={{marginTop: "10px"}}>          
-         
+
+          <h3 style={{fontWeight: "bold", color: "black"}}>Point System</h3>
+          <br />
+          <Progress
+            animated
+            color="success"
+            value={totalPoints}
+          />
+          <br />
+          <p>Total points earned: {totalPoints}</p>
           <h3 style={{fontWeight: "bold", color: "black"}}>Revision</h3>
           <br />
           <Overview />
+          <br />
           <Button style={{marginRight: "10px"}} onClick={() => history.push("revision-landing-page")}> Revision Page </Button>
           <br />
           <br />

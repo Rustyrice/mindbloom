@@ -25,10 +25,9 @@ function SleepPage() {
     const [amount, setAmount] = useState(0);
     const [goal, setGoal] = useState(8);
     const [data, setData] = React.useState([{ name: "Sleep", data: 8 }, { name: "Goal", data: 8 }]);
+    const [points, setPoints] = useState(0);
 
     const [dataUpdated, setDataUpdated] = useState(false);
-
-    
 
     // when data is updated, update sleepData
     useEffect(() => {
@@ -111,16 +110,34 @@ function SleepPage() {
             if (existingData && existingData.length > 0) {
                 alert("You've already logged your sleep for today");
             } else {
-                const { data, error } = await supabase
+                const { data: sleepData, error: sleepError } = await supabase
                     .from("sleep")
                     .insert([
                         { quality: quality, amount: amount, date: date, user_id: await getUserId(), goal_amount: goalData.goalSleep },
                     ]);
-                if (error) throw error;
+                if (sleepError) throw sleepError;
+
+                const sleepHours = parseInt(amount);
+
+                const { data: pointsData, error: pointsError } = await supabase
+                    .from("points")
+                    .insert([
+                        {
+                            user_id: await getUserId(),
+                            date: date,
+                            points: sleepHours,
+                            type: "sleep",
+                        },
+                    ]);
+                if (pointsError) throw pointsError;
             
                 setSleepData(null); // Clear the topic
                 setDataUpdated(!dataUpdated); // Update the data, to show the new item
                 alert("Sleep has been recorded successfully!");
+
+                // update the points
+                setPoints(points + sleepHours);
+                alert("You have earned " + sleepHours + " points for your sleep today!");
             }
 
         } catch (error) {
