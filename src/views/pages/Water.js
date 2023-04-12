@@ -10,25 +10,22 @@ import {
 } from "reactstrap";
 
 import IndexNavbar from "components/Navbars/IndexNavbar";
-import { ListItem } from "components/RevisionComponents.js";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { AreaGraph } from "components/Graphs";
 import { AiOutlinePlus, AiOutlineMinus } from "react-icons/ai";
 
 import { supabase } from "config/client";
 
 
 function WaterPage() {
+    // Water data
     const [waterData, setWaterData] = useState([]);
     const [goalData, setGoalData] = useState([]);
 
-    const [from, setFrom] = useState("");
-    const [to, setTo] = useState("");
-    const [quality, setQuality] = useState("");
+    const [points, setPoints] = useState(0);
+
+    // User input
     const [amount, setAmount] = useState(0);
     const [goal, setGoal] = useState(8);
-    const [focusBar, setFocusBar] = useState(null);
-    const [data, setData] = React.useState([{ name: "Water", data: 8 }, { name: "Goal", data: 8 }]);
-    const [points, setPoints] = useState(0);
 
     const [dataUpdated, setDataUpdated] = useState(false);
 
@@ -51,6 +48,8 @@ function WaterPage() {
 
         return formattedDate;
     }
+
+    // Supabase functions
 
     async function getUserId() {
         const { data, error } = await supabase.auth.getSession()
@@ -85,7 +84,7 @@ function WaterPage() {
                 const { data: waterData, error:waterError } = await supabase
                     .from("water")
                     .insert([
-                        { amount: amount, date: date, user_id: await getUserId() },
+                        { amount: amount, date: date, user_id: await getUserId(), goal_amount: goal },
                     ]); // Insert the new item into the database
                 if (waterError) throw waterError;
 
@@ -190,31 +189,14 @@ function WaterPage() {
         }
     };
 
-    const CustomTooltip = ({ active, payload, label }) => {
-        if (active && payload && payload.length) {
-          return (
-            <div className="custom-tooltip">
-              <p >{`${label} : ${payload[0].value}`}</p>
-            </div>
-          );
-        }
 
-        return null;
-      };
-    useEffect(() => {
-        getWater();
-        getCurrentGoal();
-        console.log(waterData);
-    }, [dataUpdated]);
-
-
-  document.documentElement.classList.remove("nav-open");
-  React.useEffect(() => {
-    document.body.classList.add("revision-landing-page");
-    return function cleanup() {
-      document.body.classList.remove("revision-landing-page");
-    };
-  });
+    document.documentElement.classList.remove("nav-open");
+    React.useEffect(() => {
+        document.body.classList.add("revision-landing-page");
+        return function cleanup() {
+        document.body.classList.remove("revision-landing-page");
+        };
+    });
 
     return (
       <div>
@@ -243,33 +225,16 @@ function WaterPage() {
         </div>
           <div className="content-center" style={{paddingTop: "30px"}}>
           <Container>
-                <ListGroupItem style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
-                   
-                    <Button color="success" onClick={() => { {/*  Do Something  */} }}>Prev</Button>
-                    <h1 className='content-center'>Today</h1>
-                    <Button color="success" onClick={() => { {/*  Do Something  */} }}>Next</Button>
-                </ListGroupItem>
-                <br/>
 
                 <div style={{display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column", borderRadius: "5px", border: "0.5px solid #ebebeb" ,boxShadow: "3px 3px 5px #d1d1d1"}}>
-                    <AreaChart
-                        width={1000}
-                        height={400}
-                        data={waterData}
-                        margin={{
-                            top: 10,
-                            right: 30,
-                            left: 20,
-                            bottom: 5,
 
-                        }}
-                    >
-                        {/* <CartesianGrid strokeDasharray="3 3" /> */}
-                        <XAxis dataKey="Day" />
-                        <YAxis />
-                        <Tooltip cursor={{fill: '#fff'}} content={<CustomTooltip />} />
-                        <Area dataKey="amount" barSize={30} fill="#8884d8" />
-                    </AreaChart>
+                <AreaGraph data={waterData} width={1000} height={350} goal="false" margin={{
+                            top: 20,
+                            right: 0,
+                            left: 0,
+                            bottom: 20,
+
+                        }} />
                 </div>
                     
 

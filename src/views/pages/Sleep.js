@@ -1,4 +1,4 @@
-import React, { useState, useEffect, PureComponent} from "react";
+import React, { useState, useEffect} from "react";
 import {
     ListGroup,
     ListGroupItem,
@@ -10,8 +10,8 @@ import {
 } from "reactstrap";
 
 import IndexNavbar from "components/Navbars/IndexNavbar";
-import { ListItem } from "components/RevisionComponents.js";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from 'recharts';
+import { AreaGraph } from "components/Graphs";
+
 import { AiOutlinePlus, AiOutlineMinus } from "react-icons/ai";
 
 import { supabase } from "config/client";
@@ -38,6 +38,8 @@ function SleepPage() {
         console.log(goalData);
         console.log(data);
     }, [dataUpdated]);
+
+
 
     const formattedDate = (date) => {
         var date = new Date(date); // Get the current date
@@ -213,7 +215,9 @@ function SleepPage() {
         console.log("sleepDate");
         console.log(data);
 
-        setSleepData(data);
+        // Format the data
+        // setSleepData(data)
+        setSleepData(data); // Set the sleep data
 
     };
 
@@ -231,19 +235,6 @@ function SleepPage() {
         } else {
             setGoalData({ goalSleep: 8 });
         }
-    };
-
-    const CustomTooltip = ({ active, payload, label }) => {
-        if (active && payload && payload.length) {
-          return (
-            <div className="custom-tooltip">
-              <p >{`${label} : ${payload[0].value}`}</p>
-              <p className="desc">Quality: {quality}</p>
-            </div>
-          );
-        }
-
-        return null;
     };
 
 
@@ -289,87 +280,19 @@ function SleepPage() {
           <Container>
                 
                 <div style={{display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column", borderRadius: "5px", border: "0.5px solid #ebebeb" ,boxShadow: "3px 3px 5px #d1d1d1"}}>
-                    <AreaChart
-                        width={1000}
-                        height={400}
-                        data={sleepData}
-                        margin={{
+
+                    <AreaGraph data={sleepData} width={1000} height={350} quality="true" margin={{
                             top: 20,
                             right: 0,
                             left: 0,
                             bottom: 20,
 
-                        }}
-                    >
-                        {/* <CartesianGrid strokeDasharray="3 3" /> */}
-                        <XAxis dataKey="Day" />
-                        <YAxis />
-                        <Tooltip cursor={{fill: '#fff'}} content={<CustomTooltip />} />
-                        <Area dataKey="amount" barSize={30} fill="#8884d8" />
-                        <Area dataKey="goal_amount" barSize={30} fill="#82ca9d" />
-                        <Legend />
-                    </AreaChart>
+                        }} />
+                    
                 </div>
                 <br/>
                 <ListGroup>
-                    {/* <ListGroupItem style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
-                        <div  style={{display: "flex", flexDirection: "row", width: "60%"}}>
-                            <InputGroup style={{width: "60%", marginRight: "10px"}}>
-                                <InputGroupText>
-                                    In Bed
-                                </InputGroupText>
-                            </InputGroup>
-                            <InputGroup style={{width: "90%"}}>
-                                <InputGroupText>
-                                    From
-                                </InputGroupText>
-                                <Input
-                                    addon
-                                    type="number"
-                                    value={from}
-                                    onChange={(e) => {
-                                        const value = e.target.value;
-                                        if (!isNaN(value) && value >= 0 && value < 24) {
-                                            setFrom(value);
-                                        }
-                                    }}
-                                    />
-                                <InputGroupText>
-                                    To
-                                </InputGroupText>
-                                <Input addon type="number" value={to} onChange={(e) => {
-                                        const value = e.target.value;
-                                        if (!isNaN(value) && value >= 0 && value < 24) {
-                                            setTo(value);
-                                        }
-                                    }}/>
-                            </InputGroup>
-                        </div>
-                        <Button color="success" onClick={handleSleepSubmit}>Add</Button> */}
-                    {/* </ListGroupItem>
-                    <ListGroupItem style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
-                        <div  style={{display: "flex", flexDirection: "row", width: "60%"}}>
-                            <InputGroup style={{width: "60%", marginRight: "10px"}}>
-                                <InputGroupText>
-                                   Sleep Quality
-                                </InputGroupText>
-                            </InputGroup>
-                            <InputGroup style={{width: "90%"}}>
-                                <Input
-                                    addon
-                                    type="text"
-                                    value={quality}
-                                    onChange={(e) => {
-                                        const value = e.target.value
-                                        if (value.length <= 30) {
-                                            setQuality(value);
-                                        }
-                                    }}
-                                        />
-                            </InputGroup>
-                        </div>
-                        <Button color="success" onClick={handleSubmit}>Add</Button>
-                    </ListGroupItem> */}
+                    
                     <ListGroupItem style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
                         <div  style={{display: "flex", flexDirection: "row", width: "60%"}}>
                             <InputGroup style={{width: "60%", marginRight: "10px"}}>
