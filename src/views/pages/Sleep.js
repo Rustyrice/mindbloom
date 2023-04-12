@@ -20,12 +20,16 @@ import { supabase } from "config/client";
 function SleepPage() {
     const [sleepData, setSleepData] = useState([]);
     const [goalData, setGoalData] = useState([]);
+    const [points, setPoints] = useState(0);
 
+    // User input
     const [quality, setQuality] = useState("");
     const [amount, setAmount] = useState(0);
     const [goal, setGoal] = useState(8);
-    const [data, setData] = React.useState([{ name: "Sleep", data: 8 }, { name: "Goal", data: 8 }]);
-    const [points, setPoints] = useState(0);
+
+    // Processed data
+    const [averageSleepTime, setAverageSleepTime] = useState(0);
+    const [averageSleepTimeWeek, setAverageSleepTimeWeek] = useState(0);
 
     const [dataUpdated, setDataUpdated] = useState(false);
 
@@ -33,13 +37,7 @@ function SleepPage() {
     useEffect(() => {
         getSleepData();
         getCurrentGoal();
-        getCurrentGoal();
-        console.log(sleepData);
-        console.log(goalData);
-        console.log(data);
     }, [dataUpdated]);
-
-
 
     const formattedDate = (date) => {
         var date = new Date(date); // Get the current date
@@ -207,19 +205,45 @@ function SleepPage() {
         const { data,  error } = await supabase
             .from("sleep")
             .select("*")
-            .in("date", dates)
-            .order("date", { ascending: true })
+            // .in("date", dates)
+            // .order("date", { ascending: true })
             .eq("user_id", await getUserId());
         if (error) throw error;
 
-        console.log("sleepDate");
-        console.log(data);
+        getAverages(data);
 
-        // Format the data
-        // setSleepData(data)
-        setSleepData(data); // Set the sleep data
+        setSleepData(data);
 
     };
+
+    const getAverages = (data) => {
+
+        var totalSleep = 0;
+        var count = 0;
+        data.forEach((item) => {
+            totalSleep += parseInt(item.amount);
+            count++;
+        }
+        );
+
+        setAverageSleepTime(parseInt(totalSleep / count));
+
+        var dates = weekDates(); // Get the dates of the current week
+        var filetered = data.filter((item) => {
+            return dates.includes(item.date);
+        })
+
+        count = 0;
+        totalSleep = 0;
+        filetered.forEach((item) => {
+            totalSleep += parseInt(item.amount);
+            count++;
+        }
+        );
+
+        setAverageSleepTimeWeek(parseInt(totalSleep / count));
+
+    }
 
     // get the current goal
     const getCurrentGoal = async () => {
@@ -291,6 +315,13 @@ function SleepPage() {
                     
                 </div>
                 <br/>
+                <div style={{display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column", borderRadius: "5px", border: "0.5px solid #ebebeb" ,boxShadow: "3px 3px 5px #d1d1d1"}}>
+                    <p>Average Sleep Time: {averageSleepTime}</p> 
+                    <br /> 
+                    <p>Average Sleep Time This Week: {averageSleepTimeWeek}</p>
+                </div>
+                <br/>
+
                 <ListGroup>
                     
                     <ListGroupItem style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
