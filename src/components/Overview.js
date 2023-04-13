@@ -1,8 +1,8 @@
 import { Button } from "reactstrap";
-import { LineChart, AreaChart, Line, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import {  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useHistory } from "react-router-dom";
 
-function Overview({ title = "No title", AvgPoints = "null", subject = "no subject", subjectNum = "null", navigate="revision-landing-page"}, ) {
+function Overview({ title = "No title", AvgPoints = "null", subject = "no subject", subjectNum = "null", navigate}, ) {
 
     const history = useHistory();
 

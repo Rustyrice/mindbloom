@@ -40,8 +40,11 @@ export const AreaGraph = ({ data, goal = true, quality = false, width = 730, hei
     // get the data for each day of the week
     const formatWeekData = (data) => {
 
+        if (data == null) {
+            return []
+        }
         if (data.length == 0) {
-            return [];
+            return []
         }
 
         var weekData = [];

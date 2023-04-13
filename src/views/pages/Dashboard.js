@@ -83,15 +83,17 @@ function DashboardPage() {
           <p>Total points earned: {totalPoints}</p>
           <h3 style={{fontWeight: "bold", color: "black"}}>Revision</h3>
           <br />
-          <Overview />
+          <Overview title="Sleep" navigate="revision-landing-page"/>
           <br />
-          <Button style={{marginRight: "10px"}} onClick={() => history.push("revision-landing-page")}> Revision Page </Button>
           <br />
           <br />
           <h3 style={{fontWeight: "bold", color: "black"}}>Wellbeing</h3>
           <br />
-          <Button style={{marginRight: "10px"}} onClick={() => history.push("sleep")}> Sleep Page </Button>
-          <Button style={{marginRight: "10px"}} onClick={() => history.push("water")}> Water Page </Button>
+          <Overview title="Sleep" navigate="sleep"/>
+          <br />
+          <Overview title="Water" navigate="water"/>
+          <br />
+          <br />
           <Button style={{marginRight: "10px"}} onClick={() => history.push("alcohol")}> Alcohol Page </Button>
 
 
