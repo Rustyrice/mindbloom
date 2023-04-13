@@ -69,52 +69,66 @@ function WaterPage() {
 
         const date = dateNow(); // Get the current date
 
+        var todaysWater = waterData.filter((item) => item.date == date);
+        console.log("todays water: ")
+        console.log(todaysWater);
+        // console.log("existing water amount: " + todaysWater[0].amount);
+
         try {
-            const { data: existingData, error: existingError } = await supabase
-                .from("water")
-                .select()
-                .eq("date", date)
-                .eq("user_id", await getUserId());
 
-            if (existingError) throw existingError;
-
-            if (existingData && existingData.length > 0) {
-                alert("You've already logged your water consumption for today");
-            } else {
-                const { data: waterData, error:waterError } = await supabase
+            if (todaysWater.length == 0) {
+                const { data: waterData, error: waterError } = await supabase
                     .from("water")
                     .insert([
                         { amount: amount, date: date, user_id: await getUserId(), goal_amount: goal },
                     ]); // Insert the new item into the database
                 if (waterError) throw waterError;
 
-                const waterAmount = parseInt(amount);
-
-                const { data: pointsData, error: pointsError } = await supabase
+                const { data, error: pointsError } = await supabase
                     .from("points")
                     .insert([
                         {
                             user_id: await getUserId(),
                             date: date,
-                            points: waterAmount,
+                            points: amount,
                             type: "water",
                         }
                     ]);
                 if (pointsError) throw pointsError;
 
-                setWaterData(null); // Clear the topic
+            } else {
+
+                const { data: updatedData, error: updateError } = await supabase
+                    .from("water")
+                    .update({ amount: amount + todaysWater[0].amount })
+                    .eq("id", todaysWater[0].id);
+
+                if (updateError) throw updateError;
+
+                const { data, error: pointsError } = await supabase
+                    .from("points")
+                    .update({ points: amount + todaysWater[0].amount })
+                    .eq("user_id", await getUserId())
+                    .eq("date", date)
+                    .eq("type", "water");
+
+                if (pointsError) throw pointsError;
+            }
+
+
                 setDataUpdated(!dataUpdated); // Update the data, to show the new item
                 alert("Water has been recorded successfully!");
 
                 // update the points
-                setPoints(points + waterAmount);
-                alert("You have earned " + waterAmount + " points for drinking water today!");
-            }
+                setPoints(points + amount);
+                alert("You have earned " + amount + " points for drinking water today!");
 
-        } catch (error) {
-            alert(error.message);
-            console.log("error", error);
-        }
+                setAmount(0); // Reset the input field
+
+            } catch (error) {
+                alert(error.message);
+                console.log("error", error);
+            }
     };
 
     const handleGoalSubmit = async (e) => {
