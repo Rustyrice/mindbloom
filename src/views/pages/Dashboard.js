@@ -10,6 +10,7 @@ import DemoFooter from "components/Footers/DemoFooter.js";
 import Overview from "components/Overview";
 
 import { supabase } from "config/client";
+import { AreaGraph } from "components/Graphs";
 
 function DashboardPage() {
   const [user, setUser] = useState(null);
@@ -20,7 +21,6 @@ function DashboardPage() {
   useEffect(() => {
     supabase.auth.getUser().then((value) => {
       if (value.data?.user) {
-        // console.log("user", value.data.user);
         setUser(value.data.user);
         getPoints(value.data.user.id);
       } else {
@@ -42,7 +42,6 @@ function DashboardPage() {
       setTotalPoints(points);
     }
   };
-  console.log(totalPoints);
 
 
   document.documentElement.classList.remove("nav-open");
@@ -53,60 +52,74 @@ function DashboardPage() {
     };
   });
   return (
-    <>
+    <div style={{height: "74vh", border: "1px red", maxHeight: "100vh"}}>
       <IndexNavbar />
       <div style={{
             display: "flex",
-            // justifyContent: "center",
             alignItems: "center",
             width: "100%",
-            height: "30vh",
-            
+            height: "25%",
             backgroundImage: "url(https://images.unsplash.com/photo-1468657988500-aca2be09f4c6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2670&q=80)",
         }}>
         <Container>
-          <h1 style={{fontWeight: "bold", color: "white"}}>Hi {user?.user_metadata.name}, welcome to mindbloom</h1>
+          <h1 style={{fontWeight: "bold", color: "white", paddingTop: "40px"}}>Hi {user?.user_metadata.name}, welcome to mindbloom</h1>
         </Container>
 
         </div>
-      <div className="section profile-content">
-        <Container style={{marginTop: "10px"}}>          
+        <div style={{margin: "10px 10px", display: "flex", height: "100%", flexDirection: "column"}}> 
 
-          <h3 style={{fontWeight: "bold", color: "black"}}>Point System</h3>
-          <br />
-          <Progress
-            animated
-            color="success"
-            value={totalPoints}
-          />
-          <br />
-          <p>Total points earned: {totalPoints}</p>
-          <h3 style={{fontWeight: "bold", color: "black"}}>Revision</h3>
-          <br />
-          <Overview title="Sleep" navigate="revision-landing-page"/>
-          <br />
-          <br />
-          <br />
-          <h3 style={{fontWeight: "bold", color: "black"}}>Wellbeing</h3>
-          <br />
-          <Overview title="Sleep" navigate="sleep"/>
-          <br />
-          <Overview title="Water" navigate="water"/>
-          <br />
-          <br />
-          <Button style={{marginRight: "10px"}} onClick={() => history.push("alcohol")}> Alcohol Page </Button>
+        <div style={{display: "grid", gridTemplateColumns: "1fr 1fr", gridGap: "20px"}}>
+          <div className="borderDash">
+            <div style={{display: "flex"}}>
+              <p className="subTitleDash">Point this week</p>
+              <div style={{marginLeft: "auto"}} />
+              <p>??/??</p>
+            </div>
+            <Progress
+              style={{width: "75vw"}}
+                animated
+                color="success"
+                value={totalPoints}
+              />
+          </div>
 
+          <div className="borderDash" style={{display: "flex", alignItems: "center", height: "100%"}}>
+            <p>Total points earned: {totalPoints}</p>
+          </ div>
+        </div>
 
-          <br />
-          <br />
-          <p>This page will show all the data and trends about Personal Informatics according to user Input</p>
+        <div className="gridDash"> 
 
-          
-          
-        </Container>
-      </div>
-      <DemoFooter />
-    </>
+          <div className="borderDash" style={{gridArea: "pieChart"}}>
+            {/* <p className="subTitleDash">Point this week</p> */}
+          </div>
+
+          <div className="borderDash" style={{gridArea: "areaChart"}}>
+            {/* <p className="subTitleDash">Point this week</p> */}
+            <AreaGraph goal={false} />
+          </div>
+
+          <div className="borderDash" style={{gridArea: "revision", width: "100%"}}>
+            <p className="subTitleDash">Revision</p>
+            <AreaGraph goal={false} />
+            <Button style={{width: "100%"}} color="success" onClick={() => history.push("/revision-landing-page")}> view </Button>
+          </div>
+
+          <div className="borderDash" style={{gridArea: "sleep", display: "flex", flexDirection: "column", justifyContent: "space-between"}}>
+            <p className="subTitleDash">Sleep</p>
+            <p>Avg. pts in a day this week: </p>
+            <Button style={{width: "100%"}} color="success" onClick={() => history.push("/sleep")}> view </Button>
+          </div>
+
+          <div className="borderDash" style={{gridArea: "water", display: "flex", flexDirection: "column", justifyContent: "space-between"}}>
+            <p className="subTitleDash">Water</p>
+            <p>Avg. pts in a a day this week: </p>
+            <Button style={{width: "100%", alignSelf: "flex-end"}} color="success" onClick={() => history.push("/water")}> view </Button>
+          </div>
+        </div>
+      </ div>
+      </ div>
+
   );
 }
 

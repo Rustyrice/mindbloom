@@ -148,13 +148,38 @@
 .sleep-tracker > div {
   margin: 20px;
 }
-// li button {
-//   margin-left: 1rem;
-// }
 
-// li .due-date {
-//   font-size: 1rem;
-//   color: gray;
-//   margin-top: 0.5rem;
-// }
+.borderDash {
+  border: 1px solid black;
+  padding: 10px;
+  border-radius: 5px;
+  border: 0.5px solid #ebebeb;
+  box-shadow: 3px 3px 5px #d1d1d1;
+  height: 100%;
+}
+
+.gridDash {
+  display: grid;
+  grid-template-columns: 18.85% 19.4% 19.4% 19.4% 19.4%;
+  grid-template-rows: 25% 25% 25% 25%;
+  grid-template-areas:
+  "pieChart pieChart areaChart areaChart areaChart areaChart"
+  "pieChart pieChart areaChart areaChart areaChart areaChart"
+  "pieChart pieChart revision revision sleep sleep"
+  "pieChart pieChart revision revision water water";
+
+  grid-gap: 1rem;
+  padding: 10px;
+  justify-content: center;
+  align-items: center;
+
+  height: 100%;
+}
+
+.subTitleDash {
+  font-weight: 700;
+  // color: #000000;
+  font-size: "1em";
+  margin-bottom: "5px";
+}
 

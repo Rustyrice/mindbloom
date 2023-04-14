@@ -125,9 +125,8 @@ export const AreaGraph = ({ data, goal = true, quality = false, width = 730, hei
             <Area type="monotone" dataKey="amount" stroke="#8884d8" fillOpacity={1} fill="url(#colourAmount)" />
 
             {goal && <Area type="monotone" dataKey="goal_amount" stroke="#82ca9d" fillOpacity={1} fill="url(#colorGoalAmount)" />}
-            
-            
-            <Legend />
+            {goal && <Legend />}
+
         </AreaChart>
 
     )
