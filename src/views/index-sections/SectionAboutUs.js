@@ -37,9 +37,7 @@ function SectionAboutUs() {
                             </div>
                             </a>
                             <p className="card-description text-center">
-                            Teamwork is so important that it is virtually impossible
-                            for you to reach the heights of your capabilities or make
-                            the money that you want without becoming very good at it.
+                            Software development is a team sport, and success comes from collaboration, communication, and mutual respect.
                             </p>
                         </CardBody>
                         <CardFooter className="text-center">
@@ -88,9 +86,7 @@ function SectionAboutUs() {
                             </div>
                             </a>
                             <p className="card-description text-center">
-                            Teamwork is so important that it is virtually impossible
-                            for you to reach the heights of your capabilities or make
-                            the money that you want without becoming very good at it.
+                            The best code is the one that never needs to be written, but when it is, it should be elegant and efficient.
                             </p>
                         </CardBody>
                         <CardFooter className="text-center">
@@ -135,13 +131,11 @@ function SectionAboutUs() {
                             <a href="#pablo" onClick={(e) => e.preventDefault()}>
                             <div className="author">
                                 <CardTitle tag="h4">Oliwer Kolodziejczyk</CardTitle>
-                                <h6 className="card-category">Back-end developer</h6>
+                                <h6 className="card-category">Scrum Master</h6>
                             </div>
                             </a>
                             <p className="card-description text-center">
-                            Teamwork is so important that it is virtually impossible
-                            for you to reach the heights of your capabilities or make
-                            the money that you want without becoming very good at it.
+                            Programming isn't just a job, it's a way of life that requires constant learning and adaptation.
                             </p>
                         </CardBody>
                         <CardFooter className="text-center">
@@ -190,10 +184,7 @@ function SectionAboutUs() {
                             </div>
                             </a>
                             <p className="card-description text-center">
-                            A group becomes a team when each member is sure enough of
-                            himself and his contribution to praise the skill of the
-                            others. No one can whistle a symphony. It takes an
-                            orchestra to play it.
+                            Debugging is like being a detective in a crime movie where you're also the murderer.
                             </p>
                         </CardBody>
                         <CardFooter className="text-center">
@@ -242,10 +233,7 @@ function SectionAboutUs() {
                             </div>
                             </a>
                             <p className="card-description text-center">
-                            The strength of the team is each individual member. The
-                            strength of each member is the team. If you can laugh
-                            together, you can work together, silence isn’t golden,
-                            it’s deadly.
+                            Coding is not just about writing lines of code, it's about creating something that can make a difference in people's lives.
                             </p>
                         </CardBody>
                         <CardFooter className="text-center">

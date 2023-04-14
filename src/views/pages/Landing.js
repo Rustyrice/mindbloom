@@ -41,29 +41,21 @@ function LandingPage() {
       <IndexNavbar />
       <IndexHeader />
       <div className="main">
-        <div>
-            {/* Usefull links */}
-            <Button color="primary" onClick={() => history.push("dashboard")}> Dashboard Page </Button>
-            <Button color="primary" onClick={() => history.push("revision-landing-page")}> Revision Page </Button>
-            <Button color="primary" onClick={() => history.push("sleep")}> Sleep Page </Button>
-            <Button color="primary" onClick={() => history.push("water")}> Water Page </Button>
-            <Button color="primary" onClick={() => history.push("alcohol")}> Alcohol Page </Button>
-        </div>
         {/* <SectionButtons />*/}
         {/*<SectionNavbars />*/}
         {/*<SectionNavigation /> */}
         {/*<SectionProgress />*/}
         {/*<SectionNotifications />*/}
         {/*<SectionTypography />*/}
-        {/*<SectionCards />*/}
+        <SectionCards />
         {/*<SectionJavaScript /> */}
-        {/*<SectionCarousel />*/}
-        {/*<SectionAboutUs />*/}
+        <SectionCarousel />
+        <SectionAboutUs />
         {/*<SectionNucleoIcons /> */}
         {/*<SectionDark />*/}
-        {/*<SectionLogin />*/}
+        {/* <SectionLogin /> */}
         {/* <SectionDownload /> */}
-        {/*<DemoFooter /> */}
+        <DemoFooter />
       </div>
     </>
   );
