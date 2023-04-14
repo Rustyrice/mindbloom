@@ -77,7 +77,7 @@ export const getWaterDataOfWeek = async ({date, userId}) => {
     return data;
 }
 
-export const getAvgDailyPoints = async (date, type) => {
+export const getDailyPoints = async (date, type) => {
     
     const userId = await getUserId();
 
@@ -97,7 +97,7 @@ export const getAvgDailyPoints = async (date, type) => {
     const days = data.length; // get number of days
     const avg = points / days; // calculate average
 
-    return parseInt(avg);
+    return [parseInt(avg), points];
 }
 
 export const getTotalPoints = async (userId) => {

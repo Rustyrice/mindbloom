@@ -145,14 +145,14 @@ function DashboardPage() {
 
         <div className="gridDash">
 
-          <div className="borderDash" style={{gridArea: "pieChart"}}>
+          <div className="borderDash" style={{gridArea: "pieChart", maxHeight: "80vh"}}>
             <h3>Total points for each topic</h3>
-            <ResponsiveContainer width="100%" height="50%">
+            <ResponsiveContainer width="100%">
               <PieChart width={800} height={400}>
                 <Pie
                   data={data}
-                  cx={220}
-                  cy={300}
+                  cx={200}
+                  cy={200}
                   innerRadius={80}
                   outerRadius={100}
                   fill="#8884d8"
@@ -163,7 +163,7 @@ function DashboardPage() {
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
-              <Legend />
+                <Legend />
               </PieChart>
             </ResponsiveContainer>
           </div>
