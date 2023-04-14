@@ -3,25 +3,30 @@ import { useHistory } from "react-router-dom";
 
 // reactstrap components
 import { Container, Button, Progress } from "reactstrap";
-
-// recharts components
 import { PieChart, Pie, Sector, Cell, ResponsiveContainer } from 'recharts';
 
 // core components
 import IndexNavbar from "components/Navbars/IndexNavbar";
-import DemoFooter from "components/Footers/DemoFooter.js";
-import Overview from "components/Overview";
+import { getSleepDataOfWeek, getWaterDataOfWeek, getAvgDailyPoints, getTotalPoints, getTotalPointsofWeek } from "config/data";
+
 
 import { supabase } from "config/client";
 import { AreaGraph } from "components/Graphs";
 
 function DashboardPage() {
   const [user, setUser] = useState(null);
+
   const [totalPoints, setTotalPoints] = useState(0);
-  const [weeklyPoints, setWeeklyPoints] = useState(0);
-  const [AvgDailyPoints, setAvgDailyPoints] = useState(0);
+
+  const [avgSleepPts, setAvgSleepPts] = useState(0);
+  const [avgWaterPts, setAvgWaterPts] = useState(0);
+  const [avgRevisionPts, setAvgRevisiosPts] = useState(0);
+
+  const [TotalWeeklyPoints, setTotalWeeklyPoints] = useState(0);
+
+
   const [sleepData, setSleepData] = useState(null);
-  const [waterData, setWaterData] = useState([]);
+  const [waterData, setWaterData] = useState(null);
 
   // data for pie chart
   const data = [
@@ -33,97 +38,54 @@ function DashboardPage() {
 
   let history = useHistory();
 
-  useEffect(() => {
+   useEffect(() => {
     supabase.auth.getUser().then((value) => {
       if (value.data?.user) {
         setUser(value.data.user);
-        getTotalPoints(value.data.user.id);
-        getWeeklyPoints(value.data.user.id);
+        const date = dateNow();
+
+        // get data for the week
+        getSleepDataOfWeek(date).then((data) => {
+          setSleepData(data);
+        });
+
+        getWaterDataOfWeek(date).then((data) => {
+          setWaterData(data);
+        });
+
+        // get total points
+
+        getTotalPoints().then((data) => {
+          setTotalPoints(data);
+        });
+
+        getTotalPointsofWeek(date).then((data) => {
+          setTotalWeeklyPoints(data);
+        });
+
+        // get average daily points for each category
+
+        getAvgDailyPoints(date, "revision").then((data) => {
+          setAvgRevisiosPts(data);
+        });
+
+        getAvgDailyPoints(date, "sleep").then((data) => {
+          setAvgSleepPts(data);
+        });
+
+        getAvgDailyPoints(date, "water").then((data) => {
+          setAvgWaterPts(data);
+        });
+
       } else {
         console.log("no user");
       }
-    });
-    getSleepData();
-    getWater();
+    })
   }, []);
 
-  const getTotalPoints = async (userId) => {
-    const { data, error } = await supabase
-      .from("points")
-      .select("*")
-      .eq("user_id", userId)
-    
-    if (error) {
-      console.log(error.message);
-    } else {
-      const points = data.reduce((acc, point) => acc + point.points, 0);
-      setTotalPoints(points);
-    }
-  };
-
-  const getWeeklyPoints = async (userId) => {
-    // calculate the start and end dates of the week
-    const endofWeek = new Date();
-    const startofWeek = new Date(endofWeek.getTime() - 7 * 24 * 60 * 60 * 1000);
-
-    const { data, error } = await supabase
-      .from("points")
-      .select("*")
-      .eq("user_id", userId)
-      .gte("date", startofWeek.toISOString().slice(0, 10))
-      .lte("date", endofWeek.toISOString().slice(0, 10));
-    
-    if (error) {
-      console.log(error.message);
-    } else {
-      const points = data.reduce((acc, point) => acc + point.points, 0);
-      const days = 7;
-      const weeklyPoints = Math.round(points / days);
-      const dailyPoints = Math.round(points / data.length);
-      
-      setWeeklyPoints(weeklyPoints);
-      setAvgDailyPoints(dailyPoints);
-    }
-  };
-
-  // get sleep data
-  const getSleepData = async () => {
-      try {
-          const { data, error } = await supabase
-            .from("sleep")
-            .select("*")
-            .order("date", {ascending: true})
-            .limit(7)
-            .eq("user_id", await getUserId());
-          if (error) throw error;
-          setSleepData(data);
-      } catch (error) {
-          alert(error.message);
-          console.log("error", error);
-      }
-  };
-
-  // get water data
-  const getWater = async () => {
-        
-    const { data, error } = await supabase
-      .from("water")
-      .select("*")
-      .eq("user_id", await getUserId());
-    if (error) throw error;
-
-    setWaterData(data);
-    console.log(waterData);
-    console.log(data);
-  };
-
-  // get the user's id
-  async function getUserId() {
-      const { data, error } = await supabase.auth.getSession()
-      if (data.session) { // if there is a session, user is logged in
-          return data.session.user.id;
-      }
-      throw error;
+  const dateNow = () => {
+    const date = new Date();
+    return date;
   }
 
 
@@ -135,7 +97,7 @@ function DashboardPage() {
     };
   });
   return (
-    <div style={{height: "150vh", border: "1px red", maxHeight: "200vh"}}>
+    <div style={{height: "100vh", border: "1px red", maxHeight: "100vh"}}>
       <IndexNavbar />
       <div style={{
             display: "flex",
@@ -149,20 +111,20 @@ function DashboardPage() {
         </Container>
 
         </div>
-        <div style={{margin: "10px 10px", display: "flex", height: "100%", flexDirection: "column"}}> 
+        <div style={{margin: "10px 10px", display: "flex", flexDirection: "column"}}> 
 
         <div style={{display: "grid", gridTemplateColumns: "1fr 1fr", gridGap: "20px"}}>
           <div className="borderDash">
             <div style={{display: "flex"}}>
               <p className="subTitleDash">Points this week</p>
               <div style={{marginLeft: "auto"}} />
-              <p>{weeklyPoints}/??</p>
+              <p>{TotalWeeklyPoints}/??</p>
             </div>
             <Progress
               style={{width: "75vw"}}
                 animated
                 color="success"
-                value={weeklyPoints}
+                value={TotalWeeklyPoints}
               />
           </div>
 
@@ -173,7 +135,7 @@ function DashboardPage() {
 
         <div className="gridDash"> 
 
-          <div className="borderDash" style={{gridArea: "pieChart"}}>
+          <div className="borderDash" style={{gridArea: "pieChart", height:"100%"}}>
             {/* <p className="subTitleDash">Point this week</p> */}
           </div>
 
@@ -184,7 +146,13 @@ function DashboardPage() {
 
           <div className="borderDash" style={{gridArea: "revision", width: "100%"}}>
             <p className="subTitleDash">Revision</p>
-            <AreaGraph goal={false} />
+            <AreaGraph data={sleepData} width={380} height={180} quality="true" margin={{
+              top: 20,
+              right: 0,
+              left: 0,
+              bottom: 20,
+            }} />
+            <p>Average daily points for this week: {avgRevisionPts} </p>
             <Button style={{width: "100%"}} color="success" onClick={() => history.push("/revision-landing-page")}> view </Button>
           </div>
 
@@ -196,7 +164,7 @@ function DashboardPage() {
               left: 0,
               bottom: 20,
             }} />
-            <p>Average daily points for this week: {weeklyPoints}/{AvgDailyPoints} </p>
+            <p>Average points in a day (this week): {avgSleepPts} </p>
             <Button style={{width: "100%"}} color="success" onClick={() => history.push("/sleep")}> view </Button>
           </div>
 
@@ -208,7 +176,7 @@ function DashboardPage() {
               left: 0,
               bottom: 20,
             }} />
-            <p>Average daily points for this week: {weeklyPoints}/{AvgDailyPoints} </p>
+            <p>Average daily points for this week: {avgWaterPts} </p>
             <Button style={{width: "100%", alignSelf: "flex-end"}} color="success" onClick={() => history.push("/water")}> view </Button>
           </div>
         </div>

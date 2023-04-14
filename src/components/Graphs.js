@@ -42,10 +42,10 @@ export const AreaGraph = ({ data, goal = true, quality = false, width = 730, hei
 
         if (data == null) {
             return []
-        }
-        if (data.length == 0) {
+        } else if (data.length == 0) {
             return []
         }
+
 
         var weekData = [];
         var week = weekDates();
@@ -81,7 +81,6 @@ export const AreaGraph = ({ data, goal = true, quality = false, width = 730, hei
             var date = week[i];
             var dayData = data.filter((item) => item.date == date);
             if (dayData.length > 0) {
-                console.log(dayData);
                 dayData[0].day = day;
                 weekData.push(dayData[0]);
             } else {

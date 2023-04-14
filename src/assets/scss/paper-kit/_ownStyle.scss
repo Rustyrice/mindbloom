@@ -160,18 +160,17 @@
 
 .gridDash {
   display: grid;
-  grid-template-columns: 20% 10% 10% 26% 30%;
-  grid-template-rows: 20% 20% 30% 30%;
+  grid-template-columns: 33% 33% 33%;
+  grid-template-rows: 50% 50%;
   grid-template-areas:
-  "pieChart pieChart areaChart areaChart areaChart areaChart"
-  "pieChart pieChart areaChart areaChart areaChart areaChart"
-  "pieChart pieChart revision revision sleep sleep"
-  "pieChart pieChart revision revision water water";
+  "pieChart areaChart sleep"
+  "pieChart revision water";
 
   grid-gap: 1rem;
   padding: 10px;
   justify-content: center;
   align-items: center;
+  margin-bottom: "5px";
 
   height: 100%;
 }
