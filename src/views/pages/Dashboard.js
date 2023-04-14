@@ -5,7 +5,7 @@ import { useHistory } from "react-router-dom";
 import { Container, Button, Progress } from "reactstrap";
 
 // recharts components
-import { PieChart, Pie, Sector, Cell, ResponsiveContainer } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from 'recharts';
 
 // core components
 import IndexNavbar from "components/Navbars/IndexNavbar";
@@ -20,14 +20,17 @@ function DashboardPage() {
   const [totalPoints, setTotalPoints] = useState(0);
   const [weeklyPoints, setWeeklyPoints] = useState(0);
   const [AvgDailyPoints, setAvgDailyPoints] = useState(0);
+  const [revisionPoints, setRevisionPoints] = useState(0);
+  const [sleepPoints, setSleepPoints] = useState(0);
+  const [waterPoints, setWaterPoints] = useState(0);
   const [sleepData, setSleepData] = useState(null);
   const [waterData, setWaterData] = useState([]);
 
   // data for pie chart
   const data = [
-    { name: 'Revision', value: 400 },
-    { name: 'Sleep', value: 300 },
-    { name: 'Water', value: 200 },
+    { name: 'Revision', value: revisionPoints },
+    { name: 'Sleep', value: sleepPoints },
+    { name: 'Water', value: waterPoints },
   ];
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28'];
 
@@ -52,14 +55,28 @@ function DashboardPage() {
       .from("points")
       .select("*")
       .eq("user_id", userId)
-    
+  
     if (error) {
       console.log(error.message);
     } else {
-      const points = data.reduce((acc, point) => acc + point.points, 0);
-      setTotalPoints(points);
+      const revisionPoints = data.filter(point => point.type === 'revision')
+                                 .reduce((acc, point) => acc + point.points, 0);
+      const sleepPoints = data.filter(point => point.type === 'sleep')
+                              .reduce((acc, point) => acc + point.points, 0);
+      const waterPoints = data.filter(point => point.type === 'water')
+                              .reduce((acc, point) => acc + point.points, 0);
+      
+      // set state for each topic's total points
+      setRevisionPoints(revisionPoints);
+      setSleepPoints(sleepPoints);
+      setWaterPoints(waterPoints);
+      
+      // set state for the total points (sum of all topics)
+      const totalPoints = revisionPoints + sleepPoints + waterPoints;
+      setTotalPoints(totalPoints);
     }
   };
+  
 
   const getWeeklyPoints = async (userId) => {
     // calculate the start and end dates of the week
@@ -174,7 +191,26 @@ function DashboardPage() {
         <div className="gridDash"> 
 
           <div className="borderDash" style={{gridArea: "pieChart"}}>
-            {/* <p className="subTitleDash">Point this week</p> */}
+            <h3>Total points for each topic</h3>
+            <ResponsiveContainer width="100%" height="50%">
+              <PieChart width={800} height={400}>
+                <Pie
+                  data={data}
+                  cx={220}
+                  cy={300}
+                  innerRadius={80}
+                  outerRadius={100}
+                  fill="#8884d8"
+                  paddingAngle={5}
+                  dataKey="value"
+                >
+                  {data.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+              <Legend />
+              </PieChart>
+            </ResponsiveContainer>
           </div>
 
           <div className="borderDash" style={{gridArea: "areaChart"}}>
