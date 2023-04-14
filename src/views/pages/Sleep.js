@@ -304,9 +304,6 @@ function SleepPage() {
           <Container>
                 
                 <div style={{display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column", borderRadius: "5px", border: "0.5px solid #ebebeb" ,boxShadow: "3px 3px 5px #d1d1d1"}}>
-
-                
-                    
                     <AreaGraph data={sleepData} width={1000} height={350} quality="true" margin={{
                         top: 20,
                         right: 0,
@@ -314,9 +311,6 @@ function SleepPage() {
                         bottom: 20,
 
                     }} />
-                       
-                    
-                    
                 </div>
                 <br/>
                 <div style={{display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column", borderRadius: "5px", border: "0.5px solid #ebebeb" ,boxShadow: "3px 3px 5px #d1d1d1"}}>
