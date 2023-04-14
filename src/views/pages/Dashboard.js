@@ -3,11 +3,11 @@ import { useHistory } from "react-router-dom";
 
 // reactstrap components
 import { Container, Button, Progress } from "reactstrap";
-import { PieChart, Pie, Sector, Cell, ResponsiveContainer } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from 'recharts';
 
 // core components
 import IndexNavbar from "components/Navbars/IndexNavbar";
-import { getSleepDataOfWeek, getWaterDataOfWeek, getAvgDailyPoints, getTotalPoints, getTotalPointsofWeek } from "config/data";
+import { getSleepDataOfWeek, getWaterDataOfWeek, getDailyPoints, getTotalPoints, getTotalPointsofWeek } from "config/data";
 
 
 import { supabase } from "config/client";
@@ -22,7 +22,14 @@ function DashboardPage() {
   const [avgWaterPts, setAvgWaterPts] = useState(0);
   const [avgRevisionPts, setAvgRevisiosPts] = useState(0);
 
+
+  const [waterPoints, setWaterPoints] = useState(0);
+  const [sleepPoints, setSleepPoints] = useState(0);
+  const [revisionPoints, setRevisionPoints] = useState(0);
+
   const [TotalWeeklyPoints, setTotalWeeklyPoints] = useState(0);
+
+
 
 
   const [sleepData, setSleepData] = useState(null);
@@ -30,9 +37,9 @@ function DashboardPage() {
 
   // data for pie chart
   const data = [
-    { name: 'Revision', value: 400 },
-    { name: 'Sleep', value: 300 },
-    { name: 'Water', value: 200 },
+    { name: 'Revision', value: revisionPoints },
+    { name: 'Sleep', value: sleepPoints },
+    { name: 'Water', value: waterPoints },
   ];
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28'];
 
@@ -65,16 +72,19 @@ function DashboardPage() {
 
         // get average daily points for each category
 
-        getAvgDailyPoints(date, "revision").then((data) => {
-          setAvgRevisiosPts(data);
+        getDailyPoints(date, "revision").then((data) => {
+          setAvgRevisiosPts(data[0]);
+          setRevisionPoints(data[1])
         });
 
-        getAvgDailyPoints(date, "sleep").then((data) => {
-          setAvgSleepPts(data);
+        getDailyPoints(date, "sleep").then((data) => {
+          setAvgSleepPts(data[0]);
+          setSleepPoints(data[1])
         });
 
-        getAvgDailyPoints(date, "water").then((data) => {
-          setAvgWaterPts(data);
+        getDailyPoints(date, "water").then((data) => {
+          setAvgWaterPts(data[0]);
+          setWaterPoints(data[1])
         });
 
       } else {
@@ -111,7 +121,7 @@ function DashboardPage() {
         </Container>
 
         </div>
-        <div style={{margin: "10px 10px", display: "flex", flexDirection: "column"}}> 
+        <div style={{margin: "10px 10px", display: "flex", flexDirection: "column"}}>
 
         <div style={{display: "grid", gridTemplateColumns: "1fr 1fr", gridGap: "20px"}}>
           <div className="borderDash">
@@ -133,10 +143,29 @@ function DashboardPage() {
           </ div>
         </div>
 
-        <div className="gridDash"> 
+        <div className="gridDash">
 
-          <div className="borderDash" style={{gridArea: "pieChart", height:"100%"}}>
-            {/* <p className="subTitleDash">Point this week</p> */}
+          <div className="borderDash" style={{gridArea: "pieChart"}}>
+            <h3>Total points for each topic</h3>
+            <ResponsiveContainer width="100%" height="50%">
+              <PieChart width={800} height={400}>
+                <Pie
+                  data={data}
+                  cx={220}
+                  cy={300}
+                  innerRadius={80}
+                  outerRadius={100}
+                  fill="#8884d8"
+                  paddingAngle={5}
+                  dataKey="value"
+                >
+                  {data.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+              <Legend />
+              </PieChart>
+            </ResponsiveContainer>
           </div>
 
           <div className="borderDash" style={{gridArea: "areaChart"}}>
