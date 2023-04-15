@@ -11,7 +11,7 @@ import { getSleepDataOfWeek, getWaterDataOfWeek, getDailyPoints, getTotalPoints,
 
 
 import { supabase } from "config/client";
-import { AreaGraph } from "components/Graphs";
+import { AreaGraph, healthMeter } from "components/Graphs";
 
 function DashboardPage() {
   const [user, setUser] = useState(null);
@@ -41,53 +41,30 @@ function DashboardPage() {
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28'];
 
   // data for needle chart
-  const RADIAN = Math.PI / 180;
   const dataNeedleChart = [
     { name: 'Poor', value: 100, color: '#ff0000' },
-    { name: 'Average', value: 300, color: '#FFBB28' },
-    { name: 'Good', value: 200, color: '#FFFF00' },
-    { name: 'Excellent', value: 200, color: '#00C49F' },
+    { name: 'Average', value: 200, color: '#FFBB28' },
+    { name: 'Good', value: 300, color: '#FFFF00' },
+    { name: 'Excellent', value: 400, color: '#00C49F' },
   ];
-  const cx = 150;
-  const cy = 200;
+
+  const cx = 250;
+  const cy = 150;
   const iR = 50;
   const oR = 100;
   const value = 50;
 
-  const needle = (value, data, cx, cy, iR, oR, color) => {
-    let total = 0;
-    data.forEach((v) => {
-      total += v.value;
-    });
-    const ang = 180.0 * (1 - value / total);
-    const length = (iR + 2 * oR) / 3;
-    const sin = Math.sin(-RADIAN * ang);
-    const cos = Math.cos(-RADIAN * ang);
-    const r = 5;
-    const x0 = cx + 5;
-    const y0 = cy + 5;
-    const xba = x0 + r * sin;
-    const yba = y0 - r * cos;
-    const xbb = x0 - r * sin;
-    const ybb = y0 + r * cos;
-    const xp = x0 + length * cos;
-    const yp = y0 + length * sin;
-
-    if (value >= 600) {
-      color = '#00C49F';
-    } else if (value >= 400) {
-      color = '#FFFF00';
-    } else if (value >= 100) {
-      color = '#FFBB28';
+  const healthStatus = (value) => {
+    if (value < 100) {
+      return "Cmon, you can do better";
+    } else if (value < 200) {
+      return "Bruh, your average";
+    } else if (value < 300) {
+      return "Good job, keep it up";
     } else {
-      color = '#ff0000';
+      return "You have been blessed by the gods";
     }
-
-    return [
-      <circle cx={x0} cy={y0} r={r} fill="gray" stroke="none" />,
-      <path d={`M${xba} ${yba}L${xbb} ${ybb} L${xp} ${yp} L${xba} ${yba}`} stroke="#none" fill="gray" />,
-    ];
-  };
+  }
 
   let history = useHistory();
 
@@ -217,9 +194,9 @@ function DashboardPage() {
             </ResponsiveContainer>
           </div>
 
-          <div className="borderDash" style={{gridArea: "areaChart", maxHeight: "80vh"}}>
+          <div className="borderDash" style={{gridArea: "healthMeter", maxHeight: "80vh"}}>
           <h3>Health Status</h3>
-            <ResponsiveContainer width="100%" height="80%">
+            <ResponsiveContainer width="100%" height="60%">
               <PieChart width={400} height={500}>
                 <Pie
                   dataKey="value"
@@ -237,10 +214,15 @@ function DashboardPage() {
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
-                {needle(TotalWeeklyPoints, dataNeedleChart, cx, cy, iR, oR, '#d0d000')}
+                {healthMeter(TotalWeeklyPoints, dataNeedleChart, cx, cy, iR, oR, '#d0d000')}
               </PieChart>
             </ResponsiveContainer>
+            <p style={{textAlign: "center", fontWeight: "bold"}}>
+              {healthStatus(TotalWeeklyPoints)}
+            </p>
           </div>
+
+          
 
           <div className="borderDash" style={{gridArea: "revision", width: "100%"}}>
             <p className="subTitleDash">Revision</p>
