@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 
 // reactstrap components
 import { Container, Button, Progress } from "reactstrap";
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 
 // core components
 import IndexNavbar from "components/Navbars/IndexNavbar";
@@ -28,9 +28,6 @@ function DashboardPage() {
   const [revisionPoints, setRevisionPoints] = useState(0);
 
   const [TotalWeeklyPoints, setTotalWeeklyPoints] = useState(0);
-
-
-
 
   const [sleepData, setSleepData] = useState(null);
   const [waterData, setWaterData] = useState(null);
@@ -159,11 +156,15 @@ function DashboardPage() {
                   paddingAngle={5}
                   dataKey="value"
                 >
-                  {data.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
+                {data.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={COLORS[index % COLORS.length]}
+                  />
+                ))}
                 </Pie>
                 <Legend />
+                <Tooltip />
               </PieChart>
             </ResponsiveContainer>
           </div>
@@ -181,7 +182,7 @@ function DashboardPage() {
               left: 0,
               bottom: 20,
             }} />
-            <p>Average daily points for this week: {avgRevisionPts} </p>
+            <p>Average daily points (last 7 days): {avgRevisionPts} </p>
             <Button style={{width: "100%"}} color="success" onClick={() => history.push("/revision-landing-page")}> view </Button>
           </div>
 
@@ -193,7 +194,7 @@ function DashboardPage() {
               left: 0,
               bottom: 20,
             }} />
-            <p>Average points in a day (this week): {avgSleepPts} </p>
+            <p>Average daily points (last 7 days): {avgSleepPts} </p>
             <Button style={{width: "100%"}} color="success" onClick={() => history.push("/sleep")}> view </Button>
           </div>
 
@@ -205,7 +206,7 @@ function DashboardPage() {
               left: 0,
               bottom: 20,
             }} />
-            <p>Average daily points for this week: {avgWaterPts} </p>
+            <p>Average daily points (last 7 days): {avgWaterPts} </p>
             <Button style={{width: "100%", alignSelf: "flex-end"}} color="success" onClick={() => history.push("/water")}> view </Button>
           </div>
         </div>
