@@ -28,7 +28,7 @@ function RevisionDailyPage() {
     // For the list of items
     const [active, setActive] = useState(0);
 
-    const [points, setPoints] = useState(0);
+    // const [points, setPoints] = useState(0);
 
     // When the data is updated, update the revisionData
     useEffect(() => {
@@ -132,26 +132,48 @@ function RevisionDailyPage() {
         setDataUpdated(!dataUpdated); // Update the data, to show the new progress
 
         const date = dateNow(); // Get the current date
-        const pomodoroCount = 1;
 
+        // Get points for today
         const { data: pointsData, error: pointsError } = await supabase
             .from("points")
-            .insert([
-                {
-                    user_id: await getUserId(),
-                    date: date,
-                    points: pomodoroCount * 5,
-                    type: "revision",
-                },
-            ]);
+            .select("*")
+            .eq("date", date)
+            .eq("user_id", await getUserId())
+            .eq("type", "revision");
         if (pointsError) throw pointsError;
+
+        console.log("Points data", pointsData);
+
+        // If there are no points for today, insert a new row
+        if (pointsData.length === 0) {
+            const { data, error } = await supabase
+                .from("points")
+                .insert([
+                    {
+                        user_id: await getUserId(),
+                        date: date,
+                        points: 5,
+                        type: "revision",
+                    },
+                ]);
+            if (error) throw error;
+        } else {
+            // Otherwise, update the points
+            const { data, error } = await supabase
+                .from("points")
+                .update({ points: pointsData[0].points + 5 })
+                .eq("id", pointsData[0].id);
+            if (error) throw error;
+
+            console.log("Updated points", data);
+        }
 
         setTopic(""); // Clear the topic
         setDataUpdated(!dataUpdated); // Update the data, to show the new item
 
         // Update the points
-        setPoints(points + pomodoroCount * 5);
-        alert("You have earned " + pomodoroCount * 5 + " points for completing a pomodoro!");
+        // setPoints(points + 5);
+        alert("You have earned " + 5 + " points for completing a pomodoro!");
     };
 
     // Create a ListItem for each item in the database
