@@ -97,6 +97,9 @@ export const getDailyPoints = async (date, type) => {
     const days = data.length; // get number of days
     const avg = points / days; // calculate average
 
+    if (isNaN(avg)) {
+        return [0, points, data];
+    }
     return [parseInt(avg), points, data];
 }
 

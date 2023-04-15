@@ -40,12 +40,6 @@ export const AreaGraph = ({ data, goal = true, quality = false, width = 730, hei
     // get the data for each day of the week
     const formatWeekData = (data) => {
 
-        if (data == null) {
-            return []
-        } else if (data.length == 0) {
-            return []
-        }
-
 
         var weekData = [];
         var week = weekDates();
@@ -107,27 +101,33 @@ export const AreaGraph = ({ data, goal = true, quality = false, width = 730, hei
 
 
     return (
-        <AreaChart width={width} height={height} data={formatWeekData(data)} margin={margin}>
-            <defs>
-                <linearGradient id="colourAmount" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#8884d8" stopOpacity={0}/>
-                </linearGradient>
-                <linearGradient id="colorGoalAmount" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#82ca9d" stopOpacity={0}/>
-                </linearGradient>
-            </defs>
+        <>
+            {data && data.length > 0 ?
+                <AreaChart width={width} height={height} data={formatWeekData(data)} margin={margin}>
+                    <defs>
+                        <linearGradient id="colourAmount" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8}/>
+                            <stop offset="95%" stopColor="#8884d8" stopOpacity={0}/>
+                        </linearGradient>
+                        <linearGradient id="colorGoalAmount" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.8}/>
+                            <stop offset="95%" stopColor="#82ca9d" stopOpacity={0}/>
+                        </linearGradient>
+                    </defs>
 
-            <XAxis dataKey="day" />
-            <YAxis />
-            <Tooltip cursor={{fill: '#fff'}} content={<CustomTooltip />} />
-            <Area type="monotone" dataKey={measure} stroke="#8884d8" fillOpacity={1} fill="url(#colourAmount)" />
+                    <XAxis dataKey="day" />
+                    <YAxis />
+                    <Tooltip cursor={{fill: '#fff'}} content={<CustomTooltip />} />
+                    <Area type="monotone" dataKey={measure} stroke="#8884d8" fillOpacity={1} fill="url(#colourAmount)" />
 
-            {goal && <Area type="monotone" dataKey="goal_amount" stroke="#82ca9d" fillOpacity={1} fill="url(#colorGoalAmount)" />}
-            {goal && <Legend />}
+                    {goal && <Area type="monotone" dataKey="goal_amount" stroke="#82ca9d" fillOpacity={1} fill="url(#colorGoalAmount)" />}
+                    {goal && <Legend />}
 
-        </AreaChart>
+                </AreaChart>
+                :
+                <p>No data to display</p>
+            }
+        </>
 
     )
 }
