@@ -161,18 +161,17 @@
 .gridDash {
   display: grid;
   grid-template-columns: 33% 33% 33%;
-  grid-template-rows: 50% 50%;
+  grid-template-rows: 35% 17% 17% 35%;
   grid-template-areas:
-  "pieChart revision revision"
-  "healthMeter sleep water";
+  "revision revision healthMeter"
+  "sleep quote leaderBoard"
+  "water quote leaderBoard"
+  "pieChart badges leaderBoard";
 
   grid-gap: 1rem;
   padding: 10px;
   justify-content: center;
   align-items: center;
-  margin-bottom: "5px";
-
-  height: 100%;
 }
 
 .subTitleDash {

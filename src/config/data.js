@@ -97,7 +97,7 @@ export const getDailyPoints = async (date, type) => {
     const days = data.length; // get number of days
     const avg = points / days; // calculate average
 
-    return [parseInt(avg), points];
+    return [parseInt(avg), points, data];
 }
 
 export const getTotalPoints = async (userId) => {

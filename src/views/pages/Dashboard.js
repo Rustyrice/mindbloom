@@ -31,6 +31,9 @@ function DashboardPage() {
 
   const [sleepData, setSleepData] = useState(null);
   const [waterData, setWaterData] = useState(null);
+  const [revisionData, setRevisionData] = useState(null);
+
+  const [quote, setQuote] = useState(null);
 
   // data for pie chart
   const dataPieChart = [
@@ -98,6 +101,7 @@ function DashboardPage() {
         getDailyPoints(date, "revision").then((data) => {
           setAvgRevisiosPts(data[0]);
           setRevisionPoints(data[1])
+          setRevisionData(data[2])
         });
 
         getDailyPoints(date, "sleep").then((data) => {
@@ -114,7 +118,20 @@ function DashboardPage() {
         console.log("no user");
       }
     })
+
+    getQuote();
+    
   }, []);
+
+  const getQuote = () => {
+    fetch("https://type.fit/api/quotes")
+      .then((response) => response.json())
+      .then((data) => {
+        const random = Math.floor(Math.random() * data.length);
+        setQuote(data[random]);
+      });
+  }
+
 
   const dateNow = () => {
     const date = new Date();
@@ -130,7 +147,7 @@ function DashboardPage() {
     };
   });
   return (
-    <div style={{height: "100vh", border: "1px red", maxHeight: "100vh"}}>
+    <div style={{ border: "1px red"}}>
       <IndexNavbar />
       <div style={{
             display: "flex",
@@ -168,9 +185,9 @@ function DashboardPage() {
 
         <div className="gridDash">
 
-          <div className="borderDash" style={{gridArea: "pieChart", maxHeight: "80vh"}}>
-            <h3>Total points for each topic</h3>
-            <ResponsiveContainer width="100%" height="80%">
+          <div className="borderDash" style={{gridArea: "pieChart"}}>
+          <p className="subTitleDash">Total points for each topic</p>
+            <ResponsiveContainer width="100%">
               <PieChart width={800} height={400}>
                 <Pie
                   data={dataPieChart}
@@ -195,7 +212,7 @@ function DashboardPage() {
           </div>
 
           <div className="borderDash" style={{gridArea: "healthMeter", maxHeight: "80vh"}}>
-          <h3>Health Status</h3>
+          <p className="subTitleDash">Health Status</p>
             <ResponsiveContainer width="100%" height="60%">
               <PieChart width={400} height={500}>
                 <Pie
@@ -226,7 +243,7 @@ function DashboardPage() {
 
           <div className="borderDash" style={{gridArea: "revision", width: "100%"}}>
             <p className="subTitleDash">Revision</p>
-            <AreaGraph data={sleepData} width={1000} height={200} quality="true" margin={{
+            <AreaGraph data={revisionData} width={1000} height={200} quality="true" measure="points" margin={{
               top: 20,
               right: 0,
               left: 0,
@@ -238,29 +255,40 @@ function DashboardPage() {
 
           <div className="borderDash" style={{gridArea: "sleep", display: "flex", flexDirection: "column", justifyContent: "space-between"}}>
             <p className="subTitleDash">Sleep</p>
-            <AreaGraph data={sleepData} width={380} height={180} quality="true" margin={{
-              top: 20,
-              right: 0,
-              left: 0,
-              bottom: 20,
-            }} />
             <p>Average daily points (last 7 days): {avgSleepPts} </p>
             <Button style={{width: "100%"}} color="success" onClick={() => history.push("/sleep")}> view </Button>
           </div>
 
           <div className="borderDash" style={{gridArea: "water", display: "flex", flexDirection: "column", justifyContent: "space-between"}}>
             <p className="subTitleDash">Water</p>
-            <AreaGraph data={waterData} width={380} height={180} quality="true" margin={{
-              top: 20,
-              right: 0,
-              left: 0,
-              bottom: 20,
-            }} />
             <p>Average daily points (last 7 days): {avgWaterPts} </p>
             <Button style={{width: "100%", alignSelf: "flex-end"}} color="success" onClick={() => history.push("/water")}> view </Button>
           </div>
+
+          <div className="borderDash" style={{gridArea: "quote", }}>
+            <p className="subTitleDash">Quote of the day</p>
+            {quote === null ? <p>loading...</p> : 
+            <div style={{display: "flex", flexDirection: "column", justifyContent: "space-between", height: "90%"}}>
+              <h3 style={{width: "100%", textAlign: "center"}}>"{quote.text}"</h3>
+              <p style={{width: "100%", textAlign: "center"}}> - {quote.author}</p>
+            </div>
+            }
+            
+          </div>
+
+          <div className="borderDash" style={{gridArea: "badges", display: "flex", flexDirection: "column", justifyContent: "space-between"}}>
+            <p className="subTitleDash">Badges</p>
+          </div>
+
+          <div className="borderDash" style={{gridArea: "leaderBoard", display: "flex", flexDirection: "column", justifyContent: "space-between"}}>
+            <p className="subTitleDash">LeaderBoard</p>
+          </div>
+
         </div>
       </ div>
+
+
+
       </ div>
 
   );

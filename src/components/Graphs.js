@@ -2,7 +2,7 @@ import { AreaChart, Area, XAxis, YAxis, Tooltip, Legend, ReferenceLine } from 'r
 
 
 // This graph will be used to display the amount of points a user has earned over time (in a week)
-export const AreaGraph = ({ data, goal = true, quality = false, width = 730, height = 250, margin={ top: 10, right: 30, left: 0, bottom: 0 } }) => {
+export const AreaGraph = ({ data, goal = true, quality = false, width = 730, height = 250, margin={ top: 10, right: 30, left: 0, bottom: 0 }, measure = "value" }) => {
 
     // format a date object into a yyyy-mm-dd string
     const formattedDate = (date) => {
@@ -121,7 +121,7 @@ export const AreaGraph = ({ data, goal = true, quality = false, width = 730, hei
             <XAxis dataKey="day" />
             <YAxis />
             <Tooltip cursor={{fill: '#fff'}} content={<CustomTooltip />} />
-            <Area type="monotone" dataKey="amount" stroke="#8884d8" fillOpacity={1} fill="url(#colourAmount)" />
+            <Area type="monotone" dataKey={measure} stroke="#8884d8" fillOpacity={1} fill="url(#colourAmount)" />
 
             {goal && <Area type="monotone" dataKey="goal_amount" stroke="#82ca9d" fillOpacity={1} fill="url(#colorGoalAmount)" />}
             {goal && <Legend />}
