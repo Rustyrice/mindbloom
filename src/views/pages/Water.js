@@ -68,28 +68,30 @@ function WaterPage() {
         const date = dateNow(); // Get the current date
 
         var todaysWater = waterData.filter((item) => item.date == date);
+        
+        var newAmount = amount;
 
         if (todaysWater.length == 0) {
             const { data: waterData, error: waterError } = await supabase
                 .from("water")
                 .insert([
-                    { amount: amount, date: date, user_id: await getUserId(), goal_amount: goal },
+                    { amount: newAmount, date: date, user_id: await getUserId(), goal_amount: goal },
                 ]); // Insert the new item into the database
             if (waterError) throw waterError;
 
         } else {
+            newAmount = amount + todaysWater[0].amount;
 
             const { data: updatedData, error: updateError } = await supabase
                 .from("water")
-                .update({ amount: amount + todaysWater[0].amount })
+                .update({ amount: newAmount })
                 .eq("id", todaysWater[0].id);
 
             if (updateError) throw updateError;
 
         }
 
-        var newAmount = amount + todaysWater[0].amount
-        handlePointsSubmit(newAmount, date);
+        await handlePointsSubmit(newAmount, date);
 
         setDataUpdated(!dataUpdated);
         setAmount(0);
@@ -106,7 +108,7 @@ function WaterPage() {
         
         if (goalError) throw goalError;
 
-        var currrentGoal = goalData[0].goalWater;
+        const currrentGoal = goalData[0].goalWater;
 
         if (amount >= currrentGoal) {
             updatedPoints = 5 + (amount - currrentGoal);
@@ -117,14 +119,16 @@ function WaterPage() {
 
         const { data: pointsData, error: pointsError } = await supabase
             .from("points")
-            .select("*")
+            .select("id")
             .eq("user_id", await getUserId())
-            .eq("date", date);
+            .eq("date", date)
+            .eq("type", "water");
+            
 
         if (pointsError) throw pointsError;
 
         if (pointsData.length == 0) {
-            const { data: pointsData, error: pointsError } = await supabase
+            const { data, error: pointsError } = await supabase
                 .from("points")
                 .insert([
                     { points: updatedPoints, date: date, user_id: await getUserId(), type: "water" },
@@ -133,7 +137,7 @@ function WaterPage() {
         } else {
             const { data, error: updateError } = await supabase
                 .from("points")
-                .update({ points: updatedPoints + pointsData[0].amount })
+                .update({ points: updatedPoints })
                 .eq("id", pointsData[0].id);
 
             if (updateError) throw updateError;
