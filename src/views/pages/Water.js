@@ -105,30 +105,40 @@ function WaterPage() {
 
                 if (updateError) throw updateError;
 
-                const { data, error: pointsError } = await supabase
-                    .from("points")
-                    .update({ points: amount + todaysWater[0].amount })
-                    .eq("user_id", await getUserId())
-                    .eq("date", date)
-                    .eq("type", "water");
-
-                if (pointsError) throw pointsError;
-            }
-
-
                 setDataUpdated(!dataUpdated); // Update the data, to show the new item
                 alert("Water has been recorded successfully!");
 
-                // update the points
-                setPoints(points + amount);
-                alert("You have earned " + amount + " points for drinking water today!");
-
                 setAmount(0); // Reset the input field
 
-            } catch (error) {
-                alert(error.message);
-                console.log("error", error);
+                if (amount >= goal) {
+
+                    // update the points
+                    const earnedPoints = points + 1 + (amount - goal);
+                    setPoints(earnedPoints);
+                    alert("Congrats on meeting your water intake goal! You just earned " + earnedPoints + " points!");
+
+                    const { data, error: pointsError } = await supabase
+                        .from("points")
+                        .update({ points: earnedPoints + todaysWater[0].amount })
+                        .eq("user_id", await getUserId())
+                        .eq("date", date)
+                        .eq("type", "water");
+
+                    if (pointsError) throw pointsError;
+                } else {
+                    const { data, error: pointsError } = await supabase
+                        .from("points")
+                        .update({ points: 0 })
+                        .eq("user_id", await getUserId())
+                        .eq("date", date)
+                        .eq("type", "water");
+                }
             }
+
+        } catch (error) {
+            alert(error.message);
+            console.log("error", error);
+        }
     };
 
     const handleGoalSubmit = async (e) => {

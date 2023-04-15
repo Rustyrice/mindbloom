@@ -60,9 +60,9 @@ function DashboardPage() {
 
   const healthStatus = (value) => {
     if (value < 100) {
-      return "Cmon, you can do better";
+      return "C'mon, you can do better";
     } else if (value < 200) {
-      return "Bruh, your average";
+      return "Bruh, you're average";
     } else if (value < 300) {
       return "Good job, keep it up";
     } else {
@@ -168,7 +168,7 @@ function DashboardPage() {
               style={{width: "75vw"}}
                 animated
                 color="success"
-                value={TotalWeeklyPoints / 100}
+                value={TotalWeeklyPoints / 10}
               />
           </div>
 
@@ -237,7 +237,7 @@ function DashboardPage() {
 
           <div className="borderDash" style={{gridArea: "revision", width: "100%"}}>
             <p className="subTitleDash">Revision</p>
-            <AreaGraph data={revisionData} width={1000} height={200} goal={false} measure={"points"} margin={{
+            <AreaGraph data={revisionData} width={900} height={200} goal={false} measure={"points"} margin={{
               top: 20,
               right: 0,
               left: 0,

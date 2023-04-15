@@ -117,27 +117,34 @@ function SleepPage() {
                     ]);
                 if (sleepError) throw sleepError;
 
-                const sleepHours = parseInt(amount);
-
-                const { data: pointsData, error: pointsError } = await supabase
-                    .from("points")
-                    .insert([
-                        {
-                            user_id: await getUserId(),
-                            date: date,
-                            points: sleepHours,
-                            type: "sleep",
-                        },
-                    ]);
-                if (pointsError) throw pointsError;
-            
                 setSleepData(null); // Clear the topic
                 setDataUpdated(!dataUpdated); // Update the data, to show the new item
                 alert("Sleep has been recorded successfully!");
 
-                // update the points
-                setPoints(points + sleepHours);
-                alert("You have earned " + sleepHours + " points for your sleep today!");
+                const sleepHours = parseInt(amount);
+                
+                if (sleepHours >= goalData.goalSleep) {
+
+                    // update the points
+                    const earnedPoints = points + 1 + (sleepHours - goalData.goalSleep)
+                    setPoints(earnedPoints);
+                    
+                    const { data: pointsData, error: pointsError } = await supabase
+                        .from("points")
+                        .insert([
+                            {
+                                user_id: await getUserId(),
+                                date: date,
+                                points: earnedPoints,
+                                type: "sleep",
+                            },
+                        ]);
+                    if (pointsError) throw pointsError;
+
+                    alert("Congrats on meeting your sleep goal! You just earned " + earnedPoints + " points!");
+                } else {
+                    alert("You did not meet your sleep goal today, try to get more sleep tomorrow!");
+                }
             }
 
         } catch (error) {
