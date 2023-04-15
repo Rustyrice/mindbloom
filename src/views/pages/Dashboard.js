@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 
 // reactstrap components
 import { Container, Button, Progress } from "reactstrap";
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 
 // core components
 import IndexNavbar from "components/Navbars/IndexNavbar";
@@ -33,12 +33,61 @@ function DashboardPage() {
   const [waterData, setWaterData] = useState(null);
 
   // data for pie chart
-  const data = [
+  const dataPieChart = [
     { name: 'Revision', value: revisionPoints },
     { name: 'Sleep', value: sleepPoints },
     { name: 'Water', value: waterPoints },
   ];
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28'];
+
+  // data for needle chart
+  const RADIAN = Math.PI / 180;
+  const dataNeedleChart = [
+    { name: 'Poor', value: 100, color: '#ff0000' },
+    { name: 'Average', value: 300, color: '#FFBB28' },
+    { name: 'Good', value: 200, color: '#FFFF00' },
+    { name: 'Excellent', value: 200, color: '#00C49F' },
+  ];
+  const cx = 150;
+  const cy = 200;
+  const iR = 50;
+  const oR = 100;
+  const value = 50;
+
+  const needle = (value, data, cx, cy, iR, oR, color) => {
+    let total = 0;
+    data.forEach((v) => {
+      total += v.value;
+    });
+    const ang = 180.0 * (1 - value / total);
+    const length = (iR + 2 * oR) / 3;
+    const sin = Math.sin(-RADIAN * ang);
+    const cos = Math.cos(-RADIAN * ang);
+    const r = 5;
+    const x0 = cx + 5;
+    const y0 = cy + 5;
+    const xba = x0 + r * sin;
+    const yba = y0 - r * cos;
+    const xbb = x0 - r * sin;
+    const ybb = y0 + r * cos;
+    const xp = x0 + length * cos;
+    const yp = y0 + length * sin;
+
+    if (value >= 600) {
+      color = '#00C49F';
+    } else if (value >= 400) {
+      color = '#FFFF00';
+    } else if (value >= 100) {
+      color = '#FFBB28';
+    } else {
+      color = '#ff0000';
+    }
+
+    return [
+      <circle cx={x0} cy={y0} r={r} fill="gray" stroke="none" />,
+      <path d={`M${xba} ${yba}L${xbb} ${ybb} L${xp} ${yp} L${xba} ${yba}`} stroke="#none" fill="gray" />,
+    ];
+  };
 
   let history = useHistory();
 
@@ -125,13 +174,13 @@ function DashboardPage() {
             <div style={{display: "flex"}}>
               <p className="subTitleDash">Points this week</p>
               <div style={{marginLeft: "auto"}} />
-              <p>{TotalWeeklyPoints}/??</p>
+              <p>{TotalWeeklyPoints}/1000</p>
             </div>
             <Progress
               style={{width: "75vw"}}
                 animated
                 color="success"
-                value={TotalWeeklyPoints}
+                value={TotalWeeklyPoints / 100}
               />
           </div>
 
@@ -147,31 +196,50 @@ function DashboardPage() {
             <ResponsiveContainer width="100%" height="80%">
               <PieChart width={800} height={400}>
                 <Pie
-                  data={data}
-                  cx={250}
-                  cy={110}
+                  data={dataPieChart}
+                  cx="50%"
+                  cy="50%"
                   innerRadius={80}
                   outerRadius={100}
                   fill="#8884d8"
                   paddingAngle={5}
                   dataKey="value"
                 >
-                {data.map((entry, index) => (
+                {dataPieChart.map((entry, index) => (
                   <Cell
                     key={`cell-${index}`}
                     fill={COLORS[index % COLORS.length]}
                   />
                 ))}
                 </Pie>
-                <Legend />
                 <Tooltip />
               </PieChart>
             </ResponsiveContainer>
           </div>
 
-          <div className="borderDash" style={{gridArea: "areaChart"}}>
-            {/* <p className="subTitleDash">Point this week</p> */}
-            <AreaGraph goal={false} />
+          <div className="borderDash" style={{gridArea: "areaChart", maxHeight: "80vh"}}>
+          <h3>Health Status</h3>
+            <ResponsiveContainer width="100%" height="80%">
+              <PieChart width={400} height={500}>
+                <Pie
+                  dataKey="value"
+                  startAngle={180}
+                  endAngle={0}
+                  data={dataNeedleChart}
+                  cx={cx}
+                  cy={cy}
+                  innerRadius={iR}
+                  outerRadius={oR}
+                  fill="#8884d8"
+                  stroke="none"
+                >
+                  {dataNeedleChart.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                {needle(TotalWeeklyPoints, dataNeedleChart, cx, cy, iR, oR, '#d0d000')}
+              </PieChart>
+            </ResponsiveContainer>
           </div>
 
           <div className="borderDash" style={{gridArea: "revision", width: "100%"}}>
@@ -183,7 +251,7 @@ function DashboardPage() {
               bottom: 20,
             }} />
             <p>Average daily points (last 7 days): {avgRevisionPts} </p>
-            <Button style={{width: "100%"}} color="success" onClick={() => history.push("/revision-landing-page")}> view </Button>
+            <Button style={{width: "100%", marginTop: "15px"}} color="success" onClick={() => history.push("/revision-landing-page")}> view </Button>
           </div>
 
           <div className="borderDash" style={{gridArea: "sleep", display: "flex", flexDirection: "column", justifyContent: "space-between"}}>
