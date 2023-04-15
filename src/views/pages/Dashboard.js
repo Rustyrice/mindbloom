@@ -147,12 +147,12 @@ function DashboardPage() {
 
           <div className="borderDash" style={{gridArea: "pieChart", maxHeight: "80vh"}}>
             <h3>Total points for each topic</h3>
-            <ResponsiveContainer width="100%">
+            <ResponsiveContainer width="100%" height="80%">
               <PieChart width={800} height={400}>
                 <Pie
                   data={data}
-                  cx={200}
-                  cy={200}
+                  cx={250}
+                  cy={110}
                   innerRadius={80}
                   outerRadius={100}
                   fill="#8884d8"
@@ -175,7 +175,7 @@ function DashboardPage() {
 
           <div className="borderDash" style={{gridArea: "revision", width: "100%"}}>
             <p className="subTitleDash">Revision</p>
-            <AreaGraph data={sleepData} width={380} height={180} quality="true" margin={{
+            <AreaGraph data={sleepData} width={1000} height={200} quality="true" margin={{
               top: 20,
               right: 0,
               left: 0,
