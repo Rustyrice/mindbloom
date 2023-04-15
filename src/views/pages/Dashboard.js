@@ -12,25 +12,26 @@ import { getSleepDataOfWeek, getWaterDataOfWeek, getDailyPoints, getTotalPoints,
 
 import { supabase } from "config/client";
 import { AreaGraph, healthMeter } from "components/Graphs";
+import Badges from "components/Badges";
 
 function DashboardPage() {
   const [user, setUser] = useState(null);
 
   const [totalPoints, setTotalPoints] = useState(0);
+  const [TotalWeeklyPoints, setTotalWeeklyPoints] = useState(0);
+
 
   const [avgSleepPts, setAvgSleepPts] = useState(0);
   const [avgWaterPts, setAvgWaterPts] = useState(0);
   const [avgRevisionPts, setAvgRevisiosPts] = useState(0);
 
-
   const [waterPoints, setWaterPoints] = useState(0);
   const [sleepPoints, setSleepPoints] = useState(0);
   const [revisionPoints, setRevisionPoints] = useState(0);
 
-  const [TotalWeeklyPoints, setTotalWeeklyPoints] = useState(0);
 
-  const [sleepData, setSleepData] = useState(null);
-  const [waterData, setWaterData] = useState(null);
+  // const [sleepData, setSleepData] = useState(null);
+  // const [waterData, setWaterData] = useState(null);
   const [revisionData, setRevisionData] = useState(null);
 
   const [quote, setQuote] = useState(null);
@@ -75,18 +76,18 @@ function DashboardPage() {
     supabase.auth.getUser().then((value) => {
       if (value.data?.user) {
         setUser(value.data.user);
-        const date = dateNow();
+        getData();
+      } else {
+        console.log("no user");
+      }
+    })
 
-        // get data for the week
-        getSleepDataOfWeek(date).then((data) => {
-          setSleepData(data);
-        });
+    getQuote();
+    
+  }, []);
 
-        getWaterDataOfWeek(date).then((data) => {
-          setWaterData(data);
-        });
-
-        // get total points
+  const getData = async () => {
+    const date = dateNow();
 
         getTotalPoints().then((data) => {
           setTotalPoints(data);
@@ -102,6 +103,7 @@ function DashboardPage() {
           setAvgRevisiosPts(data[0]);
           setRevisionPoints(data[1])
           setRevisionData(data[2])
+          console.log(data[2])
         });
 
         getDailyPoints(date, "sleep").then((data) => {
@@ -113,15 +115,7 @@ function DashboardPage() {
           setAvgWaterPts(data[0]);
           setWaterPoints(data[1])
         });
-
-      } else {
-        console.log("no user");
-      }
-    })
-
-    getQuote();
-    
-  }, []);
+  }
 
   const getQuote = () => {
     fetch("https://type.fit/api/quotes")
@@ -147,17 +141,17 @@ function DashboardPage() {
     };
   });
   return (
-    <div style={{ border: "1px red"}}>
+    <div>
       <IndexNavbar />
       <div style={{
             display: "flex",
             alignItems: "center",
             width: "100%",
-            height: "25%",
+            height: "35%",
             backgroundImage: "url(https://images.unsplash.com/photo-1468657988500-aca2be09f4c6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2670&q=80)",
         }}>
         <Container>
-          <h1 style={{fontWeight: "bold", color: "white", paddingTop: "40px"}}>Hi {user?.user_metadata.name}, welcome to mindbloom</h1>
+          <h1 style={{fontWeight: "bold", color: "white", padding: "90px 0 20px 0"}}>Hi {user?.user_metadata.name}, welcome to mindbloom</h1>
         </Container>
 
         </div>
@@ -243,14 +237,14 @@ function DashboardPage() {
 
           <div className="borderDash" style={{gridArea: "revision", width: "100%"}}>
             <p className="subTitleDash">Revision</p>
-            <AreaGraph data={revisionData} width={1000} height={200} quality="true" measure="points" margin={{
+            <AreaGraph data={revisionData} width={1000} height={200} goal={false} measure={"points"} margin={{
               top: 20,
               right: 0,
               left: 0,
               bottom: 20,
             }} />
-            <p>Average daily points (last 7 days): {avgRevisionPts} </p>
-            <Button style={{width: "100%", marginTop: "15px"}} color="success" onClick={() => history.push("/revision-landing-page")}> view </Button>
+            {/* <p>Average daily points (last 7 days): {avgRevisionPts} </p> */}
+            <Button style={{width: "100%"}} color="success" onClick={() => history.push("/revision-landing-page")}> view </Button>
           </div>
 
           <div className="borderDash" style={{gridArea: "sleep", display: "flex", flexDirection: "column", justifyContent: "space-between"}}>
@@ -278,6 +272,9 @@ function DashboardPage() {
 
           <div className="borderDash" style={{gridArea: "badges", display: "flex", flexDirection: "column", justifyContent: "space-between"}}>
             <p className="subTitleDash">Badges</p>
+            <div style={{height: "100%", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center"}}>
+              <Badges points={totalPoints}/>
+            </div>
           </div>
 
           <div className="borderDash" style={{gridArea: "leaderBoard", display: "flex", flexDirection: "column", justifyContent: "space-between"}}>

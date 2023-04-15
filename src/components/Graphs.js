@@ -1,8 +1,8 @@
-import { AreaChart, Area, XAxis, YAxis, Tooltip, Legend, ReferenceLine } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, Tooltip, Legend } from 'recharts';
 
 
 // This graph will be used to display the amount of points a user has earned over time (in a week)
-export const AreaGraph = ({ data, goal = true, quality = false, width = 730, height = 250, margin={ top: 10, right: 30, left: 0, bottom: 0 }, measure = "value" }) => {
+export const AreaGraph = ({ data, goal = true, quality = false, width = 730, height = 250, margin={ top: 10, right: 30, left: 0, bottom: 0 }, measure = "amount" }) => {
 
     // format a date object into a yyyy-mm-dd string
     const formattedDate = (date) => {
@@ -96,7 +96,8 @@ export const AreaGraph = ({ data, goal = true, quality = false, width = 730, hei
         if (active && payload && payload.length) {
           return (
             <div className="custom-tooltip" style={{backgroundColor: "rgba(255, 255, 255, 0.5)" }}>
-                <p className="desc">Amount: {payload[0].payload.amount}</p>
+                {measure == "amount" && <p className="desc">Amount: {payload[0].payload.amount}</p>}
+                {measure == "points" && <p className="desc">Points: {payload[0].payload.points}</p>}
                 {goal && <p className="desc">Goal: {payload[0].payload.goal_amount}</p>}
                 {quality && <p className="desc">Quality: {payload[0].payload.quality}</p>}
             </div>
