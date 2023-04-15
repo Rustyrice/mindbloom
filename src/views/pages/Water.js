@@ -21,8 +21,6 @@ function WaterPage() {
     const [waterData, setWaterData] = useState([]);
     const [goalData, setGoalData] = useState([]);
 
-    const [points, setPoints] = useState(0);
-
     // User input
     const [amount, setAmount] = useState(0);
     const [goal, setGoal] = useState(8);
@@ -70,76 +68,80 @@ function WaterPage() {
         const date = dateNow(); // Get the current date
 
         var todaysWater = waterData.filter((item) => item.date == date);
-        console.log("todays water: ")
-        console.log(todaysWater);
-        // console.log("existing water amount: " + todaysWater[0].amount);
 
-        try {
+        if (todaysWater.length == 0) {
+            const { data: waterData, error: waterError } = await supabase
+                .from("water")
+                .insert([
+                    { amount: amount, date: date, user_id: await getUserId(), goal_amount: goal },
+                ]); // Insert the new item into the database
+            if (waterError) throw waterError;
 
-            if (todaysWater.length == 0) {
-                const { data: waterData, error: waterError } = await supabase
-                    .from("water")
-                    .insert([
-                        { amount: amount, date: date, user_id: await getUserId(), goal_amount: goal },
-                    ]); // Insert the new item into the database
-                if (waterError) throw waterError;
+        } else {
 
-                const { data, error: pointsError } = await supabase
-                    .from("points")
-                    .insert([
-                        {
-                            user_id: await getUserId(),
-                            date: date,
-                            points: amount,
-                            type: "water",
-                        }
-                    ]);
-                if (pointsError) throw pointsError;
+            const { data: updatedData, error: updateError } = await supabase
+                .from("water")
+                .update({ amount: amount + todaysWater[0].amount })
+                .eq("id", todaysWater[0].id);
 
-            } else {
+            if (updateError) throw updateError;
 
-                const { data: updatedData, error: updateError } = await supabase
-                    .from("water")
-                    .update({ amount: amount + todaysWater[0].amount })
-                    .eq("id", todaysWater[0].id);
-
-                if (updateError) throw updateError;
-
-                setDataUpdated(!dataUpdated); // Update the data, to show the new item
-                alert("Water has been recorded successfully!");
-
-                setAmount(0); // Reset the input field
-
-                if (amount >= goal) {
-
-                    // update the points
-                    const earnedPoints = points + 1 + (amount - goal);
-                    setPoints(earnedPoints);
-                    alert("Congrats on meeting your water intake goal! You just earned " + earnedPoints + " points!");
-
-                    const { data, error: pointsError } = await supabase
-                        .from("points")
-                        .update({ points: earnedPoints + todaysWater[0].amount })
-                        .eq("user_id", await getUserId())
-                        .eq("date", date)
-                        .eq("type", "water");
-
-                    if (pointsError) throw pointsError;
-                } else {
-                    const { data, error: pointsError } = await supabase
-                        .from("points")
-                        .update({ points: 0 })
-                        .eq("user_id", await getUserId())
-                        .eq("date", date)
-                        .eq("type", "water");
-                }
-            }
-
-        } catch (error) {
-            alert(error.message);
-            console.log("error", error);
         }
+
+        var newAmount = amount + todaysWater[0].amount
+        handlePointsSubmit(newAmount, date);
+
+        setDataUpdated(!dataUpdated);
+        setAmount(0);
+
     };
+
+    const handlePointsSubmit = async (amount, date) => {
+        var updatedPoints = 0;
+
+        const { data: goalData, error: goalError } = await supabase
+            .from("goal")
+            .select("goalWater")
+            .eq("user_id", await getUserId());
+        
+        if (goalError) throw goalError;
+
+        var currrentGoal = goalData[0].goalWater;
+
+        if (amount >= currrentGoal) {
+            updatedPoints = 5 + (amount - currrentGoal);
+        } else {
+            console.log("less than goal");
+            return;
+        }
+
+        const { data: pointsData, error: pointsError } = await supabase
+            .from("points")
+            .select("*")
+            .eq("user_id", await getUserId())
+            .eq("date", date);
+
+        if (pointsError) throw pointsError;
+
+        if (pointsData.length == 0) {
+            const { data: pointsData, error: pointsError } = await supabase
+                .from("points")
+                .insert([
+                    { points: updatedPoints, date: date, user_id: await getUserId(), type: "water" },
+                ]); // Insert the new item into the database
+            if (pointsError) throw pointsError;
+        } else {
+            const { data, error: updateError } = await supabase
+                .from("points")
+                .update({ points: updatedPoints + pointsData[0].amount })
+                .eq("id", pointsData[0].id);
+
+            if (updateError) throw updateError;
+
+        }
+    }
+
+        
 
     const handleGoalSubmit = async (e) => {
         e.preventDefault();
@@ -178,7 +180,7 @@ function WaterPage() {
                 setDataUpdated(!dataUpdated);
             }
             alert("Goal has been updated successfully!");
-            setGoal(8);
+            // setGoal(goal);
         } catch (error) {
             alert(error.message);
             console.log("error", error);
