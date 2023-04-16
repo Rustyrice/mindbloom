@@ -164,9 +164,9 @@
   grid-template-rows: 35% 17% 17% 35%;
   grid-template-areas:
   "revision revision healthMeter"
-  "sleep quote leaderBoard"
-  "water quote leaderBoard"
-  "pieChart badges leaderBoard";
+  "sleep quote quote"
+  "water quote quote"
+  "pieChart badges badges";
 
   grid-gap: 1rem;
   padding: 10px;

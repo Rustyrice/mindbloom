@@ -277,10 +277,6 @@ function DashboardPage() {
             </div>
           </div>
 
-          <div className="borderDash" style={{gridArea: "leaderBoard", display: "flex", flexDirection: "column", justifyContent: "space-between"}}>
-            <p className="subTitleDash">LeaderBoard</p>
-          </div>
-
         </div>
       </ div>
 
