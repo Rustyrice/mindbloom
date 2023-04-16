@@ -27,7 +27,7 @@ function IndexHeader() {
               </div>
             </div>
             <h2 className="presentation-subtitle text-center">
-              This is a demo website for our Software Processes Coursework! 
+              Discover a healthier you, one breath at a time.
             </h2>
           </Container>
         </div>

@@ -35,6 +35,7 @@ const items = [
 function SectionCarousel() {
   const [activeIndex, setActiveIndex] = React.useState(0);
   const [animating, setAnimating] = React.useState(false);
+  const [intervalId, setIntervalId] = React.useState(null);
   const onExiting = () => {
     setAnimating(true);
   };
@@ -43,11 +44,13 @@ function SectionCarousel() {
   };
   const next = () => {
     if (animating) return;
+    clearInterval(intervalId);
     const nextIndex = activeIndex === items.length - 1 ? 0 : activeIndex + 1;
     setActiveIndex(nextIndex);
   };
   const previous = () => {
     if (animating) return;
+    clearInterval(intervalId);
     const nextIndex = activeIndex === 0 ? items.length - 1 : activeIndex - 1;
     setActiveIndex(nextIndex);
   };
@@ -55,6 +58,14 @@ function SectionCarousel() {
     if (animating) return;
     setActiveIndex(newIndex);
   };
+
+  React.useEffect(() => {
+    const id = setInterval(() => {
+      next();
+    }, 500);
+    setIntervalId(id);
+    return () => clearInterval(id);
+  }, []);
   return (
     <>
       <div className="section pt-o" id="carousel">
@@ -82,7 +93,7 @@ function SectionCarousel() {
                           onExited={onExited}
                           key={item.src}
                         >
-                          <img src={item.src} alt={item.altText} />
+                          <img src={item.src} alt={item.altText} style={{ opacity: 0.8 }} />
                           <CarouselCaption
                             captionText={item.caption}
                             captionHeader=""

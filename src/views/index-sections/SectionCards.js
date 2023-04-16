@@ -31,12 +31,12 @@ function SectionCards() {
                 <Col md="4">
                     <div className="info">
                         <div className="icon icon-info">
-                        <i className="nc-icon nc-satisfied" />
+                        <i className="nc-icon nc-ruler-pencil" />
                         </div>
                         <div className="description">
-                        <h4 className="info-title">Find more joy</h4>
+                        <h4 className="info-title">Have better focus</h4>
                         <p>
-                        Catch your breath, relax your mind, and feel 14% less stressed in just 10 days.
+                        Catch your breath, relax your mind, and feel 14% less stressed during exams.
                         </p>
                         </div>
                     </div>
