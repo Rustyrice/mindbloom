@@ -91,6 +91,12 @@ function SleepPage() {
     const handleSleepSubmit = async (e) => {
         e.preventDefault();
 
+        // check if user has set their goal before allowing them to submit data
+        if (!goalData || !goalData.goalSleep) {
+            alert("Please set your sleep goal before logging your sleep");
+            return;
+        }
+
         if (!quality || !amount) {
             alert("Please fill in all the required fields");
             return;
@@ -321,9 +327,9 @@ function SleepPage() {
                 </div>
                 <br/>
                 <div style={{display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column", borderRadius: "5px", border: "0.5px solid #ebebeb" ,boxShadow: "3px 3px 5px #d1d1d1"}}>
-                    <p>Average Sleep Time: {averageSleepTime}</p> 
+                    <p>Average Sleep Time: {averageSleepTime} hrs</p> 
                     <br /> 
-                    <p>Average Sleep Time This Week: {averageSleepTimeWeek}</p>
+                    <p>Average Sleep Time This Week: {averageSleepTimeWeek} hrs</p>
                 </div>
                 <br/>
 

@@ -228,7 +228,7 @@ function DashboardPage() {
                 {healthMeter(TotalWeeklyPoints, dataNeedleChart, cx, cy, iR, oR, '#d0d000')}
               </PieChart>
             </ResponsiveContainer>
-            <p style={{textAlign: "center", fontWeight: "bold"}}>
+            <p style={{width: "100%", textAlign: "center", fontWeight: "bold"}}>
               {healthStatus(TotalWeeklyPoints)}
             </p>
           </div>
@@ -263,7 +263,7 @@ function DashboardPage() {
             <p className="subTitleDash">Quote of the day</p>
             {quote === null ? <p>loading...</p> : 
             <div style={{display: "flex", flexDirection: "column", justifyContent: "space-between", height: "90%"}}>
-              <h3 style={{width: "100%", textAlign: "center"}}>"{quote.text}"</h3>
+              <h3 style={{width: "100%", textAlign: "center", display: "flex", justifyContent: "center", alignItems: "center", height: "100%"}}>"{quote.text}"</h3>
               <p style={{width: "100%", textAlign: "center"}}> - {quote.author}</p>
             </div>
             }

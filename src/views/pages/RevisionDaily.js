@@ -173,7 +173,7 @@ function RevisionDailyPage() {
 
         // Update the points
         // setPoints(points + 5);
-        alert("You have earned " + 5 + " points for completing a pomodoro!");
+        alert("Congrats! You have earned " + 5 + " points for completing a pomodoro!");
     };
 
     // Create a ListItem for each item in the database

@@ -60,6 +60,12 @@ function WaterPage() {
     const handleWaterSubmit = async (e) => {
         e.preventDefault();
 
+        // check if user has set thier goal before allowing them to submit data
+        if (!goalData || !goalData.goalWater) {
+            alert("Please set your goal before logging in your water intake");
+            return;
+        }
+
         if (!amount) {
             alert("Please fill in all the required fields");
             return;
