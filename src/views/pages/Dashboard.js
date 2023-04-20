@@ -30,8 +30,6 @@ function DashboardPage() {
   const [revisionPoints, setRevisionPoints] = useState(0);
 
 
-  // const [sleepData, setSleepData] = useState(null);
-  // const [waterData, setWaterData] = useState(null);
   const [revisionData, setRevisionData] = useState(null);
 
   const [quote, setQuote] = useState(null);
@@ -60,13 +58,13 @@ function DashboardPage() {
 
   const healthStatus = (value) => {
     if (value < 100) {
-      return "C'mon, you can do better";
-    } else if (value < 200) {
-      return "Bruh, you're average";
+      return "C'mon, you can do better!";
     } else if (value < 300) {
-      return "Good job, keep it up";
+      return "Good start, but don't give up just yet!";
+    } else if (value < 600) {
+      return "Amazing job, keep it up";
     } else {
-      return "You have been blessed by the gods";
+      return "Fantastic work! You are on the path to success!";
     }
   }
 
@@ -92,6 +90,7 @@ function DashboardPage() {
         getTotalPoints().then((data) => {
           setTotalPoints(data);
         });
+        
 
         getTotalPointsofWeek(date).then((data) => {
           setTotalWeeklyPoints(data);

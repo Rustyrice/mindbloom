@@ -17,7 +17,6 @@ import RevisionWeeklyPage from "views/pages/RevisionWeekly.js";
 import DashboardPage from "views/pages/Dashboard.js";
 import SleepPage from "views/pages/Sleep.js";
 import WaterPage from "views/pages/Water.js";
-import AlcoholPage from "views/pages/Alcohol.js";
 // others
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -60,10 +59,6 @@ root.render(
       <Route
           path ="/water"
           render={(props) => <WaterPage {...props} />}
-      />
-      <Route
-          path ="/alcohol"
-          render={(props) => <AlcoholPage {...props} />}
       />
       <Redirect to="/index" />
     </Switch>
