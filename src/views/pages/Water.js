@@ -81,7 +81,7 @@ function WaterPage() {
             const { data: waterData, error: waterError } = await supabase
                 .from("water")
                 .insert([
-                    { amount: newAmount, date: date, user_id: await getUserId(), goal_amount: goal },
+                    { amount: newAmount, date: date, user_id: await getUserId(), goal_amount: goalData.goalWater },
                 ]); // Insert the new item into the database
             if (waterError) throw waterError;
 
