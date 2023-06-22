@@ -2,20 +2,23 @@
 
 Welcome to MindBloom, a Personal Informatics (PI) software designed to help you improve various aspects of your life. Whether you want to enhance your fitness level, manage your time effectively, or track your well-being, MindBloom offers a range of features to support your personal growth journey. This README provides an overview of MindBloom, including its purpose, frameworks used, key features, and survey-driven development process.
 
-Purpose
+### Purpose
+
 The primary objective of MindBloom is to empower individuals in improving specific areas of their lives. By leveraging the principles of Personal Informatics, MindBloom aims to provide valuable insights and guidance for personal growth. Whether you seek physical fitness, efficient time management, or overall well-being, MindBloom strives to assist you on your journey towards self-improvement.
 
-Frameworks Used
+### Frameworks Used
 
 Front-End Framework: React.js
 
 React.js was chosen for its popularity and extensive resources available online. Its user-friendly nature and robust community support make it an optimal choice for developing the front-end of MindBloom.
 Several team members had proficiency in React.js, ensuring a smooth development experience for the project.
+
 Back-End Framework: Node.js with JavaScript
 
 Node.js was selected to ensure compatibility between the front-end and back-end of the software.
 Extensive research was conducted on various frameworks, including Prisma, Firebase, and Supabase. Ultimately, Node.js was chosen due to its versatility and compatibility with relational databases, which proved essential for user verification and data integration.
-Key Features
+
+### Key Features
 
 Revision Tracker:
 
